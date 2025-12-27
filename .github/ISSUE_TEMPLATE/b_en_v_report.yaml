@@ -1,0 +1,83 @@
+name: Security Vulnerability/Threat
+description: We take software security issues very seriously. If you have discovered a security vulnerability, please select this option to report it. Thank you for your support and cooperation!
+title: "[Security Vulnerability/Threat]: "
+labels: ["vulnerability/threat", "new submission"]
+assignees:
+  - XFTY
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Hello!  
+        We take software security issues very seriously. To quickly and effectively address the security vulnerability you discovered, please provide the following detailed information. Thank you for your support and cooperation!
+
+  - type: textarea
+    id: Vul-Description
+    attributes:
+      label: Vulnerability Overview
+      description: Please describe in detail the issue you discovered, including how it was found and why it is a security risk.
+      placeholder: Please enter a detailed vulnerability description here
+    validations:
+      required: true
+
+  - type: input
+    id: Vul-id
+    attributes:
+      label: Vulnerability ID
+      description: If the vulnerability has an official or internal identifier (such as CVE-2025-xxx, WS-2025-xxx), please fill it in; if not, please indicate "None".
+      placeholder: Please enter the vulnerability ID or "None" here
+    validations:
+      required: true
+
+  - type: dropdown
+    id: Vul-level
+    attributes:
+      label: Threat Level
+      description: |
+        Please evaluate and select the threat level of the vulnerability:
+        
+        - Low: Minimal impact, lower repair priority (rating 0~3)  
+        - Medium: Some impact, needs timely attention and repair (rating 4~7)  
+        - High: Seriously affects system security, needs immediate handling (rating 8~10)
+      options:
+        - Low
+        - Medium
+        - High
+    validations:
+      required: true
+
+  - type: textarea
+    id: Reproduction-Steps
+    attributes:
+      label: Reproduction Steps
+      description: Please provide detailed reproduction steps so that we can accurately reproduce the issue.
+      placeholder: Please enter reproduction steps here
+    validations:
+      required: true
+
+  - type: input
+    id: Affected-Versions
+    attributes:
+      label: Affected Versions
+      description: |
+        Please list the affected software versions.  
+        Or the HomeworkChecker version where you discovered this vulnerability.
+      placeholder: Please enter the affected version numbers here
+    validations:
+      required: true
+
+  - type: input
+    id: Environment
+    attributes:
+      label: Operating Environment
+      description: Please provide the operating environment information when the vulnerability occurred (e.g., operating system, hardware configuration).
+      placeholder: Please enter the operating environment information here
+    validations:
+      required: true
+
+  - type: textarea
+    id: Additional-Information
+    attributes:
+      label: Additional Information
+      description: If there are any other related information or suggestions, please add them here.
+      placeholder: Please enter other information or suggestions here

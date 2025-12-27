@@ -1,0 +1,75 @@
+name: 软件 Bug 反馈
+description: 向开发者反馈软件错误
+title: "[Bug]: "
+labels: ["bug", "新提交"]
+assignees:
+  - XFTY
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您向软件开发者提供故障反馈！  
+        请问，是哪里出现了问题(qwq)？
+
+  - type: input
+    id: Bug-Description
+    attributes:
+      label: 软件 异常/故障 描述
+      description: 请向开发者简要说明软件故障。
+      placeholder: 请在这里输入
+    validations:
+      required: true
+
+  - type: textarea
+    id: To-Reproduce
+    attributes:
+      label: 问题复现步骤
+      description: |
+        这问题...咋弄的？？？开发者求教程...  
+        如果可以，您也可以提供软件截图。
+
+      placeholder: |
+        1. 先这样...  
+        2. 在那样...  
+        3. 最后在这样...  
+        
+        真填的时候不能怎么说哈！
+    validations:
+      required: true
+
+  - type: input
+    id: Expected-Behavior
+    attributes:
+      label: 软件预期行为
+      description: 在按照您上述方法操作完后，软件应该是怎样的？
+      placeholder: 请在这里输入
+    validations:
+      required: true
+
+  - type: dropdown
+    id: NP-Version
+    attributes:
+      label: NameProject版本
+      description: |
+        您正在运行哪个版本的 NameProject。  
+
+      options:
+        - 1.4-snapshot
+        - 1.3-stable
+        - 1.2-snapshot
+        - 1.1-snapshot
+      default: 0
+    validations:
+      required: true
+
+  - type: textarea
+    id: Additional-Context
+    attributes:
+      label: 补充信息
+      description: |
+        您可以在此补充您想要说明的信息
+
+      placeholder: |
+        请在这里输入
+    validations:
+      required: false

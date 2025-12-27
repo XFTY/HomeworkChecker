@@ -1,0 +1,69 @@
+name: Feature Request
+description: Suggest new features to the developer
+title: "[Feature Request]: "
+labels: ["enhancement", "new submission"]
+assignees:
+  - XFTY
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thank you for providing us with valuable suggestions and recommendations!  
+        We value every single one of your suggestions, which will help us improve HomeworkChecker better.
+
+  - type: input
+    id: Feature-Idea
+    attributes:
+      label: New Feature Suggestion
+      description: Please describe in detail the new feature you would like us to add.
+      placeholder: Please enter here
+    validations:
+      required: true
+
+  - type: textarea
+    id: Use-Cases
+    attributes:
+      label: Use Cases
+      description: Please describe how you think this new feature will be used? What are the specific use scenarios?
+      placeholder: Please enter here
+    validations:
+      required: true
+
+  - type: input
+    id: Benefits
+    attributes:
+      label: Benefits Provided
+      description: What benefits will implementing this new feature bring to users?
+      placeholder: Please enter here
+    validations:
+      required: true
+
+  - type: dropdown
+    id: Priority
+    attributes:
+      label: Feature Priority
+      description: How important do you think this feature is?
+      options:
+        - High
+        - Medium
+        - Low
+    validations:
+      required: true
+
+  - type: input
+    id: Alternative-Solutions
+    attributes:
+      label: Alternative Solutions
+      description: Are there other ways or existing features that can achieve similar effects?
+      placeholder: Please enter here
+    validations:
+      required: false
+
+  - type: textarea
+    id: Additional-Context
+    attributes:
+      label: Additional Information
+      description: Do you have any other related information you would like to add?
+      placeholder: Please enter here
+    validations:
+      required: false
