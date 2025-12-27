@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="353.0" prefWidth="600.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.languageChooser">
+   <children>
+      <HBox alignment="CENTER" layoutX="14.0" prefHeight="133.0" prefWidth="600.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <ImageView fitHeight="87.0" fitWidth="84.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/网络.png" />
+               </image>
+            </ImageView>
+         </children>
+      </HBox>
+      <GridPane hgap="10.0" layoutX="34.4" layoutY="148.0" prefHeight="182.0" prefWidth="513.0" vgap="10.0" AnchorPane.leftAnchor="34.0" AnchorPane.rightAnchor="53.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+        </rowConstraints>
+         <children>
+            <AnchorPane fx:id="chineseButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.chinese.simplified" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children></AnchorPane>
+            <AnchorPane fx:id="traditionalChineseButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="1" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.chinese.traditional" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="englishButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="2" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.english" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="spanishButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="3" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.spanish" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="frenchButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.rowIndex="1" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.french" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="arabicButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="1" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.arabic" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="russianButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="1" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.russian" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="bengaliButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="3" GridPane.rowIndex="1" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.bengali" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="germanButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.rowIndex="2" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.german" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="japaneseButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="2" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.japanese" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="portugueseButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="2" styleClass="language-button">
+               <children>
+                  <Label alignment="CENTER" layoutX="63.0" layoutY="28.0" text="%language.portuguese" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+         </children>
+      </GridPane>
+      <TextArea editable="false" layoutX="36.0" layoutY="21.0" prefHeight="74.0" prefWidth="200.0" text="1.简体中文&#10;2.繁体中文&#10;3.英语&#10;4.西班牙语&#10;5.法语&#10;6.阿拉伯语&#10;7.俄语&#10;8.孟加拉语&#10;9.德语&#10;10.日语&#10;11.葡萄牙语&#10;&#10;留一手笔记，省得到时候他们认识我我不认识他" visible="false" wrapText="true" />
+   </children>
+</AnchorPane>

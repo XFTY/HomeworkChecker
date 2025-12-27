@@ -1,0 +1,139 @@
+/* 现代化扁平风格的DatePicker样式，适配深色主题 */
+.date-picker {
+    /* 基础样式 */
+    -fx-background-color: #2d2d2d;
+    -fx-text-fill: #ffffff;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 12px;
+    
+    /* 边框设置 */
+    -fx-border-width: 1px;
+    -fx-border-color: #3e3e3e;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    
+    /* 内边距 */
+    -fx-padding: 2px 6px;
+    -fx-pref-height: 24px;
+}
+
+/* DatePicker文本输入区域 */
+.date-picker .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: #ffffff;
+    -fx-border-width: 0;
+    -fx-padding: 0;
+}
+
+/* DatePicker下拉箭头按钮 */
+.date-picker .arrow-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+/* DatePicker下拉箭头图标 */
+.date-picker .arrow-button .arrow {
+    -fx-background-color: #ffffff;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+/* 下拉日历面板样式 */
+.date-picker .popup > * {
+    -fx-background-color: #2d2d2d;
+    -fx-border-color: #3e3e3e;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+}
+
+/* 日历标题栏 */
+.date-picker .month-year-pane {
+    -fx-background-color: #3a3a3a;
+    -fx-border-width: 0 0 1px 0;
+    -fx-border-color: #3e3e3e;
+}
+
+/* 月份标签 */
+.date-picker .month-year-pane .label {
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* 导航按钮（上一个月/下一个月） */
+.date-picker .previous-month,
+.date-picker .next-month {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+/* 导航按钮悬停状态 */
+.date-picker .previous-month:hover,
+.date-picker .next-month:hover {
+    -fx-background-color: #3e3e3e;
+}
+
+/* 导航按钮图标 */
+.date-picker .previous-month > .left-arrow,
+.date-picker .next-month > .right-arrow {
+    -fx-background-color: #ffffff;
+    -fx-border-width: 0;
+}
+
+/* 星期栏 */
+.date-picker .day-name-cell {
+    -fx-background-color: #3a3a3a;
+    -fx-border-width: 0;
+    -fx-text-fill: #cccccc;
+    -fx-font-weight: bold;
+    -fx-alignment: center;
+}
+
+/* 日期单元格 */
+.date-picker .cell {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+    -fx-text-fill: #ffffff;
+    -fx-alignment: center;
+}
+
+/* 日期单元格悬停状态 */
+.date-picker .cell:hover {
+    -fx-background-color: #3e3e3e;
+}
+
+/* 当前选中日期 */
+.date-picker .cell:selected {
+    -fx-background-color: #5a9cf0;
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+}
+
+/* 当前日期（今天） */
+.date-picker .today {
+    -fx-background-color: #4a4a4a;
+    -fx-border-width: 1px;
+    -fx-border-color: #5a9cf0;
+}
+
+/* 不属于当前月份的日期 */
+.date-picker .other-month {
+    -fx-background-color: transparent;
+    -fx-text-fill: #7a7a7a;
+}
+
+/* 禁用状态的日期 */
+.date-picker .cell:disabled {
+    -fx-opacity: 0.5;
+    -fx-text-fill: #5a5a5a;
+}
+
+/* 焦点状态 */
+.date-picker:focused {
+    -fx-border-color: #5a9cf0;
+    -fx-border-width: 1px;
+}
+
+/* 箭头按钮悬停状态 */
+.date-picker .arrow-button:hover {
+    -fx-background-color: #3e3e3e;
+    -fx-background-radius: 0 6px 6px 0;
+}

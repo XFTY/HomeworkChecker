@@ -1,0 +1,72 @@
+/* 现代化扁平风格的TextArea样式，适配深色主题 */
+.text-area {
+    /* 基础样式 */
+    -fx-background-color: #2d2d2d;
+    -fx-text-fill: #ffffff;
+    
+    /* 边框设置 */
+    -fx-border-width: 1px;
+    -fx-border-color: #3e3e3e;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    
+    /* 内边距 */
+    -fx-padding: 6px;
+}
+
+/* TextArea内部文本区域样式 */
+.text-area .content {
+    /* 文本区域背景 */
+    -fx-background-color: #2d2d2d;
+    -fx-text-fill: #ffffff;
+}
+
+/* 禁用水平和垂直滚动条 */
+.text-area .scroll-pane {
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: never;
+}
+
+/* 滚动条样式 */
+.text-area .scroll-bar:horizontal .thumb,
+.text-area .scroll-bar:vertical .thumb {
+    -fx-background-color: #5a5a5a;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4px;
+}
+
+.text-area .scroll-bar:horizontal .thumb:hover,
+.text-area .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #6a6a6a;
+}
+
+.text-area .scroll-bar:horizontal .thumb:pressed,
+.text-area .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: #4a4a4a;
+}
+
+/* 滚动条轨道 */
+.text-area .scroll-bar:horizontal .track,
+.text-area .scroll-bar:vertical .track {
+    -fx-background-color: #3a3a3a;
+    -fx-border-color: transparent;
+}
+
+/* 箭头按钮 */
+.text-area .scroll-bar .increment-arrow,
+.text-area .scroll-bar .decrement-arrow {
+    -fx-background-color: #ffffff;
+    -fx-shape: "M 0 0 L 4 4 L 0 8 Z";
+}
+
+/* 焦点状态 */
+.text-area:focused {
+    -fx-border-color: #5a9cf0;
+    -fx-border-width: 1px;
+}
+
+/* 禁用状态 */
+.text-area:disabled {
+    -fx-opacity: 1.0;
+    -fx-border-color: #2d2d2d;
+}

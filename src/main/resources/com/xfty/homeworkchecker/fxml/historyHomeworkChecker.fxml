@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.HistoryHomeworkChecker">
+   <children>
+      <TextArea fx:id="editMain" layoutX="24.0" layoutY="74.8" prefHeight="375.0" prefWidth="737.0" stylesheets="@../theme/darkness/textarea/text-area.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0" />
+      <Label fx:id="showDate" layoutX="14.0" layoutY="10.0" text="%history.date" textFill="WHITE">
+         <font>
+            <Font size="21.0" />
+         </font>
+      </Label>
+      <Label fx:id="statusDisplay" layoutX="14.0" layoutY="38.0" text="%history.readonly" textFill="WHITE" />
+   </children>
+</AnchorPane>

@@ -1,0 +1,19 @@
+{
+  "configVersion": 1,
+  "themeChoice": "darkness",
+  "font": {
+    "fontFamily": {
+      "useLocalTtfFile": false,
+      "localFilePath": "",
+      "defaultFontFamily": "System"
+    },
+    "textSize": {
+      "ui": 20.0,
+      "editMain": 17.0
+    }
+  },
+  "homeworkDatabase": {
+    "useDefault": true,
+    "userSetHomeworkDatabasePath": ""
+  }
+}

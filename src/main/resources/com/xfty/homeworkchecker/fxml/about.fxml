@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane prefHeight="359.0" prefWidth="419.0" style="-fx-background-color: #1e1e1e; -fx-border-radius: 20; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.About">
+   <children>
+      <HBox alignment="CENTER" layoutY="34.6" prefHeight="77.0" prefWidth="354.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.6">
+         <children>
+            <ImageView fitHeight="52.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/logo.png" />
+               </image>
+            </ImageView>
+            <Label text="HomeworkChecker" textFill="WHITE">
+               <font>
+                  <Font size="26.0" />
+               </font>
+            </Label>
+         </children>
+      </HBox>
+      <Label alignment="CENTER" layoutX="14.4" layoutY="117.0" text="%about.title" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977">
+         <font>
+            <Font size="14.0" />
+         </font>
+      </Label>
+      <Label fx:id="versionDisplayAboutPage" alignment="CENTER" layoutX="14.4" layoutY="155.0" text="%about.version" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977" />
+      <Label alignment="CENTER" layoutX="118.0" layoutY="371.0" text="%about.opensource" textFill="WHITE" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+      <Label alignment="CENTER" layoutX="14.4" layoutY="184.0" text="%about.runtime" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977" />
+      <Label alignment="CENTER" layoutX="14.4" layoutY="201.0" text="%about.vm" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977" />
+      <Label alignment="CENTER" layoutX="73.0" layoutY="209.0" text="%about.copyright" textFill="WHITE" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+      <HBox alignment="CENTER" layoutY="233.0" prefHeight="46.0" prefWidth="354.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+         <children>
+            <Button mnemonicParsing="false" onMouseClicked="#onUpdateWhatButtonClicked" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%about.updateLog">
+               <graphic>
+                  <ImageView fitHeight="20.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../icon/右上角箭头.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Button>
+         </children>
+      </HBox>
+      <AnchorPane layoutX="90.0" layoutY="-86.0" prefHeight="34.0" prefWidth="488.0" style="-fx-background-color: #323232; -fx-background-radius: 20 20 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" layoutY="45.0" prefHeight="19.0" prefWidth="200.0" spacing="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Circle fx:id="windowCloseButton" fill="#f96057" radius="8.0" stroke="#f96057" strokeType="INSIDE" />
+                  <Circle fx:id="windowMinimizeButton" fill="#f8ce52" radius="8.0" stroke="#f8ce52" strokeType="INSIDE" />
+                  <Circle fx:id="windowMaximizeButton" fill="#5fcf65" radius="8.0" stroke="#5fcf65" strokeType="INSIDE" />
+               </children>
+            </HBox>
+         </children></AnchorPane>
+   </children>
+</AnchorPane>

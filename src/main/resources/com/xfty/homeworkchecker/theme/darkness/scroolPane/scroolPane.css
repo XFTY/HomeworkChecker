@@ -1,0 +1,71 @@
+/* 现代化扁平风格的ScrollPane样式，适配深色主题 */
+.scroll-pane {
+    /* 基础样式 */
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #ffffff;
+    
+    /* 边框设置 */
+    -fx-border-width: 1px;
+    -fx-border-color: #3e3e3e;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    
+    /* 内边距 */
+    -fx-padding: 6px;
+}
+
+/* ScrollPane内容区域样式 */
+.scroll-pane .viewport {
+    /* 内容区域背景 */
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #ffffff;
+}
+
+/* 滚动条样式 */
+.scroll-pane .scroll-bar:horizontal .thumb,
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #5a5a5a;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3px;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb:hover,
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #6a6a6a;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb:pressed,
+.scroll-pane .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: #4a4a4a;
+}
+
+/* 滚动条轨道 */
+.scroll-pane .scroll-bar:horizontal .track,
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #3a3a3a;
+    -fx-border-color: transparent;
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+}
+
+/* 滚动条按钮 */
+.scroll-pane .scroll-bar .increment-button,
+.scroll-pane .scroll-bar .decrement-button {
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+}
+
+/* 箭头按钮 */
+.scroll-pane .scroll-bar .increment-arrow,
+.scroll-pane .scroll-bar .decrement-arrow {
+    -fx-background-color: #ffffff;
+    -fx-shape: "M 0 0 L 4 4 L 0 8 Z";
+    -fx-scale-shape: false;
+    -fx-padding: 3px;
+}
+
+/* 焦点状态 */
+/*.scroll-pane:focused {*/
+/*    -fx-border-color: #5a9cf0;*/
+/*    -fx-border-width: 1px;*/
+/*}*/

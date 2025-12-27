@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <!-- 定义日志文件存储路径 -->
+    <property name="LOG_HOME" value="logs" />
+
+    <!-- 控制台输出配置 -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.out</target>
+        <!-- 使用ConsoleConverter实现日志高亮 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} / %highlight(%-5level) %logger{36} - %msg%n</pattern>
+        </encoder>
+        <!-- 只输出INFO及以下级别的日志到标准输出 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>DENY</onMatch>
+            <onMismatch>NEUTRAL</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 错误日志控制台输出配置 -->
+    <appender name="CONSOLE_ERR" class="ch.qos.logback.core.ConsoleAppender">
+        <target>System.err</target>
+        <!-- 使用ConsoleConverter实现日志高亮 -->
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} / %highlight(%-5level) %logger{36} - %msg%n</pattern>
+        </encoder>
+        <!-- 只输出ERROR级别的日志到错误输出 -->
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>ERROR</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+    </appender>
+
+    <!-- 按文件大小和时间拆分的日志文件输出 -->
+    <appender name="ROLLING_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_HOME}/app.log</file>
+        <encoder class="ch.qos.logback.classic.encoder.PatternLayoutEncoder">
+            <pattern>%d{yyyy-MM-dd HH:mm:ss} / %-5level %logger{36} - %msg%n</pattern>
+        </encoder>
+
+        <!-- 滚动策略配置 -->
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <!-- 日志文件名模式 -->
+            <fileNamePattern>${LOG_HOME}/app-%d{yyyy-MM-dd}-%i.log.gz</fileNamePattern>
+            <!-- 单个文件最大大小 -->
+            <maxFileSize>2MB</maxFileSize>
+            <!-- 保留日志文件的最大天数 -->
+            <maxHistory>60</maxHistory>
+            <!-- 总文件大小限制 -->
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+    </appender>
+
+    <!-- 根日志记录器配置 -->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE" />
+        <appender-ref ref="CONSOLE_ERR" />
+        <appender-ref ref="ROLLING_FILE" />
+    </root>
+</configuration>

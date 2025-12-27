@@ -1,0 +1,35 @@
+/* 语言选择按钮样式 */
+.language-button {
+    /* 基础样式 */
+    -fx-background-color: #575757;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    
+    /* 过渡效果 */
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+/* 悬停状态 - 鼠标悬停时的效果 */
+.language-button:hover {
+    -fx-background-color: #6b6b6b;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+/* 按下状态 */
+.language-button:pressed {
+    -fx-background-color: #3d3d3d;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+/* 禁用状态 */
+.language-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+/* 焦点状态 */
+.language-button:focused {
+    -fx-effect: dropshadow(gaussian, #8a8a8a, 6, 0.2, 0, 0);
+}

@@ -1,0 +1,70 @@
+/* 现代化扁平风格的Slider样式，适配深色主题 */
+.slider {
+    /* 基础样式 */
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+/* 滑轨样式 */
+.slider .track {
+    -fx-background-color: #3e3e3e;
+    -fx-background-radius: 3px;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-height: 6px;
+}
+
+/* 已滑过部分的滑轨样式 */
+.slider .fill {
+    -fx-background-color: #5a9cf0;
+    -fx-background-radius: 3px;
+    -fx-background-insets: 0;
+}
+
+/* 滑块样式 */
+.slider .thumb {
+    -fx-background-color: #ffffff;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6px;
+    -fx-border-color: #5a9cf0;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-pref-width: 12px;
+    -fx-pref-height: 12px;
+}
+
+/* 滑块悬停状态 */
+.slider .thumb:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+/* 滑块按下状态 */
+.slider .thumb:pressed {
+    -fx-background-color: #e0e0e0;
+    -fx-border-color: #4a8ce0;
+}
+
+/* 焦点状态 */
+.slider:focused .thumb {
+    -fx-border-color: #5a9cf0;
+    -fx-border-width: 2px;
+}
+
+/* 禁用状态 */
+.slider:disabled {
+    -fx-opacity: 0.6;
+}
+
+.slider:disabled .track {
+    -fx-background-color: #3a3a3a;
+}
+
+.slider:disabled .fill {
+    -fx-background-color: #4a4a4a;
+}
+
+.slider:disabled .thumb {
+    -fx-background-color: #5a5a5a;
+    -fx-border-color: #4a4a4a;
+}
