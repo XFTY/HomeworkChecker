@@ -47,11 +47,11 @@ body:
       required: true
 
   - type: dropdown
-    id: NP-Version
+    id: HC-Version
     attributes:
-      label: NameProject版本
+      label: HomeworkChecker版本
       description: |
-        您正在运行哪个版本的 NameProject。  
+        您正在运行哪个版本的 HomeworkChecker。  
 
       options:
         - 1.4-snapshot

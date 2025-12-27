@@ -1,7 +1,7 @@
 name: Bug Report
 description: Report software bugs to the developer
 title: "[Bug]: "
-labels: ["bug", "new submission"]
+labels: ["bug", "新提交"]
 assignees:
   - XFTY
 body:
@@ -47,11 +47,11 @@ body:
       required: true
 
   - type: dropdown
-    id: NP-Version
+    id: HC-Version
     attributes:
-      label: NameProject Version
+      label: HomeworkChecker Version
       description: |
-        Which version of NameProject are you running?  
+        Which version of HomeworkChecker are you running?  
 
       options:
         - 1.4-snapshot

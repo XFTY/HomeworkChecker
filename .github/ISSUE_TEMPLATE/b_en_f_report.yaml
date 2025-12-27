@@ -1,7 +1,7 @@
 name: Feature Request
 description: Suggest new features to the developer
 title: "[Feature Request]: "
-labels: ["enhancement", "new submission"]
+labels: ["enhancement", "新提交"]
 assignees:
   - XFTY
 body:

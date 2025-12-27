@@ -1,7 +1,7 @@
 name: Security Vulnerability/Threat
 description: We take software security issues very seriously. If you have discovered a security vulnerability, please select this option to report it. Thank you for your support and cooperation!
 title: "[Security Vulnerability/Threat]: "
-labels: ["vulnerability/threat", "new submission"]
+labels: ["漏洞/威胁", "新提交"]
 assignees:
   - XFTY
 body:
