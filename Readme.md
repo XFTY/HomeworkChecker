@@ -1,66 +1,65 @@
 # HomeworkChecker 
-适用于在 **教室大屏展示作业** 的一款 **轻量级** 作业检查工具 📚
+A **lightweight** homework checking tool 📚 designed for **classroom presentations on large screens**.
 
 ![](https://img.shields.io/badge/license-GNU_GPL_V3-green.svg)
 ![](https://img.shields.io/badge/language-Java-orange.svg)
 
-
 ![](docs/pic/en/img-sftMain.png)
 
-## HomeworkChecker 有哪些 ✨亮点 🌟
+## What ✨Features does HomeworkChecker have? 🌟
 
-### 1. 隐式保存 - 彻底解决作业保存问题 💾
-只要作业内容被修改，软件就会 **自动保存** 好修改的作业内容，避免作业内容丢失。
+### 1. Implicit Saving - Completely solves homework saving issues 💾
+As soon as homework content is modified, the software will **automatically save** the modified homework content, preventing loss of homework content.
 
-### 2. 历史作业查询 - 轻松获取历史作业 📅
+### 2. Historical Homework Query - Easily retrieve historical homework 📅
 
-HomeworkChecker 自带作业数据库，可以轻松实现历史作业查询。
+HomeworkChecker comes with a homework database that allows for easy historical homework queries.
 
 ![](docs/pic/en/historical-homework-search.png)
 
 ![](docs/pic/en/historical-homework-show.png)
 
-### 3.设置界面 - 个性化你的 HomeworkChecker ⚙️
+### 3. Settings Interface - Personalize your HomeworkChecker ⚙️
 
-你可以随时自拟定软件，让 HomeworkChecker 真正与您并驾齐驱！
+You can customize the software anytime to make HomeworkChecker truly work alongside you!
 
 ![](docs/pic/en/settings-show.png)
 
-### 4. 多语言支持 🌍
+### 4. Multi-language Support 🌍
 
-截止 v1.4-snapshot 版本，HomeworkChecker已经支持 **11种** 语言，供您随意挑选
+As of version v1.4-snapshot, HomeworkChecker already supports **11 languages** for you to choose from
 
 ![](docs/pic/en/language-show.png)
 
- * 当然，如果翻译有问题，您可以随时发起 issue ，我会尽力解决问题！
+* Of course, if there are translation issues, you can always submit an issue and I will do my best to resolve it!
 
-## 快速开始 🚀
+## Quick Start 🚀
 
-如果您打算开始使用 HomeworkChecker，请按照以下步骤开始操作：
+If you plan to start using HomeworkChecker, please follow these steps to get started:
 
-### 1.下载发行版 📦
+### 1. Download the release version 📦
 
-#### 注意 ⚠️
-HomeworkChecker **不提供** 32位操作系统使用的程序  
-当然，现在的32位电脑已经非常稀少了，所以这点各位大可不必担心😄
+#### Note ⚠️
+HomeworkChecker **does not provide** programs for 32-bit operating systems
+Of course, 32-bit computers are very rare nowadays, so you don't need to worry about this 😄
 
- - 访问 [发行版发布页面](https://github.com/XFTY/HomeworkChecker/releases)
- - 根据您的电脑操作系统和体系架构下载文件
-   - 比如，您正在使用 Windows 操作系统，则下载带有[Win_x64]的 **.zip** 文件
+ - Visit the [releases page](https://github.com/XFTY/HomeworkChecker/releases)
+ - Download the file according to your computer's operating system and architecture
+   - For example, if you are using Windows OS, download the **.zip** file with [Win_x64]
 
-### 2. 解压文件 📂
-解压文件后，你将看到以下文件
+### 2. Extract the files 📂
+After extracting the files, you will see the following files:
 ![](docs/pic/global/file.png)
 
-### 3. 运行 HomeworkChecker ▶️
-今后，如果您需要运行 HomeworkChecker，  
-双击 ```HomeworkCheckerLauncher.vbs```即可！
+### 3. Run HomeworkChecker ▶️
+In the future, if you need to run HomeworkChecker,
+double-click ```HomeworkCheckerLauncher.vbs```!
 
-## 支持 🤝
+## Support 🤝
 
-如果您在软件运行时遇到问题，您可以向我发送 [issue](https://github.com/XFTY/HomeworkChecker/issues)
+If you encounter problems while running the software, you can send me an [issue](https://github.com/XFTY/HomeworkChecker/issues)
 
 ---
 
-版权所有，XFTY，保留所有权利。 ©️
-软件基于 GNU-GPLv3 协议开放源代码。 🔓
+Copyright, XFTY, all rights reserved. ©️
+The software is open source under the GNU-GPLv3 license. 🔓
