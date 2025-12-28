@@ -17,6 +17,9 @@ import javafx.scene.control.TextArea;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.input.InputMethodEvent;
 import javafx.scene.input.InputMethodRequests;
 import javafx.scene.layout.AnchorPane;
@@ -30,6 +33,7 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
@@ -270,6 +274,38 @@ public class MainPage implements Initializable {
         editMain.setDisable(false);
         editMain.setEditable(false);
         logger.info("MainPage initialized successfully");
+    }
+
+    @FXML
+    protected void onscreenShotButtonPressed() {
+        try {
+            WritableImage editMainPage = editMain.snapshot(null, null);
+
+            Clipboard clipboard = Clipboard.getSystemClipboard();
+            ClipboardContent content = new ClipboardContent();
+
+            content.putImage(editMainPage);
+
+            clipboard.setContent(content);
+
+            logger.info("Screenshot saved to clipboard");
+
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(Idf.userLanguageBundle.getString("mainpage.snapshot.success.title"));
+            alert.setHeaderText(Idf.userLanguageBundle.getString("mainpage.snapshot.success.title"));
+            alert.setContentText(Idf.userLanguageBundle.getString("mainpage.snapshot.success.header"));
+
+            alert.showAndWait();
+
+        } catch (Exception e) {
+            logger.error("Failed to save screenshot", e);
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle(Idf.userLanguageBundle.getString("mainpage.snapshot.failure.title"));
+            alert.setHeaderText(Idf.userLanguageBundle.getString("mainpage.snapshot.failure.title"));
+            alert.setContentText(Idf.userLanguageBundle.getString("mainpage.snapshot.failure.header"));
+
+            alert.showAndWait();
+        }
     }
 
     /**
@@ -537,6 +573,7 @@ public class MainPage implements Initializable {
     protected void onSettingsButtonClicked() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/settings.fxml"));
+            // FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/settings/index.fxml"));
             // Set resource bundle for internationalization
             if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
                 String languageCode = Idf.userLanguage.getString("language");

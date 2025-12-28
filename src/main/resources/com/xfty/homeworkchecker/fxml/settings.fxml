@@ -14,7 +14,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="504.0" prefWidth="456.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
+<AnchorPane prefHeight="504.0" prefWidth="511.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
    <children>
       <AnchorPane fx:id="topTag" layoutX="56.0" layoutY="34.0" prefHeight="34.0" prefWidth="488.0" style="-fx-background-color: #323232; -fx-background-radius: 20 20 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -34,7 +34,7 @@
             </HBox>
          </children>
       </AnchorPane>
-      <ScrollPane fitToWidth="true" layoutX="42.0" layoutY="43.0" prefHeight="471.0" prefWidth="456.0" stylesheets="@../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
+      <ScrollPane fitToWidth="true" layoutY="43.0" prefHeight="469.0" prefWidth="578.0" stylesheets="@../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="35.0">
          <content>
             <VBox prefHeight="704.0" prefWidth="427.0" spacing="10.0">
                <children>

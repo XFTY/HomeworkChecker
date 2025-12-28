@@ -9,11 +9,11 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="359.0" prefWidth="419.0" style="-fx-background-color: #1e1e1e; -fx-border-radius: 20; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.About">
+<AnchorPane prefHeight="359.0" prefWidth="419.0" style="-fx-background-color: #1e1e1e; -fx-border-radius: 20; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.About">
    <children>
       <HBox alignment="CENTER" layoutY="34.6" prefHeight="77.0" prefWidth="354.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.6">
          <children>
-            <ImageView fitHeight="52.0" fitWidth="46.0" pickOnBounds="true" preserveRatio="true">
+            <ImageView fitHeight="52.0" fitWidth="46.0" onMouseClicked="#onIconButtonClicked" pickOnBounds="true" preserveRatio="true">
                <image>
                   <Image url="@../icon/logo.png" />
                </image>

@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="500.0" prefWidth="767.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.MainPage">
+<AnchorPane prefHeight="500.0" prefWidth="767.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.MainPage">
    <children>
       <AnchorPane fx:id="showingMainArea" prefHeight="200.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -19,9 +19,39 @@
                <children>
                   <HBox alignment="CENTER_RIGHT" layoutX="553.0" layoutY="24.0" prefHeight="70.0" prefWidth="514.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="237.39999999999998" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button fx:id="historyHomeworkButton" mnemonicParsing="false" onMouseClicked="#onHistoryHomeworkButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.view.history" />
-                        <Button fx:id="settingsButton" mnemonicParsing="false" onMouseClicked="#onSettingsButtonClicked" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.settings" />
-                        <Button fx:id="aboutButton" mnemonicParsing="false" onMouseClicked="#onAboutButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.about" />
+                        <Button fx:id="screenShotButton" mnemonicParsing="false" onMouseClicked="#onscreenShotButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.view.snapshot">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icon/截屏.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="historyHomeworkButton" mnemonicParsing="false" onMouseClicked="#onHistoryHomeworkButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.view.history">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icon/历史.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button fx:id="settingsButton" mnemonicParsing="false" onMouseClicked="#onSettingsButtonClicked" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.settings">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icon/设置.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
+                        <Button fx:id="aboutButton" mnemonicParsing="false" onMouseClicked="#onAboutButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.about">
+                           <graphic>
+                              <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icon/关于.png" />
+                                 </image>
+                              </ImageView>
+                           </graphic></Button>
                      </children>
                   </HBox>
                   <VBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="12.0" prefHeight="70.0" prefWidth="441.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="0.0">
@@ -58,8 +88,8 @@
             <Label fx:id="versionDisplay" text="%main.version" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
          </children>
       </AnchorPane>
-      <Pane fx:id="blackPane" layoutY="75.2" mouseTransparent="true" opacity="0.0" prefHeight="425.0" prefWidth="767.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
-      <VBox fx:id="centerOutBox" alignment="CENTER" layoutX="364.0" layoutY="167.2" mouseTransparent="true" prefHeight="333.0" prefWidth="767.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <Pane fx:id="blackPane" mouseTransparent="true" opacity="0.0" prefHeight="500.0" prefWidth="767.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+      <VBox fx:id="centerOutBox" alignment="CENTER" layoutX="364.0" mouseTransparent="true" prefHeight="500.0" prefWidth="767.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <HBox fx:id="centerHighControl" alignment="CENTER" prefHeight="305.0" prefWidth="767.0">
                <children>

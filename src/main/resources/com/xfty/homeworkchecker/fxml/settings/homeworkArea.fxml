@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="438.0" prefWidth="462.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
+   <children>
+      <AnchorPane prefHeight="54.0" prefWidth="442.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" text="%settings.tip.header" textFill="WHITE" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="8.0">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="14.0" layoutY="31.0" text="%settings.tip.content" textFill="WHITE" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="98.0" prefWidth="442.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" text="%settings.font.header" textFill="WHITE" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="8.0">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <ChoiceBox fx:id="fontFamily" layoutX="14.0" layoutY="61.0" prefHeight="30.0" prefWidth="211.0" style="-fx-font-color: white;" stylesheets="@../../theme/darkness/choicebox.css" />
+            <Label layoutX="14.0" layoutY="31.0" text="%settings.font.description" textFill="WHITE" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="230.0" prefWidth="427.0">
+         <children>
+            <Label layoutX="14.4" layoutY="2.2" text="%settings.font.size.header" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.topAnchor="2.2">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Slider fx:id="editMainTextSize" layoutX="40.0" layoutY="48.0" prefHeight="14.0" prefWidth="322.0" stylesheets="@../../theme/darkness/slider.css" value="30.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" />
+            <Label layoutX="14.4" layoutY="46.0" text="%settings.font.size.min" textFill="WHITE" AnchorPane.leftAnchor="14.4">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="389.6000000000001" layoutY="46.0" text="%settings.font.size.max" textFill="WHITE" AnchorPane.rightAnchor="14.399999999999977">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label fx:id="scrollValueDisplay" layoutX="14.0" layoutY="27.0" text="%settings.font.size.current" textFill="WHITE" />
+            <TextArea fx:id="editMainTest" disable="true" editable="false" layoutX="31.2" layoutY="72.0" prefHeight="149.0" prefWidth="366.0" stylesheets="@../../theme/darkness/textarea/text-area-test.css" text="%settings.font.size.demo" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="31.0" />
+         </children>
+      </AnchorPane>
+   </children>
+   <padding>
+      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+   </padding>
+</VBox>

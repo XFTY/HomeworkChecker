@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="517.0" prefWidth="510.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.LoadHistoryHomework">
+<AnchorPane prefHeight="517.0" prefWidth="510.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.LoadHistoryHomework">
    <children>
       <Label alignment="CENTER" layoutY="51.0" prefHeight="28.0" prefWidth="444.0" text="%load.history.title" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <font>
@@ -135,7 +135,7 @@
             </HBox>
          </children>
       </AnchorPane>
-      <Label alignment="TOP_CENTER" layoutX="33.0" layoutY="79.0" prefHeight="50.0" prefWidth="510.0" text="%load.history.support" textFill="WHITE" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <Label alignment="TOP_CENTER" layoutX="33.0" layoutY="79.0" prefHeight="50.0" prefWidth="510.0" text="%load.history.support" textFill="WHITE" wrapText="true" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
          <font>
             <Font size="13.0" />
          </font>

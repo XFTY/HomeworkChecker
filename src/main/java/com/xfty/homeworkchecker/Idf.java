@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class Idf {
-    public static String softwareVersion = "1.4 - Snapshot";
+    public static String softwareVersion = "1.4.2 - Beta";
 
     public static String year;
     public static String month;
@@ -95,4 +95,9 @@ public class Idf {
             "点击锁头进行解锁操作 (◕‿◕)✨",
             "编辑权限需解锁，点锁头 (,,•́ . •̀,,)"
     );
+
+    // 下面这些变量是给一些彩蛋的
+    public static int iconClickedCount = 0;
+    public static boolean isAboutIconTriggered = false;
+    public static boolean isAboutIconTriggeredAgain = false;
 }
