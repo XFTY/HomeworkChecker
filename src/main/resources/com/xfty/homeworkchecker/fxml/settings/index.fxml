@@ -98,7 +98,7 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane onMouseClicked="#onLanguageSettingsClicked" prefHeight="45.0" prefWidth="263.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -134,7 +134,7 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane onMouseClicked="#onSetInitialDataClicked" prefHeight="45.0" prefWidth="263.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="192.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -170,7 +170,7 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane onMouseClicked="#onDataBaseEditorClicked" prefHeight="45.0" prefWidth="263.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
@@ -179,7 +179,7 @@
                                     <Image url="@../../icon/数据.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="数据库" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="数据库编辑器" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -206,7 +206,7 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane onMouseClicked="#onResetClicked" prefHeight="45.0" prefWidth="263.0">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="186.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>

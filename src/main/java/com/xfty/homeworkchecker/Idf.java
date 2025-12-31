@@ -31,10 +31,12 @@ public class Idf {
     public static boolean isSoftwareClosing;
 
     // 添加initTemple和userLanguage变量
-    public static String initTemple;
+    public static volatile String initTemple;
     public static JSONObject userLanguage;
 
     public volatile static ResourceBundle userLanguageBundle;
+
+    public static volatile boolean needHomeworkShowingAreaClear = false;
 
     public static final List<String> cuteWarningsIdf = List.of(
             "点我 o((>ω< ))o !!!!!!",

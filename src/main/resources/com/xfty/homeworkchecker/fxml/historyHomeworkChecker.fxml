@@ -5,7 +5,7 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.HistoryHomeworkChecker">
+<AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.HistoryHomeworkChecker">
    <children>
       <TextArea fx:id="editMain" layoutX="24.0" layoutY="74.8" prefHeight="375.0" prefWidth="737.0" stylesheets="@../theme/darkness/textarea/text-area.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0" />
       <Label fx:id="showDate" layoutX="14.0" layoutY="10.0" text="%history.date" textFill="WHITE">

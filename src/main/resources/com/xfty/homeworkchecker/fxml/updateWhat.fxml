@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="451.0" prefWidth="384.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1">
+<AnchorPane prefHeight="451.0" prefWidth="384.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <HBox alignment="CENTER_LEFT" layoutX="8.0" layoutY="8.0" prefHeight="57.0" prefWidth="200.0" spacing="5.0" AnchorPane.leftAnchor="8.0" AnchorPane.topAnchor="8.0">
          <children>

@@ -64,8 +64,10 @@
     -fx-padding: 3px;
 }
 
-/* 焦点状态 */
-/*.scroll-pane:focused {*/
-/*    -fx-border-color: #5a9cf0;*/
-/*    -fx-border-width: 1px;*/
-/*}*/
+/* 焦点状态 - 与非焦点状态完全一致，无额外边框 */
+.scroll-pane:focused {
+    -fx-border-color: #3e3e3e;
+    -fx-border-width: 1px;
+    -fx-background-insets: 0;
+    -fx-border-style: solid;
+}
