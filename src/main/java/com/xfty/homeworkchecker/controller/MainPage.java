@@ -89,6 +89,9 @@ public class MainPage implements Initializable {
     @FXML
     private AnchorPane showingMainArea;
 
+    @FXML
+    private Button screenShotSuccess;
+
     private final List<String> cuteWarnings = Idf.cuteWarningsIdf;
 
     // 添加用于跟踪连续点击的变量

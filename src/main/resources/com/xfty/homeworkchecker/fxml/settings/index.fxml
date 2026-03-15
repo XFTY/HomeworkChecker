@@ -11,7 +11,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="509.0" prefWidth="818.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.settings.Index">
+<AnchorPane prefHeight="509.0" prefWidth="818.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.settings.Index">
    <children>
       <AnchorPane fx:id="topTag" layoutX="66.0" layoutY="44.0" prefHeight="34.0" prefWidth="488.0" style="-fx-background-color: #323232; -fx-background-radius: 20 20 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -37,12 +37,12 @@
                <children>
                   <VBox alignment="TOP_CENTER" layoutX="228.0" prefHeight="144.0" prefWidth="555.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label text="欢迎使用新版设置界面" textFill="WHITE">
+                        <Label text="%settings.index.welcome" textFill="WHITE">
                            <font>
                               <Font size="22.0" />
                            </font>
                         </Label>
-                        <Label text="轻点左侧按钮开始设置" textFill="WHITE">
+                        <Label text="%settings.index.clickToStart" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
@@ -71,7 +71,7 @@
                                     <Image url="@../../icon/字体.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="字体" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.font" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -107,7 +107,7 @@
                                     <Image url="@../../icon/操作-翻译.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="语言" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.language" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -143,7 +143,7 @@
                                     <Image url="@../../icon/历史.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="初始内容" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.initialContent" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -179,7 +179,7 @@
                                     <Image url="@../../icon/数据.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="数据库编辑器" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.databaseEditor" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -215,7 +215,7 @@
                                     <Image url="@../../icon/重置.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="重置" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.reset" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>

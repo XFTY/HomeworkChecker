@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class Idf {
-    public static String softwareVersion = "1.4.2 - Beta";
+    public static String softwareVersion = "1.5 - Beta";
 
     public static String year;
     public static String month;
