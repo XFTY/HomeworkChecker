@@ -5,6 +5,7 @@ module com.xfty.homeworkchecker {
     requires org.apache.commons.io;
     requires com.alibaba.fastjson2;
     requires java.desktop;
+    requires fastjson;
 
 
     opens com.xfty.homeworkchecker to javafx.fxml;

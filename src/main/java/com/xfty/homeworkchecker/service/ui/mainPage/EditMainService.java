@@ -1,0 +1,229 @@
+package com.xfty.homeworkchecker.service.ui.mainPage;
+
+import com.xfty.homeworkchecker.Idf;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
+import javafx.collections.ObservableList;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
+import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Random;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
+
+/**
+ * 编辑主页业务逻辑服务类
+ * 负责处理与编辑区域相关的业务逻辑，包括可爱模式、抖动动画等
+ */
+public class EditMainService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(EditMainService.class);
+    
+    // 常量定义
+    private static final int CLICK_THRESHOLD = 3;
+    private static final long TIME_WINDOW = 6000; // 6 seconds
+    private static final String ORIGINAL_LOCK_STATUS_LABEL = "已锁定，点击锁头修改";
+    
+    // 成员变量
+    private final List<String> cuteWarnings;
+    private final Random random = new Random();
+    private final ScheduledExecutorService scheduler = Executors.newSingleThreadScheduledExecutor();
+    
+    // 状态跟踪变量
+    private int clickCount = 0;
+    private long lastClickTime = 0;
+    private boolean isInCuteMode = false;
+    private Timeline shakeAnimation;
+    
+    // UI 组件引用
+    private final Label lockStatusLabel;
+    private final HBox lockModelShowingArea;
+    
+    /**
+     * 构造函数
+     * @param lockStatusLabel 锁定状态标签
+     * @param lockModelShowingArea 锁定模式显示区域
+     */
+    public EditMainService(Label lockStatusLabel, HBox lockModelShowingArea) {
+        this.lockStatusLabel = lockStatusLabel;
+        this.lockModelShowingArea = lockModelShowingArea;
+        this.cuteWarnings = Idf.cuteWarningsIdf;
+        logger.debug("EditMainService initialized with lockStatusLabel and lockModelShowingArea");
+    }
+    
+    /**
+     * 处理编辑区域点击事件
+     * 当在非编辑模式下点击时，触发可爱模式和抖动动画
+     */
+    public void onEditMainClicked() {
+        logger.debug("onEditMainClicked called. Current editable state: {}", Idf.isEditable);
+        
+        // 如果动画正在播放，则忽略新的触发事件
+        if (shakeAnimation != null && shakeAnimation.getStatus() == javafx.animation.Animation.Status.RUNNING) {
+            logger.debug("Ignoring click - shake animation is currently running");
+            return;
+        }
+
+        if (!Idf.isEditable) {
+            long currentTime = System.currentTimeMillis();
+            
+            // 检查是否在时间窗口内
+            if (currentTime - lastClickTime <= TIME_WINDOW) {
+                clickCount++;
+                logger.debug("Click detected within time window. Click count: {}", clickCount);
+            } else {
+                // 超过时间窗口，重置计数
+                clickCount = 1;
+                logger.debug("Time window exceeded, resetting click count to 1");
+            }
+            
+            lastClickTime = currentTime;
+            
+            // 如果达到点击阈值
+            if (clickCount >= CLICK_THRESHOLD) {
+                logger.info("Click threshold reached ({} clicks), activating cute mode", clickCount);
+                
+                // 设置随机提示文本
+                int randomIndex = random.nextInt(cuteWarnings.size());
+                lockStatusLabel.setText(cuteWarnings.get(randomIndex));
+                isInCuteMode = true;
+                logger.debug("Cute mode activated with random warning message (index: {})", randomIndex);
+                
+                // 安排 6 秒后检查是否需要恢复
+                scheduler.schedule(this::checkAndRestoreLabel, TIME_WINDOW, TimeUnit.MILLISECONDS);
+                logger.debug("Scheduled label restore check in {} ms", TIME_WINDOW);
+            }
+            
+            // 创建特定的左右抖动动画效果
+            // 前三个周期幅度保持一致，第四个周期开始衰减，第五个周期停止
+            double amplitude = 15.0;  // 固定振幅
+            
+            // 使用 Timeline 实现平滑动画
+            shakeAnimation = new Timeline();
+            shakeAnimation.setCycleCount(1);
+            
+            // 定义关键帧列表
+            ObservableList<KeyFrame> keyFrames = shakeAnimation.getKeyFrames();
+            
+            double currentTimeAnim = 0;
+            
+            // 添加关键帧的辅助方法
+            addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude, 3); // 前 3 个完整周期
+            currentTimeAnim += 300; // 3 个周期的时间 (3 * (50+25+50+25))
+            
+            // 第四个周期，幅度开始衰减（减小到原来的一半）
+            addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.5, 1);
+            currentTimeAnim += 150; // 1 个周期的时间 (50+25+50+25)
+            
+            // 第五个周期，幅度进一步减小（减小到原来的四分之一）
+            addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.25, 1);
+            
+            shakeAnimation.play();
+            logger.debug("Shake animation started with amplitude: {}, total duration: {} ms", amplitude, currentTimeAnim);
+        } else {
+            logger.debug("In editable mode, requesting focus for editMain");
+        }
+    }
+    
+    /**
+     * 检查是否需要恢复标签文本
+     * 当距离上次点击超过时间窗口且处于可爱模式时，恢复原始标签文本
+     */
+    private void checkAndRestoreLabel() {
+        long currentTime = System.currentTimeMillis();
+        logger.debug("Checking if label restoration is needed. Time since last click: {} ms", currentTime - lastClickTime);
+        
+        // 检查距离上次点击是否已经超过时间窗口
+        if (currentTime - lastClickTime > TIME_WINDOW && isInCuteMode) {
+            logger.info("Restoring original lock status label after cute mode timeout");
+            javafx.application.Platform.runLater(() -> {
+                lockStatusLabel.setText(ORIGINAL_LOCK_STATUS_LABEL);
+                isInCuteMode = false;
+                clickCount = 0; // 重置点击计数
+                logger.debug("Label restored to original text and cute mode deactivated");
+            });
+        } else {
+            logger.debug("Label restoration not needed - conditions not met");
+        }
+    }
+    
+    /**
+     * 辅助方法：添加指定次数的抖动关键帧
+     * @param keyFrames 关键帧列表
+     * @param startTime 开始时间
+     * @param amplitude 振幅
+     * @param cycles 周期数
+     */
+    private void addShakeKeyFrames(ObservableList<KeyFrame> keyFrames, 
+                                   double startTime, double amplitude, int cycles) {
+        logger.trace("Adding {} shake keyframes starting at {} ms with amplitude {}", cycles, startTime, amplitude);
+        
+        double currentTime = startTime;
+        for (int cycle = 0; cycle < cycles; cycle++) {
+            // 向左移动
+            keyFrames.add(new KeyFrame(
+                Duration.millis(currentTime),
+                new KeyValue(lockModelShowingArea.translateXProperty(), -amplitude)
+            ));
+            currentTime += 50;
+            
+            // 回到中心
+            keyFrames.add(new KeyFrame(
+                Duration.millis(currentTime),
+                new KeyValue(lockModelShowingArea.translateXProperty(), 0)
+            ));
+            currentTime += 25;
+            
+            // 向右移动
+            keyFrames.add(new KeyFrame(
+                Duration.millis(currentTime),
+                new KeyValue(lockModelShowingArea.translateXProperty(), amplitude)
+            ));
+            currentTime += 50;
+            
+            // 回到中心
+            keyFrames.add(new KeyFrame(
+                Duration.millis(currentTime),
+                new KeyValue(lockModelShowingArea.translateXProperty(), 0)
+            ));
+            currentTime += 25;
+        }
+        
+        logger.trace("Completed adding {} shake keyframes, ending at {} ms", cycles, currentTime);
+    }
+    
+    /**
+     * 清理资源
+     * 关闭计划任务执行器
+     */
+    public void cleanup() {
+        logger.info("Starting EditMainService resource cleanup...");
+        
+        if (scheduler != null && !scheduler.isShutdown()) {
+            logger.debug("Shutting down scheduler...");
+            scheduler.shutdown();
+            try {
+                if (!scheduler.awaitTermination(1, TimeUnit.SECONDS)) {
+                    logger.warn("Scheduler did not terminate in time, forcing shutdown");
+                    scheduler.shutdownNow();
+                } else {
+                    logger.debug("Scheduler shutdown completed gracefully");
+                }
+            } catch (InterruptedException e) {
+                logger.error("Interrupted while waiting for scheduler termination", e);
+                scheduler.shutdownNow();
+                Thread.currentThread().interrupt();
+            }
+        } else {
+            logger.debug("Scheduler is null or already shutdown");
+        }
+        
+        logger.info("EditMainService resource cleanup completed");
+    }
+}
