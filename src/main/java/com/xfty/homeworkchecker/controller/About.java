@@ -60,6 +60,35 @@ public class About implements Initializable {
     }
 
     @FXML
+    private void onOpenSourceLicenseButtonClicked() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/openSourceLicence.fxml"));
+            // Set resource bundle for internationalization
+            if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
+                String languageCode = Idf.userLanguage.getString("language");
+                String[] languageParts = languageCode.split("_");
+                Locale locale = (languageParts.length == 2) ?
+                        new Locale.Builder().setLanguage(languageParts[0]).setRegion(languageParts[1]).build() :
+                        new Locale.Builder().setLanguage(languageParts[0]).build();
+                loader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
+            }
+            Parent root = loader.load();
+
+            Stage aboutStage = new Stage();
+            aboutStage.initModality(Modality.APPLICATION_MODAL);
+            aboutStage.setTitle(Idf.userLanguageBundle.getString("controller.about.title"));
+            aboutStage.setScene(new Scene(root));
+            aboutStage.getIcons().add(new Image(Objects.requireNonNull(Entry.class.getResourceAsStream("icon/logo.png"))));
+            aboutStage.setResizable(false);
+
+            aboutStage.showAndWait();
+        } catch (Exception e) {
+            logger.error("Error opening about homework dialog", e);
+            e.printStackTrace(System.out);
+        }
+    }
+
+    @FXML
     protected void onIconButtonClicked() {
         if (!Idf.isAboutIconTriggeredAgain) {
             if (!Idf.isAboutIconTriggered) {

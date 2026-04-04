@@ -31,7 +31,7 @@
             </HBox>
          </children>
       </AnchorPane>
-      <ScrollPane fx:id="rightShowingArea" fitToWidth="true" layoutX="248.8" layoutY="92.0" prefHeight="476.0" prefWidth="569.0" stylesheets="@../../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="249.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
+      <ScrollPane fx:id="rightShowingArea" fitToWidth="true" layoutX="248.8" layoutY="92.0" prefHeight="476.0" prefWidth="569.0" style="-fx-background-radius: 0,0,0,0;" stylesheets="@../../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="249.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
          <content>
             <AnchorPane prefHeight="255.0" prefWidth="555.0">
                <children>
@@ -62,9 +62,9 @@
          <content>
             <VBox alignment="TOP_CENTER" prefHeight="332.0" prefWidth="188.0" spacing="5.0">
                <children>
-                  <AnchorPane onMouseClicked="#onFontSettingsClicked" prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane fx:id="fontSettingsButton" onMouseClicked="#onFontSettingsClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="196.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="196.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -98,9 +98,9 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane onMouseClicked="#onLanguageSettingsClicked" prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane fx:id="languageSettingsButton" onMouseClicked="#onLanguageSettingsClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -134,9 +134,9 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane onMouseClicked="#onSetInitialDataClicked" prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane fx:id="initialDataButton" onMouseClicked="#onSetInitialDataClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="192.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="192.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -170,9 +170,9 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane onMouseClicked="#onDataBaseEditorClicked" prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane fx:id="dataBaseEditorButton" onMouseClicked="#onDataBaseEditorClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -206,9 +206,9 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane onMouseClicked="#onResetClicked" prefHeight="45.0" prefWidth="263.0">
+                  <AnchorPane fx:id="resetButton" onMouseClicked="#onResetClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="186.0" spacing="10.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="186.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>

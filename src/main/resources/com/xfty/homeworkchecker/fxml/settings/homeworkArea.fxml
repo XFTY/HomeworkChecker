@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.Slider?>
@@ -9,7 +10,7 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="438.0" prefWidth="462.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
+<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="462.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
    <children>
       <AnchorPane prefHeight="54.0" prefWidth="442.0">
          <children>
@@ -52,6 +53,17 @@
             </Label>
             <Label fx:id="scrollValueDisplay" layoutX="14.0" layoutY="27.0" text="%settings.font.size.current" textFill="WHITE" />
             <TextArea fx:id="editMainTest" disable="true" editable="false" layoutX="31.2" layoutY="72.0" prefHeight="149.0" prefWidth="366.0" stylesheets="@../../theme/darkness/textarea/text-area-test.css" text="%settings.font.size.demo" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="31.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane disable="true" opacity="0.0" prefHeight="79.0" prefWidth="442.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" text="自动换行" textFill="WHITE" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="8.0">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="14.0" layoutY="31.0" text="开启此功能后，作业显示区域的文本将会随着窗口大小自动换行" textFill="WHITE" />
+            <CheckBox layoutX="14.0" layoutY="53.0" mnemonicParsing="false" stylesheets="@../../theme/darkness/checkbox.css" text="自动换行" textFill="WHITE" />
          </children>
       </AnchorPane>
    </children>

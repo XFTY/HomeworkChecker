@@ -12,7 +12,7 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <junit.version>5.10.0</junit.version>
-        <javafx.version>21.0.1</javafx.version>
+        <javafx.version>25.0.1</javafx.version>
         <javafx.maven.plugin.version>0.0.8</javafx.maven.plugin.version>
         <client.plugin.version>0.1.6</client.plugin.version>
         <gluonfx.target>windows</gluonfx.target>
@@ -58,7 +58,7 @@
         <dependency>
             <groupId>ch.qos.logback</groupId>
             <artifactId>logback-core</artifactId>
-            <version>1.5.19</version>
+            <version>1.5.13</version>
         </dependency>
         <dependency>
             <groupId>com.alibaba</groupId>
@@ -80,8 +80,8 @@
                 <artifactId>maven-compiler-plugin</artifactId>
                 <version>3.11.0</version>
                 <configuration>
-                    <source>21</source>
-                    <target>21</target>
+                    <source>25</source>
+                    <target>25</target>
                 </configuration>
             </plugin>
             <plugin>
@@ -95,6 +95,11 @@
                     <noManPages>true</noManPages>
                     <stripDebug>true</stripDebug>
                     <noHeaderFiles>true</noHeaderFiles>
+                    <options>
+                        <option>--enable-native-access=javafx.graphics</option>
+                        <option>--add-opens=java.base/java.lang=ALL-UNNAMED</option>
+                        <option>--add-opens=java.base/java.util=ALL-UNNAMED</option>
+                    </options>
                 </configuration>
             </plugin>
             <!-- 添加 Shade Plugin 用于创建 fat JAR -->
@@ -112,6 +117,10 @@
                             <transformers>
                                 <transformer implementation="org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
                                     <mainClass>com.xfty.homeworkchecker.Entry</mainClass>
+                                    <manifestEntries>
+                                        <Add-Opens>java.base/java.lang=ALL-UNNAMED java.base/java.util=ALL-UNNAMED</Add-Opens>
+                                        <Add-Exports>java.base/jdk.internal.misc=ALL-UNNAMED</Add-Exports>
+                                    </manifestEntries>
                                 </transformer>
 
                             </transformers>

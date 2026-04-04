@@ -19,15 +19,6 @@
                <children>
                   <HBox alignment="CENTER_RIGHT" layoutX="553.0" layoutY="24.0" prefHeight="70.0" prefWidth="514.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="237.39999999999998" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Button fx:id="screenShotSuccess" mnemonicParsing="false" onMouseClicked="#onscreenShotButtonPressed" style="-fx-background-color: green;" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css">
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icon/成功.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic>
-                        </Button>
                         <Button fx:id="screenShotButton" mnemonicParsing="false" onMouseClicked="#onscreenShotButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.view.snapshot">
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
@@ -74,7 +65,7 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <TextArea fx:id="editMain" layoutY="66.4" onMouseClicked="#onEditMainClicked" prefHeight="374.0" prefWidth="737.0" stylesheets="@../theme/darkness/textarea/text-area.css" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="66.0" />
+            <TextArea fx:id="editMain" layoutY="66.4" onMouseClicked="#onEditMainClicked" prefHeight="374.0" prefWidth="737.0" stylesheets="@../theme/darkness/textarea/text-area.css" wrapText="true" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="66.0" />
             <AnchorPane prefHeight="52.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
                <children>
                   <HBox fx:id="lockModelShowingArea" alignment="CENTER_LEFT" onMouseClicked="#onLockModuleClicked" prefHeight="46.0" prefWidth="606.0" spacing="5.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -17,6 +17,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
@@ -33,10 +34,32 @@ import javafx.util.Duration;
 public class Index implements Initializable {
     @FXML
     private ScrollPane rightShowingArea;
+    
+    @FXML
+    private AnchorPane fontSettingsButton;
+    
+    @FXML
+    private AnchorPane languageSettingsButton;
+    
+    @FXML
+    private AnchorPane initialDataButton;
+    
+    @FXML
+    private AnchorPane dataBaseEditorButton;
+    
+    @FXML
+    private AnchorPane resetButton;
 
     private Locale locale;
 
     private String openPageCode;
+    
+    // 当前选中的按钮
+    private AnchorPane currentSelectedButton;
+    
+    // 高亮颜色
+    private static final String DEFAULT_BACKGROUND = "#1e1e1e";
+    private static final String HIGHLIGHT_BACKGROUND = "#3a3a3a";
 
     // 添加日志记录器
     private static final Logger logger = LoggerFactory.getLogger(Index.class);
@@ -53,6 +76,9 @@ public class Index implements Initializable {
         }
         openPageCode = "homeworkArea";
         logger.debug("Setting openPageCode to: {}", openPageCode);
+        
+        // 高亮对应的按钮
+        highlightButton(fontSettingsButton);
 
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Entry.class.getResource("fxml/settings/homeworkArea.fxml"));
@@ -86,6 +112,9 @@ public class Index implements Initializable {
         }
         openPageCode = "languageChooser";
         logger.debug("Setting openPageCode to: {}", openPageCode);
+        
+        // 高亮对应的按钮
+        highlightButton(languageSettingsButton);
 
         try {
             FXMLLoader fxmlLoader = new FXMLLoader(Entry.class.getResource("fxml/languageChooser.fxml"));
@@ -119,8 +148,11 @@ public class Index implements Initializable {
         openPageCode = "setInitialData";
         logger.debug("Setting openPageCode to: {}", openPageCode);
         
+        // 高亮对应的按钮
+        highlightButton(initialDataButton);
+        
         try {
-            // 加载FXML文件
+            // 加载 FXML 文件
             logger.debug("Loading FXML file for initial data editor");
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/historyHomeworkChecker.fxml"));
             // Set resource bundle for internationalization
@@ -189,6 +221,9 @@ public class Index implements Initializable {
         }
         openPageCode = "dataBaseEditor";
         logger.debug("Setting openPageCode to: {}", openPageCode);
+        
+        // 高亮对应的按钮
+        highlightButton(dataBaseEditorButton);
 
         try {
             logger.debug("Loading FXML file for database editor");
@@ -220,6 +255,9 @@ public class Index implements Initializable {
         }
         openPageCode = "reset";
         logger.debug("Setting openPageCode to: {}", openPageCode);
+        
+        // 高亮对应的按钮
+        highlightButton(resetButton);
 
         try {
             logger.debug("Loading FXML file for reset settings");
@@ -242,18 +280,18 @@ public class Index implements Initializable {
     }
 
     /**
-     * 为ScrollPane应用淡入淡出动画效果
+     * 为 ScrollPane 应用淡入淡出动画效果
      * @param newContent 新内容节点
      */
     private void applyFadeAnimation(Parent newContent) {
         logger.debug("Starting fade animation for new content");
-        
+            
         // 获取当前内容
         Node currentContent = rightShowingArea.getContent();
-        
+            
         // 使用非线性插值器
         Interpolator easeInOutInterpolator = Interpolator.SPLINE(0.42, 0, 0.58, 1.0);
-        
+            
         if (currentContent != null) {
             logger.debug("Fading out current content");
             // 淡出当前内容
@@ -261,42 +299,63 @@ public class Index implements Initializable {
             KeyValue fadeOutOpacity = new KeyValue(currentContent.opacityProperty(), 0, easeInOutInterpolator);
             KeyFrame fadeOutFrame = new KeyFrame(Duration.millis(150), fadeOutOpacity);
             fadeOutTimeline.getKeyFrames().add(fadeOutFrame);
-            
+                
             fadeOutTimeline.setOnFinished(event -> {
                 logger.debug("Fade out completed, setting new content");
                 // 设置新内容
                 rightShowingArea.setContent(newContent);
-                
+                    
                 // 初始设置新内容为透明
                 newContent.setOpacity(0);
-                
+                    
                 // 淡入新内容
                 Timeline fadeInTimeline = new Timeline();
                 KeyValue fadeInOpacity = new KeyValue(newContent.opacityProperty(), 1, easeInOutInterpolator);
                 KeyFrame fadeInFrame = new KeyFrame(Duration.millis(200), fadeInOpacity);
                 fadeInTimeline.getKeyFrames().add(fadeInFrame);
-                
+                    
                 fadeInTimeline.play();
                 logger.debug("Started fade in animation for new content");
             });
-            
+                
             fadeOutTimeline.play();
         } else {
             logger.debug("No current content, setting new content and starting fade in");
             // 如果没有当前内容，直接设置新内容并播放淡入动画
             rightShowingArea.setContent(newContent);
             newContent.setOpacity(0);
-            
+                
             Timeline fadeInTimeline = new Timeline();
             KeyValue fadeInOpacity = new KeyValue(newContent.opacityProperty(), 1, easeInOutInterpolator);
             KeyFrame fadeInFrame = new KeyFrame(Duration.millis(200), fadeInOpacity);
             fadeInTimeline.getKeyFrames().add(fadeInFrame);
-            
+                
             fadeInTimeline.play();
             logger.debug("Started fade in animation for new content");
         }
-        
+            
         logger.debug("Fade animation process initiated");
+    }
+        
+    /**
+     * 高亮选中的按钮，同时恢复其他按钮的默认状态
+     * @param selectedButton 选中的按钮
+     */
+    private void highlightButton(AnchorPane selectedButton) {
+        logger.debug("Highlighting button: {}", selectedButton);
+            
+        // 恢复之前选中的按钮
+        if (currentSelectedButton != null) {
+            currentSelectedButton.setStyle("-fx-background-color: " + DEFAULT_BACKGROUND + "; -fx-background-radius: 10;");
+        }
+            
+        // 高亮当前选中的按钮
+        if (selectedButton != null) {
+            selectedButton.setStyle("-fx-background-color: " + HIGHLIGHT_BACKGROUND + "; -fx-background-radius: 10;");
+            currentSelectedButton = selectedButton;
+        }
+            
+        logger.debug("Button highlighted successfully");
     }
 
     @Override

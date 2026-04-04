@@ -89,8 +89,8 @@ public class MainPage implements Initializable {
     @FXML
     private AnchorPane showingMainArea;
 
-    @FXML
-    private Button screenShotSuccess;
+//    @FXML
+//    private Button screenShotSuccess;
 
     private final List<String> cuteWarnings = Idf.cuteWarningsIdf;
 
@@ -164,7 +164,7 @@ public class MainPage implements Initializable {
 
         // 修复输入法候选框位置问题
         logger.debug("Fixing input method position");
-        fixInputMethodPosition();
+        // fixInputMethodPosition();
 
         // 添加窗口状态改变监听器
         logger.debug("Adding window listener");

@@ -1,0 +1,78 @@
+/* 现代化扁平风格的 CheckBox 样式，适配深色主题 */
+.check-box {
+    /* 基础样式 */
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #ffffff;
+    
+    /* 标签与框的间距 */
+    -fx-label-padding: 0px 0px 0px 4px;
+}
+
+/* 复选框盒子区域 */
+.check-box .box {
+    -fx-background-color: #2d2d2d;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-border-color: #5a5a5a;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+    
+    /* 内部标记颜色（勾选标记）*/
+    -fx-shape: null;
+}
+
+/* 复选框选中状态的标记 */
+.check-box:selected .mark {
+    -fx-background-color: #ffffff;
+    -fx-shape: "M 2 4 L 4 6 L 8 2";
+    -fx-stroke: #ffffff;
+    -fx-stroke-width: 1.5;
+    -fx-fill: transparent;
+}
+
+/* 鼠标悬停状态 */
+.check-box:hover .box {
+    -fx-background-color: #3e3e3e;
+    -fx-border-color: #7a7a7a;
+}
+
+/* 鼠标按下状态 */
+.check-box:pressed .box {
+    -fx-background-color: #1a1a1a;
+    -fx-border-color: #5a9cf0;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+/* 选中状态 */
+.check-box:selected .box {
+    -fx-background-color: #5a9cf0;
+    -fx-border-color: #5a9cf0;
+}
+
+/* 焦点状态 */
+.check-box:focused .box {
+    -fx-border-color: #5a9cf0;
+    -fx-border-width: 2px;
+}
+
+/* 禁用状态 */
+.check-box:disabled {
+    -fx-opacity: 0.6;
+}
+
+.check-box:disabled .box {
+    -fx-background-color: #3a3a3a;
+    -fx-border-color: #4a4a4a;
+}
+
+/* 不确定状态（半选状态）*/
+.check-box:indeterminate .mark {
+    -fx-background-color: #5a9cf0;
+    -fx-shape: "M 0 4 L 10 4";
+    -fx-stroke-width: 2px;
+    -fx-stroke: #ffffff;
+    -fx-fill: transparent;
+}

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <configuration>
-    <!-- 定义日志文件存储路径 -->
-    <property name="LOG_HOME" value="logs" />
+    <!-- 定义日志文件存储路径为系统 temp 目录 -->
+    <property name="LOG_HOME" value="${java.io.tmpdir}/homeworkChecker/logs" />
 
     <!-- 控制台输出配置 -->
     <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
