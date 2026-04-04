@@ -13,7 +13,7 @@
 
 <AnchorPane prefHeight="500.0" prefWidth="767.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.MainPage">
    <children>
-      <AnchorPane fx:id="showingMainArea" prefHeight="500.0" prefWidth="767.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <AnchorPane fx:id="showingMainArea" layoutY="40.0" prefHeight="460.0" prefWidth="767.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
             <AnchorPane prefHeight="69.0" prefWidth="767.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>

@@ -7,11 +7,15 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.shape.Circle;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Popup service for managing popup windows and animations
  */
 public class PopupService {
+    
+    private static final Logger logger = LoggerFactory.getLogger(PopupService.class);
     
     private final AnchorPane centerShowingArea;
     private final Pane blackPane;
@@ -22,29 +26,49 @@ public class PopupService {
                       Pane blackPane,
                       VBox centerOutBox,
                       AnchorPane showingMainArea) {
+        if (centerShowingArea == null || blackPane == null || centerOutBox == null || showingMainArea == null) {
+            logger.error("Cannot initialize PopupService: one or more parameters are null");
+            throw new IllegalArgumentException("All AnchorPane and Pane parameters cannot be null");
+        }
+        
         this.centerShowingArea = centerShowingArea;
         this.blackPane = blackPane;
         this.centerOutBox = centerOutBox;
         this.showingMainArea = showingMainArea;
+        logger.debug("PopupService initialized with centerShowingArea, blackPane, centerOutBox, and showingMainArea");
     }
     
     /**
      * Show a popup with fade-in animation and basic close handler
      * @param root Popup content
      * @param closeButtonId Close button ID selector
-     * @return The close button object
+     * @return The close button object, or null if failed
      */
     public Circle showPopup(Parent root, String closeButtonId) {
-        // Set opacity and scale for fade-in animation
-        centerShowingArea.setOpacity(0);
-        centerShowingArea.setScaleX(0.8);
-        centerShowingArea.setScaleY(0.8);
-        centerShowingArea.getChildren().clear();
-        centerShowingArea.getChildren().add(root);
+        if (root == null) {
+            logger.error("Cannot show popup: root is null");
+            return null;
+        }
+        if (closeButtonId == null || closeButtonId.trim().isEmpty()) {
+            logger.error("Cannot show popup: closeButtonId is null or empty");
+            return null;
+        }
         
-        GaussianBlur gaussianBlur = new GaussianBlur();
-        gaussianBlur.setRadius(0);
-        showingMainArea.setEffect(gaussianBlur);
+        logger.info("Showing popup window");
+        
+        try {
+            // Set opacity and scale for fade-in animation
+            logger.debug("Setting initial popup state: opacity=0, scale=0.8");
+            centerShowingArea.setOpacity(0);
+            centerShowingArea.setScaleX(0.8);
+            centerShowingArea.setScaleY(0.8);
+            centerShowingArea.getChildren().clear();
+            centerShowingArea.getChildren().add(root);
+            
+            GaussianBlur gaussianBlur = new GaussianBlur();
+            gaussianBlur.setRadius(0);
+            showingMainArea.setEffect(gaussianBlur);
+            logger.debug("Gaussian blur effect initialized with radius 0");
         
         // Fade-in timeline
         javafx.animation.Timeline fadeInTimeline = new javafx.animation.Timeline();
@@ -90,32 +114,52 @@ public class PopupService {
             new javafx.animation.KeyValue(blackPane.opacityProperty(), 0.5, elasticInterpolator)
         );
         
-        fadeInTimeline.getKeyFrames().addAll(
-            blurKeyFrame, opacityKeyFrame, blackPaneKeyFrame,
-            scaleXKeyFrame, scaleXKeyFrame2, scaleYKeyFrame, scaleYKeyFrame2
-        );
-        fadeInTimeline.play();
-        
-        blackPane.setOpacity(0);
-        centerOutBox.setMouseTransparent(false);
-        
-        // Setup close button handler
-        Circle windowCloseButton = (Circle) root.lookup(closeButtonId);
-        windowCloseButton.setOnMouseClicked(event -> {
-            closePopup();
-            Idf.isPreviewWindowShowing = false;
-        });
-        
-        return windowCloseButton;
+            fadeInTimeline.getKeyFrames().addAll(
+                blurKeyFrame, opacityKeyFrame, blackPaneKeyFrame,
+                scaleXKeyFrame, scaleXKeyFrame2, scaleYKeyFrame, scaleYKeyFrame2
+            );
+            fadeInTimeline.play();
+            logger.debug("Fade-in timeline started with duration 500ms");
+            
+            blackPane.setOpacity(0);
+            centerOutBox.setMouseTransparent(false);
+            
+            // Setup close button handler
+            Circle windowCloseButton = (Circle) root.lookup(closeButtonId);
+            if (windowCloseButton == null) {
+                logger.warn("Close button not found with id: {}", closeButtonId);
+            } else {
+                logger.debug("Close button found: {}", closeButtonId);
+                
+                windowCloseButton.setOnMouseClicked(event -> {
+                    logger.info("Closing popup window");
+                    closePopup();
+                    Idf.isPreviewWindowShowing = false;
+                });
+            }
+            
+            return windowCloseButton;
+        } catch (Exception e) {
+            logger.error("Error showing popup window", e);
+            return null;
+        }
     }
     
     /**
      * Close popup with fade-out animation
      */
     public void closePopup() {
-        GaussianBlur gaussianBlur = (GaussianBlur) showingMainArea.getEffect();
-        javafx.animation.Timeline fadeOutTimeline = new javafx.animation.Timeline();
-        javafx.animation.Interpolator easeOutInterpolator = javafx.animation.Interpolator.EASE_OUT;
+        logger.info("Closing popup with fade-out animation");
+        
+        try {
+            GaussianBlur gaussianBlur = (GaussianBlur) showingMainArea.getEffect();
+            if (gaussianBlur == null) {
+                logger.debug("No Gaussian blur effect found, creating new one");
+                gaussianBlur = new GaussianBlur(0);
+            }
+            
+            javafx.animation.Timeline fadeOutTimeline = new javafx.animation.Timeline();
+            javafx.animation.Interpolator easeOutInterpolator = javafx.animation.Interpolator.EASE_OUT;
         
         // Blur out keyframe
         javafx.animation.KeyFrame blurOutKeyFrame = new javafx.animation.KeyFrame(
@@ -146,15 +190,20 @@ public class PopupService {
             new javafx.animation.KeyValue(blackPane.opacityProperty(), 0, easeOutInterpolator)
         );
         
-        fadeOutTimeline.getKeyFrames().addAll(
-            blurOutKeyFrame, opacityOutKeyFrame, blackPaneOutKeyFrame,
-            scaleOutXKeyFrame, scaleOutYKeyFrame
-        );
-        fadeOutTimeline.setOnFinished(e -> {
-            centerShowingArea.getChildren().clear();
-            centerOutBox.setMouseTransparent(true);
-            showingMainArea.setEffect(null);
-        });
-        fadeOutTimeline.play();
+            fadeOutTimeline.getKeyFrames().addAll(
+                blurOutKeyFrame, opacityOutKeyFrame, blackPaneOutKeyFrame,
+                scaleOutXKeyFrame, scaleOutYKeyFrame
+            );
+            fadeOutTimeline.setOnFinished(e -> {
+                logger.debug("Fade-out animation finished, clearing popup content");
+                centerShowingArea.getChildren().clear();
+                centerOutBox.setMouseTransparent(true);
+                showingMainArea.setEffect(null);
+            });
+            fadeOutTimeline.play();
+            logger.debug("Fade-out timeline started with duration 250ms");
+        } catch (Exception e) {
+            logger.error("Error closing popup window", e);
+        }
     }
 }

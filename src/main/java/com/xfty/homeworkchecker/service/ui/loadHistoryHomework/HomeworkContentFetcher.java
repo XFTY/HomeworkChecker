@@ -13,7 +13,13 @@ public class HomeworkContentFetcher {
     private final HomeworkDatabase homeworkDatabase;
     
     public HomeworkContentFetcher() {
-        this.homeworkDatabase = new HomeworkDatabase();
+        try {
+            this.homeworkDatabase = new HomeworkDatabase();
+            logger.debug("HomeworkContentFetcher initialized successfully");
+        } catch (Exception e) {
+            logger.error("Failed to initialize HomeworkContentFetcher - database initialization failed", e);
+            throw new RuntimeException("Failed to initialize HomeworkContentFetcher", e);
+        }
     }
     
     /**
@@ -24,8 +30,18 @@ public class HomeworkContentFetcher {
      * @return 作业内容，如果不存在则返回 null
      */
     public String getHomeworkContext(String year, String month, String day) {
+        if (year == null || month == null || day == null) {
+            logger.warn("Invalid date parameters: year={}, month={}, day={}", year, month, day);
+            return null;
+        }
+        
         logger.debug("Fetching homework context for {}-{}-{}", year, month, day);
-        return homeworkDatabase.getHomeworkContext(year, month, day);
+        try {
+            return homeworkDatabase.getHomeworkContext(year, month, day);
+        } catch (Exception e) {
+            logger.error("Error fetching homework context for {}-{}-{}", year, month, day, e);
+            return null;
+        }
     }
     
     /**
@@ -34,8 +50,18 @@ public class HomeworkContentFetcher {
      * @return 作业内容，如果不存在则返回 null
      */
     public String getHomeworkContextByFileName(String fileName) {
+        if (fileName == null || fileName.trim().isEmpty()) {
+            logger.warn("Invalid file name: {}", fileName);
+            return null;
+        }
+        
         logger.debug("Fetching homework context for file: {}", fileName);
-        return homeworkDatabase.getHomeworkContextByFileName(fileName);
+        try {
+            return homeworkDatabase.getHomeworkContextByFileName(fileName);
+        } catch (Exception e) {
+            logger.error("Error fetching homework context for file: {}", fileName, e);
+            return null;
+        }
     }
     
     /**
@@ -44,14 +70,29 @@ public class HomeworkContentFetcher {
      * @return 作业内容数组，与输入文件名顺序对应，不存在的返回 null
      */
     public String[] getHomeworkContextsByFileNames(String[] fileNames) {
-        logger.debug("Batch fetching homework contexts for {} files", fileNames.length);
-        String[] results = new String[fileNames.length];
-        
-        for (int i = 0; i < fileNames.length; i++) {
-            results[i] = getHomeworkContextByFileName(fileNames[i]);
+        if (fileNames == null) {
+            logger.error("Cannot fetch homework contexts: fileNames array is null");
+            return new String[0];
         }
         
-        return results;
+        logger.debug("Batch fetching homework contexts for {} files", fileNames.length);
+        try {
+            String[] results = new String[fileNames.length];
+            
+            for (int i = 0; i < fileNames.length; i++) {
+                try {
+                    results[i] = getHomeworkContextByFileName(fileNames[i]);
+                } catch (Exception e) {
+                    logger.error("Error fetching homework context for file index {}: {}", i, fileNames[i], e);
+                    results[i] = null;
+                }
+            }
+            
+            return results;
+        } catch (Exception e) {
+            logger.error("Unexpected error in batch fetching homework contexts", e);
+            return new String[0];
+        }
     }
     
     /**
@@ -60,6 +101,16 @@ public class HomeworkContentFetcher {
      * @return 如果有作业数据返回 true，否则返回 false
      */
     public boolean hasHomeworkData(String fileName) {
-        return getHomeworkContextByFileName(fileName) != null;
+        if (fileName == null || fileName.trim().isEmpty()) {
+            logger.debug("No homework data for invalid file name: {}", fileName);
+            return false;
+        }
+        
+        try {
+            return getHomeworkContextByFileName(fileName) != null;
+        } catch (Exception e) {
+            logger.error("Error checking homework data for file: {}", fileName, e);
+            return false;
+        }
     }
 }

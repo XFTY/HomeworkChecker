@@ -9,13 +9,13 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="392.0" prefWidth="419.0" style="-fx-background-color: #1e1e1e; -fx-border-radius: 20; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.About">
+<AnchorPane prefHeight="444.0" prefWidth="482.0" style="-fx-background-color: #1e1e1e; -fx-border-radius: 20; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.About">
    <children>
       <HBox alignment="CENTER" layoutY="34.6" prefHeight="77.0" prefWidth="354.0" spacing="10.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="34.6">
          <children>
             <ImageView fitHeight="52.0" fitWidth="46.0" onMouseClicked="#onIconButtonClicked" pickOnBounds="true" preserveRatio="true">
                <image>
-                  <Image url="@../icon/logo.png" />
+                  <Image url="@../icon/logo-classic.png" />
                </image>
             </ImageView>
             <Label text="HomeworkChecker" textFill="WHITE">
@@ -25,17 +25,17 @@
             </Label>
          </children>
       </HBox>
-      <Label alignment="CENTER" layoutX="14.4" layoutY="117.0" text="%about.title" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977">
+      <Label alignment="CENTER" layoutX="14.666666666666666" layoutY="106.0" text="%about.title" textFill="WHITE" AnchorPane.leftAnchor="14.666666666666666" AnchorPane.rightAnchor="14.666666666666686">
          <font>
             <Font size="14.0" />
          </font>
       </Label>
-      <Label fx:id="versionDisplayAboutPage" alignment="CENTER" layoutX="14.4" layoutY="155.0" text="%about.version" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977" />
+      <Label fx:id="versionDisplayAboutPage" alignment="CENTER" layoutX="15.333333333333334" layoutY="129.0" text="%about.version" textFill="WHITE" AnchorPane.leftAnchor="15.333333333333334" AnchorPane.rightAnchor="14.666666666666686" />
       <Label alignment="CENTER" layoutX="118.0" layoutY="371.0" text="%about.opensource" textFill="WHITE" AnchorPane.bottomAnchor="14.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-      <Label alignment="CENTER" layoutX="14.4" layoutY="184.0" text="HomeworkChecker 开源版本" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977" />
-      <Label alignment="CENTER" layoutX="14.4" layoutY="201.0" text="更多信息，请查看软件Github仓库" textFill="WHITE" AnchorPane.leftAnchor="14.4" AnchorPane.rightAnchor="14.399999999999977" />
+      <Label alignment="CENTER" layoutX="15.333333333333334" layoutY="259.0" text="HomeworkChecker 开源版本" textFill="WHITE" AnchorPane.leftAnchor="15.333333333333334" AnchorPane.rightAnchor="14.0" />
+      <Label alignment="CENTER" layoutX="15.333333333333334" layoutY="276.0" text="更多信息，请查看软件Github仓库" textFill="WHITE" AnchorPane.leftAnchor="15.333333333333334" AnchorPane.rightAnchor="14.0" />
       <Label alignment="CENTER" layoutX="73.0" layoutY="209.0" text="%about.copyright" textFill="WHITE" AnchorPane.bottomAnchor="35.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
-      <HBox alignment="CENTER" layoutY="233.0" prefHeight="46.0" prefWidth="354.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <HBox alignment="CENTER" layoutY="300.0" prefHeight="46.0" prefWidth="354.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <Button mnemonicParsing="false" onMouseClicked="#onUpdateWhatButtonClicked" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%about.updateLog">
                <graphic>
@@ -58,7 +58,7 @@
                </children>
             </HBox>
          </children></AnchorPane>
-      <HBox alignment="CENTER" layoutX="33.0" layoutY="279.0" prefHeight="46.0" prefWidth="354.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+      <HBox alignment="CENTER" layoutY="346.0" prefHeight="46.0" prefWidth="354.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <children>
             <Button mnemonicParsing="false" onMouseClicked="#onOpenSourceLicenseButtonClicked" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="开源软件许可声明">
                <graphic>
@@ -71,5 +71,15 @@
             </Button>
          </children>
       </HBox>
+      <AnchorPane layoutX="55.333333333333336" layoutY="160.0" prefHeight="77.0" prefWidth="373.0" style="-fx-border-color: #F39C12; -fx-border-radius: 10;" AnchorPane.leftAnchor="55.333333333333336" AnchorPane.rightAnchor="54.0">
+         <children>
+            <Label layoutX="17.333333333333332" layoutY="11.666666666666668" text="软件稳定性风险提示" textFill="#f39c12">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="15.0" layoutY="37.0" text="当前版本的 HomeworkChecker 对软件内核进行了更新，代码运行可能极不稳定，建议保留上一个开发版本作为应急备份" textFill="#f39c12" wrapText="true" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" />
+         </children>
+      </AnchorPane>
    </children>
 </AnchorPane>

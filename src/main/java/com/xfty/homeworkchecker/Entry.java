@@ -81,7 +81,8 @@ public class Entry extends Application {
             // Idf.userLanguageBundle = ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale);
             fxmlLoader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
         }
-        Scene scene = new Scene(fxmlLoader.load(), 1000, 600);
+        Scene scene = new Scene(fxmlLoader.load(), 1000,
+                600);
 
         stage.setTitle(Idf.userLanguageBundle.getString("entry.window.title"));
         stage.setScene(scene);

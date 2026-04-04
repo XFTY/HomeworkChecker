@@ -51,6 +51,11 @@ public class EditMainService {
      * @param lockModelShowingArea 锁定模式显示区域
      */
     public EditMainService(Label lockStatusLabel, HBox lockModelShowingArea) {
+        if (lockStatusLabel == null || lockModelShowingArea == null) {
+            logger.error("Cannot initialize EditMainService: lockStatusLabel or lockModelShowingArea is null");
+            throw new IllegalArgumentException("Lock status label and lock model showing area cannot be null");
+        }
+        
         this.lockStatusLabel = lockStatusLabel;
         this.lockModelShowingArea = lockModelShowingArea;
         this.cuteWarnings = Idf.cuteWarningsIdf;
@@ -70,64 +75,72 @@ public class EditMainService {
             return;
         }
 
-        if (!Idf.isEditable) {
-            long currentTime = System.currentTimeMillis();
-            
-            // 检查是否在时间窗口内
-            if (currentTime - lastClickTime <= TIME_WINDOW) {
-                clickCount++;
-                logger.debug("Click detected within time window. Click count: {}", clickCount);
+        try {
+            if (!Idf.isEditable) {
+                long currentTime = System.currentTimeMillis();
+                
+                // 检查是否在时间窗口内
+                if (currentTime - lastClickTime <= TIME_WINDOW) {
+                    clickCount++;
+                    logger.debug("Click detected within time window. Click count: {}", clickCount);
+                } else {
+                    // 超过时间窗口，重置计数
+                    clickCount = 1;
+                    logger.debug("Time window exceeded, resetting click count to 1");
+                }
+                
+                lastClickTime = currentTime;
+                
+                // 如果达到点击阈值
+                if (clickCount >= CLICK_THRESHOLD) {
+                    logger.info("Click threshold reached ({} clicks), activating cute mode", clickCount);
+                    
+                    // 设置随机提示文本
+                    if (cuteWarnings != null && !cuteWarnings.isEmpty()) {
+                        int randomIndex = random.nextInt(cuteWarnings.size());
+                        lockStatusLabel.setText(cuteWarnings.get(randomIndex));
+                        isInCuteMode = true;
+                        logger.debug("Cute mode activated with random warning message (index: {})", randomIndex);
+                        
+                        // 安排 6 秒后检查是否需要恢复
+                        scheduler.schedule(this::checkAndRestoreLabel, TIME_WINDOW, TimeUnit.MILLISECONDS);
+                        logger.debug("Scheduled label restore check in {} ms", TIME_WINDOW);
+                    } else {
+                        logger.warn("Cute warnings list is empty or null, cannot set warning message");
+                    }
+                }
+                
+                // 创建特定的左右抖动动画效果
+                // 前三个周期幅度保持一致，第四个周期开始衰减，第五个周期停止
+                double amplitude = 15.0;  // 固定振幅
+                
+                // 使用 Timeline 实现平滑动画
+                shakeAnimation = new Timeline();
+                shakeAnimation.setCycleCount(1);
+                
+                // 定义关键帧列表
+                ObservableList<KeyFrame> keyFrames = shakeAnimation.getKeyFrames();
+                
+                double currentTimeAnim = 0;
+                
+                // 添加关键帧的辅助方法
+                addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude, 3); // 前 3 个完整周期
+                currentTimeAnim += 300; // 3 个周期的时间 (3 * (50+25+50+25))
+                
+                // 第四个周期，幅度开始衰减（减小到原来的一半）
+                addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.5, 1);
+                currentTimeAnim += 150; // 1 个周期的时间 (50+25+50+25)
+                
+                // 第五个周期，幅度进一步减小（减小到原来的四分之一）
+                addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.25, 1);
+                
+                shakeAnimation.play();
+                logger.debug("Shake animation started with amplitude: {}, total duration: {} ms", amplitude, currentTimeAnim);
             } else {
-                // 超过时间窗口，重置计数
-                clickCount = 1;
-                logger.debug("Time window exceeded, resetting click count to 1");
+                logger.debug("In editable mode, requesting focus for editMain");
             }
-            
-            lastClickTime = currentTime;
-            
-            // 如果达到点击阈值
-            if (clickCount >= CLICK_THRESHOLD) {
-                logger.info("Click threshold reached ({} clicks), activating cute mode", clickCount);
-                
-                // 设置随机提示文本
-                int randomIndex = random.nextInt(cuteWarnings.size());
-                lockStatusLabel.setText(cuteWarnings.get(randomIndex));
-                isInCuteMode = true;
-                logger.debug("Cute mode activated with random warning message (index: {})", randomIndex);
-                
-                // 安排 6 秒后检查是否需要恢复
-                scheduler.schedule(this::checkAndRestoreLabel, TIME_WINDOW, TimeUnit.MILLISECONDS);
-                logger.debug("Scheduled label restore check in {} ms", TIME_WINDOW);
-            }
-            
-            // 创建特定的左右抖动动画效果
-            // 前三个周期幅度保持一致，第四个周期开始衰减，第五个周期停止
-            double amplitude = 15.0;  // 固定振幅
-            
-            // 使用 Timeline 实现平滑动画
-            shakeAnimation = new Timeline();
-            shakeAnimation.setCycleCount(1);
-            
-            // 定义关键帧列表
-            ObservableList<KeyFrame> keyFrames = shakeAnimation.getKeyFrames();
-            
-            double currentTimeAnim = 0;
-            
-            // 添加关键帧的辅助方法
-            addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude, 3); // 前 3 个完整周期
-            currentTimeAnim += 300; // 3 个周期的时间 (3 * (50+25+50+25))
-            
-            // 第四个周期，幅度开始衰减（减小到原来的一半）
-            addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.5, 1);
-            currentTimeAnim += 150; // 1 个周期的时间 (50+25+50+25)
-            
-            // 第五个周期，幅度进一步减小（减小到原来的四分之一）
-            addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.25, 1);
-            
-            shakeAnimation.play();
-            logger.debug("Shake animation started with amplitude: {}, total duration: {} ms", amplitude, currentTimeAnim);
-        } else {
-            logger.debug("In editable mode, requesting focus for editMain");
+        } catch (Exception e) {
+            logger.error("Error processing edit main click event", e);
         }
     }
     

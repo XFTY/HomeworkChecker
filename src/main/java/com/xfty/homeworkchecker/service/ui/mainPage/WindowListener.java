@@ -31,6 +31,19 @@ public class WindowListener {
      * @param onLockModuleCallback 锁定模块回调方法
      */
     public WindowListener(Label titleLabel, TextArea editMain, Runnable onLockModuleCallback) {
+        if (titleLabel == null) {
+            logger.error("Cannot initialize WindowListener: titleLabel is null");
+            throw new IllegalArgumentException("Title label cannot be null");
+        }
+        if (editMain == null) {
+            logger.error("Cannot initialize WindowListener: editMain is null");
+            throw new IllegalArgumentException("Edit main TextArea cannot be null");
+        }
+        if (onLockModuleCallback == null) {
+            logger.error("Cannot initialize WindowListener: onLockModuleCallback is null");
+            throw new IllegalArgumentException("Lock module callback cannot be null");
+        }
+        
         this.titleLabel = titleLabel;
         this.editMain = editMain;
         this.onLockModuleCallback = onLockModuleCallback;
@@ -42,7 +55,7 @@ public class WindowListener {
      * 包括窗口最大化状态监听和键盘快捷键监听
      */
     public void addWindowListener() {
-        logger.debug("Setting up window listeners");
+        logger.info("Setting up window listeners");
         
         // 使用 Platform.runLater 确保在 JavaFX 线程中执行，且窗口已经显示
         Platform.runLater(() -> {
@@ -69,11 +82,20 @@ public class WindowListener {
      * 设置窗口最大化监听器
      */
     private void setupMaximizedListener() {
-        primaryStage.maximizedProperty().addListener((observable, oldValue, newValue) -> {
-            Idf.isMainPageMaximized = newValue;
-            logger.debug("Window maximized state changed to: {}", newValue);
-        });
-        logger.trace("Maximized property listener added");
+        try {
+            if (primaryStage == null) {
+                logger.warn("Cannot setup maximized listener: primary stage is null");
+                return;
+            }
+            
+            primaryStage.maximizedProperty().addListener((observable, oldValue, newValue) -> {
+                Idf.isMainPageMaximized = newValue;
+                logger.info("Window maximized state changed to: {}", newValue);
+            });
+            logger.trace("Maximized property listener added");
+        } catch (Exception e) {
+            logger.error("Error setting up maximized listener", e);
+        }
     }
     
     /**
@@ -81,40 +103,62 @@ public class WindowListener {
      * 监听 Ctrl+` 组合键用于锁定/解锁模块
      */
     private void setupKeyboardShortcuts() {
-        // 场景级别的键盘快捷键监听
-        primaryStage.getScene().setOnKeyPressed(event -> {
-            // 检查是否按下了 Ctrl+` 组合键
-            if (!Idf.isPreviewWindowShowing) {
-                if (event.isControlDown() && event.getCode() == javafx.scene.input.KeyCode.BACK_QUOTE) {
-                    logger.debug("Ctrl+` shortcut pressed in scene");
-                    handleLockModuleShortcut();
-                    event.consume(); // 标记事件已被处理
-                }
+        try {
+            if (primaryStage == null || primaryStage.getScene() == null) {
+                logger.warn("Cannot setup keyboard shortcuts: primary stage or scene is null");
+                return;
             }
-        });
-        
-        // 编辑区域级别的键盘快捷键监听
-        editMain.setOnKeyPressed(event -> {
-            // 检查是否按下了 Ctrl+` 组合键
-            if (!Idf.isPreviewWindowShowing) {
-                if (event.isControlDown() && event.getCode() == javafx.scene.input.KeyCode.BACK_QUOTE) {
-                    logger.debug("Ctrl+` shortcut pressed in editMain");
-                    handleLockModuleShortcut();
-                    event.consume(); // 标记事件已被处理
+            
+            // 场景级别的键盘快捷键监听
+            primaryStage.getScene().setOnKeyPressed(event -> {
+                try {
+                    // 检查是否按下了 Ctrl+` 组合键
+                    if (!Idf.isPreviewWindowShowing) {
+                        if (event.isControlDown() && event.getCode() == javafx.scene.input.KeyCode.BACK_QUOTE) {
+                            logger.info("Ctrl+` shortcut pressed in scene");
+                            handleLockModuleShortcut();
+                            event.consume(); // 标记事件已被处理
+                        }
+                    }
+                } catch (Exception e) {
+                    logger.error("Error processing scene key press event", e);
                 }
+            });
+            
+            // 编辑区域级别的键盘快捷键监听
+            if (editMain != null && editMain.getScene() != null) {
+                editMain.setOnKeyPressed(event -> {
+                    try {
+                        // 检查是否按下了 Ctrl+` 组合键
+                        if (!Idf.isPreviewWindowShowing) {
+                            if (event.isControlDown() && event.getCode() == javafx.scene.input.KeyCode.BACK_QUOTE) {
+                                logger.info("Ctrl+` shortcut pressed in editMain");
+                                handleLockModuleShortcut();
+                                event.consume(); // 标记事件已被处理
+                            }
+                        }
+                    } catch (Exception e) {
+                        logger.error("Error processing editMain key press event", e);
+                    }
+                });
+            } else {
+                logger.warn("EditMain or its scene is null, cannot setup keyboard shortcut");
             }
-        });
-        
-        logger.trace("Keyboard shortcuts registered for scene and editMain");
+            
+            logger.trace("Keyboard shortcuts registered for scene and editMain");
+        } catch (Exception e) {
+            logger.error("Error setting up keyboard shortcuts", e);
+        }
     }
     
     /**
      * 处理锁定模块快捷键
      */
     private void handleLockModuleShortcut() {
-        logger.debug("Handling lock module shortcut");
+        logger.info("Handling lock module shortcut");
         if (onLockModuleCallback != null) {
             onLockModuleCallback.run();
+            logger.debug("Lock module callback executed successfully");
         } else {
             logger.warn("Lock module callback is null, cannot execute shortcut action");
         }

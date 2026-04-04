@@ -3,6 +3,8 @@ package com.xfty.homeworkchecker.service.ui.loadHistoryHomework;
 import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 /**
@@ -10,15 +12,30 @@ import java.util.Objects;
  */
 public class ButtonStateManager {
     
+    private static final Logger logger = LoggerFactory.getLogger(ButtonStateManager.class);
+    
     private static final Image GREEN_IMAGE;
     private static final Image RED_IMAGE;
     
     static {
-        // Load images using Entry class classloader to ensure correct resource path
-        GREEN_IMAGE = new Image(Objects.requireNonNull(
-            com.xfty.homeworkchecker.Entry.class.getResourceAsStream("/com/xfty/homeworkchecker/icon/light/green.png")));
-        RED_IMAGE = new Image(Objects.requireNonNull(
-            com.xfty.homeworkchecker.Entry.class.getResourceAsStream("/com/xfty/homeworkchecker/icon/light/red.png")));
+        Image greenImage = null;
+        Image redImage = null;
+        
+        try {
+            // Use URL instead of InputStream for better error handling
+            greenImage = new Image(Objects.requireNonNull(
+                com.xfty.homeworkchecker.Entry.class.getResource("/com/xfty/homeworkchecker/icon/light/green.png")).toExternalForm());
+            redImage = new Image(Objects.requireNonNull(
+                com.xfty.homeworkchecker.Entry.class.getResource("/com/xfty/homeworkchecker/icon/light/red.png")).toExternalForm());
+            logger.debug("Button images loaded successfully");
+        } catch (NullPointerException e) {
+            logger.error("Failed to load button images. Check if image files exist in resources", e);
+        } catch (Exception e) {
+            logger.error("Unexpected error while loading button images", e);
+        }
+        
+        GREEN_IMAGE = greenImage;
+        RED_IMAGE = redImage;
     }
     
     /**
@@ -28,10 +45,20 @@ public class ButtonStateManager {
      * @param hasData 是否有数据
      */
     public void setButtonState(Button button, ImageView imageView, boolean hasData) {
-        if (hasData) {
-            enableButton(button, imageView);
-        } else {
-            disableButton(button, imageView);
+        if (button == null || imageView == null) {
+            logger.warn("Cannot set button state: button or imageView is null");
+            return;
+        }
+        
+        logger.debug("Setting button state: enabled={}", hasData);
+        try {
+            if (hasData) {
+                enableButton(button, imageView);
+            } else {
+                disableButton(button, imageView);
+            }
+        } catch (Exception e) {
+            logger.error("Error setting button state", e);
         }
     }
     
@@ -41,8 +68,18 @@ public class ButtonStateManager {
      * @param imageView ImageView 对象
      */
     public void enableButton(Button button, ImageView imageView) {
-        imageView.setImage(GREEN_IMAGE);
-        button.setDisable(false);
+        if (GREEN_IMAGE == null) {
+            logger.error("Green image not loaded, cannot enable button");
+            return;
+        }
+        
+        logger.trace("Enabling button with green light");
+        try {
+            imageView.setImage(GREEN_IMAGE);
+            button.setDisable(false);
+        } catch (Exception e) {
+            logger.error("Failed to enable button", e);
+        }
     }
     
     /**
@@ -51,8 +88,18 @@ public class ButtonStateManager {
      * @param imageView ImageView 对象
      */
     public void disableButton(Button button, ImageView imageView) {
-        imageView.setImage(RED_IMAGE);
-        button.setDisable(true);
+        if (RED_IMAGE == null) {
+            logger.error("Red image not loaded, cannot disable button");
+            return;
+        }
+        
+        logger.trace("Disabling button with red light");
+        try {
+            imageView.setImage(RED_IMAGE);
+            button.setDisable(true);
+        } catch (Exception e) {
+            logger.error("Failed to disable button", e);
+        }
     }
     
     /**
@@ -64,8 +111,22 @@ public class ButtonStateManager {
     public void setButtonsState(java.util.List<Button> buttons, 
                                 java.util.List<ImageView> imageViews, 
                                 java.util.List<Boolean> hasDataList) {
-        for (int i = 0; i < Math.min(buttons.size(), Math.min(imageViews.size(), hasDataList.size())); i++) {
-            setButtonState(buttons.get(i), imageViews.get(i), hasDataList.get(i));
+        if (buttons == null || imageViews == null || hasDataList == null) {
+            logger.error("Cannot set buttons state: one or more input lists are null");
+            return;
+        }
+        
+        logger.debug("Batch setting {} buttons state", buttons.size());
+        try {
+            int size = Math.min(buttons.size(), Math.min(imageViews.size(), hasDataList.size()));
+            for (int i = 0; i < size; i++) {
+                setButtonState(buttons.get(i), imageViews.get(i), hasDataList.get(i));
+            }
+            logger.debug("Batch button state setting completed");
+        } catch (IndexOutOfBoundsException e) {
+            logger.error("Index out of bounds while setting button states", e);
+        } catch (Exception e) {
+            logger.error("Unexpected error in batch button state setting", e);
         }
     }
 }

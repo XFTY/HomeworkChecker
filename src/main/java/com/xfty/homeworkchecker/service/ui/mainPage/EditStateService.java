@@ -38,6 +38,19 @@ public class EditStateService {
     public EditStateService(TextArea editMain, 
                            HomeworkDatabase homeworkDatabase,
                            Runnable onLockModuleClicked) {
+        if (editMain == null) {
+            logger.error("Cannot initialize EditStateService: editMain is null");
+            throw new IllegalArgumentException("EditMain TextArea cannot be null");
+        }
+        if (homeworkDatabase == null) {
+            logger.error("Cannot initialize EditStateService: homeworkDatabase is null");
+            throw new IllegalArgumentException("HomeworkDatabase cannot be null");
+        }
+        if (onLockModuleClicked == null) {
+            logger.error("Cannot initialize EditStateService: onLockModuleClicked is null");
+            throw new IllegalArgumentException("OnLockModuleClicked callback cannot be null");
+        }
+        
         this.editMain = editMain;
         this.homeworkDatabase = homeworkDatabase;
         this.onLockModuleClicked = onLockModuleClicked;
@@ -99,9 +112,15 @@ public class EditStateService {
                 if (!Objects.equals(Idf.homeworkContextCache, editMainText)) {
                     logger.info("Content changed, updating cache and saving to database");
                     Idf.homeworkContextCache = editMainText;
-                    homeworkDatabase.writeHomeworkContextByDay(Idf.homeworkContextCache);
-                    timings = RESET_TIMINGS;
-                    logger.info("Content changed, resetting timings to {} seconds", timings);
+                    try {
+                        homeworkDatabase.writeHomeworkContextByDay(Idf.homeworkContextCache);
+                        timings = RESET_TIMINGS;
+                        logger.info("Content changed, resetting timings to {} seconds", timings);
+                    } catch (Exception e) {
+                        logger.error("Failed to save homework context to database", e);
+                        // Continue with timing decrement even if save fails
+                        timings = timings - 5;
+                    }
                 } else {
                     timings = timings - 5;
                     logger.debug("Content unchanged, decrementing timings to {} seconds", timings);

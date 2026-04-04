@@ -30,20 +30,25 @@ public class MainPageInitService {
     public Result loadHomeworkContent() {
         logger.info("Loading homework content...");
         
-        String content;
-        String title;
-        
-        if (Idf.userConfig != null) {
-            logger.debug("Loading with user config");
-            content = loadContentWithConfig();
-            title = buildTitle(content != null && !content.isEmpty());
-        } else {
-            logger.warn("User configuration is null, using default settings");
-            content = loadContentWithoutConfig();
-            title = buildTitle(content != null && !content.isEmpty());
+        try {
+            String content;
+            String title;
+            
+            if (Idf.userConfig != null) {
+                logger.debug("Loading with user config");
+                content = loadContentWithConfig();
+                title = buildTitle(content != null && !content.isEmpty());
+            } else {
+                logger.warn("User configuration is null, using default settings");
+                content = loadContentWithoutConfig();
+                title = buildTitle(content != null && !content.isEmpty());
+            }
+            
+            return new Result(content, title);
+        } catch (Exception e) {
+            logger.error("Failed to load homework content", e);
+            return new Result("", "Error loading content");
         }
-        
-        return new Result(content, title);
     }
     
     /**
@@ -144,24 +149,36 @@ public class MainPageInitService {
     
     /**
      * 构建标题
+     * @param hasHomework 是否有作业
+     * @return 标题字符串，如果发生错误返回默认标题
      */
     private String buildTitle(boolean hasHomework) {
-        String formatKey = hasHomework ? "mainpage.format.weekday" : "mainpage.format.weekday";
-        
-        // 判断是否为周末来设置标题
-        LocalDate today = LocalDate.now();
-        int dayOfWeek = today.getDayOfWeek().getValue();
-        
-        if (dayOfWeek == 5 || dayOfWeek == 6 || dayOfWeek == 7) {
-            formatKey = hasHomework ? "mainpage.format.weekend" : "mainpage.format.weekday";
+        try {
+            String formatKey = hasHomework ? "mainpage.format.weekday" : "mainpage.format.weekday";
+            
+            // 判断是否为周末来设置标题
+            LocalDate today = LocalDate.now();
+            int dayOfWeek = today.getDayOfWeek().getValue();
+            
+            if (dayOfWeek == 5 || dayOfWeek == 6 || dayOfWeek == 7) {
+                formatKey = hasHomework ? "mainpage.format.weekend" : "mainpage.format.weekday";
+            }
+            
+            if (Idf.userLanguageBundle == null) {
+                logger.error("User language bundle is null, cannot build title");
+                return "Homework Checker";
+            }
+            
+            return Idf.year + 
+                   Idf.userLanguageBundle.getString("mainpage.year") + 
+                   Idf.month + 
+                   Idf.userLanguageBundle.getString("mainpage.month") + 
+                   Idf.day + 
+                   Idf.userLanguageBundle.getString(formatKey);
+        } catch (Exception e) {
+            logger.error("Error building title", e);
+            return "Homework Checker - Error";
         }
-        
-        return Idf.year + 
-               Idf.userLanguageBundle.getString("mainpage.year") + 
-               Idf.month + 
-               Idf.userLanguageBundle.getString("mainpage.month") + 
-               Idf.day + 
-               Idf.userLanguageBundle.getString(formatKey);
     }
     
     /**
