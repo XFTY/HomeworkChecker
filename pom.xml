@@ -6,7 +6,7 @@
 
     <groupId>com.xfty</groupId>
     <artifactId>homeworkChecker</artifactId>
-    <version>1.5.0-snapshot</version>
+    <version>1.6.0-beta</version>
     <name>homeworkChecker</name>
 
     <properties>

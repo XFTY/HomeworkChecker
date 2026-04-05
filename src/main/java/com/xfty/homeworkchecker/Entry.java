@@ -4,15 +4,20 @@ import com.xfty.homeworkchecker.controller.MainPage;
 import com.xfty.homeworkchecker.service.FileInitManager;
 import com.xfty.homeworkchecker.service.SingletonInstanceManager;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
+import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.Locale;
 import java.util.Objects;
@@ -47,18 +52,9 @@ public class Entry extends Application {
 
         // 初始化进程前检查是否已经运行了实例
         if (!initSingletonCheck()) {
-            // 已经有一个实例在运行，退出当前实例
-            logger.warn("Another instance is already running. Exiting...");
-
-            Alert alert = new Alert(Alert.AlertType.WARNING);
-            alert.setTitle(Idf.userLanguageBundle.getString("entry.title.notice"));
-            alert.setHeaderText(Idf.userLanguageBundle.getString("entry.header.notice"));
-            alert.setContentText(Idf.userLanguageBundle.getString("entry.content.alreadyRunning"));
-            // 设置窗口置顶
-            alert.getDialogPane().getScene().getWindow().requestFocus();
-            alert.showAndWait();
-
-            System.exit(1);
+            // 已经有一个实例在运行，退出当前实例（无提示）
+            logger.warn("Another instance is already running. Exiting silently...");
+            System.exit(0);
             return;
         }
 
@@ -88,6 +84,11 @@ public class Entry extends Application {
         stage.setScene(scene);
         stage.getIcons().add(new Image(Objects.requireNonNull(Entry.class.getResourceAsStream("icon/logo.png"))));
         stage.show();
+        
+        // 启动WatchService监听激活信号
+        if (Idf.singletonManager != null) {
+            Idf.singletonManager.startWatchService(stage);
+        }
 
         // 获取主页面控制器引用
         mainPageController = fxmlLoader.getController();
@@ -119,7 +120,45 @@ public class Entry extends Application {
      */
     private boolean initSingletonCheck() {
         SingletonInstanceManager singletonManager = new SingletonInstanceManager();
-        return singletonManager.acquireLock();
+        boolean acquired = singletonManager.acquireLock();
+        
+        if (acquired) {
+            // 第一个实例：保存引用，后续传入 Stage
+            Idf.singletonManager = singletonManager;
+        } else {
+            // 第二个实例：创建信号文件后退出
+            createRepeatedStartFile();
+        }
+        
+        return acquired;
+    }
+    
+    /**
+     * 创建重复启动信号文件
+     */
+    private void createRepeatedStartFile() {
+        try {
+            File userDir = FileUtils.getUserDirectory();
+            File homeworkCheckerDir = new File(userDir, "homeworkChecker");
+            
+            if (!homeworkCheckerDir.exists()) {
+                FileUtils.forceMkdir(homeworkCheckerDir);
+            }
+            
+            File signalFile = new File(homeworkCheckerDir, "repeatedly.start");
+            Files.writeString(Paths.get(signalFile.getAbsolutePath()), 
+                String.valueOf(System.currentTimeMillis()));
+            
+            logger.info("Created activation signal file: {}", signalFile.getAbsolutePath());
+            
+            // 等待一小段时间确保第一个实例能检测到
+            Thread.sleep(200);
+        } catch (IOException | InterruptedException e) {
+            logger.error("Error creating activation signal file", e);
+            if (e instanceof InterruptedException) {
+                Thread.currentThread().interrupt();
+            }
+        }
     }
 
     private void initProgress() {

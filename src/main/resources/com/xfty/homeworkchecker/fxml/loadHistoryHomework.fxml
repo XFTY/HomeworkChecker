@@ -10,7 +10,7 @@
 <?import javafx.scene.shape.Circle?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="517.0" prefWidth="510.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.LoadHistoryHomework">
+<AnchorPane prefHeight="517.0" prefWidth="510.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.LoadHistoryHomework">
    <children>
       <Label alignment="CENTER" layoutY="51.0" prefHeight="28.0" prefWidth="444.0" text="%load.history.title" textFill="WHITE" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
          <font>

@@ -1,6 +1,7 @@
 package com.xfty.homeworkchecker;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.xfty.homeworkchecker.service.SingletonInstanceManager;
 import javafx.scene.text.Font;
 
 import java.util.List;
@@ -102,4 +103,7 @@ public class Idf {
     public static int iconClickedCount = 0;
     public static boolean isAboutIconTriggered = false;
     public static boolean isAboutIconTriggeredAgain = false;
+    
+    // 单例管理器引用
+    public static SingletonInstanceManager singletonManager;
 }
