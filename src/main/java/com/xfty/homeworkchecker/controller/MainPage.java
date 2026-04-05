@@ -127,6 +127,7 @@ public class MainPage implements Initializable {
         );
         aboutService = new TopButtonService.AboutService(popupService);
         editMainService = new EditMainService(lockStatusLabel, lockModelShowingArea);
+        editMainService.setEditMain(editMain); // 设置TextArea引用以启用智能缩进
         editStateService = new EditStateService(editMain, homeworkDatabase, this::onLockModuleClicked);
         windowListener = new WindowListener(titleLabel, editMain, this::onLockModuleClicked);
         

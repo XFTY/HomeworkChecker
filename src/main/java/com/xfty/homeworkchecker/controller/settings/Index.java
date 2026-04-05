@@ -8,6 +8,7 @@ import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.animation.Transition;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -19,6 +20,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -60,6 +62,8 @@ public class Index implements Initializable {
     // 高亮颜色
     private static final String DEFAULT_BACKGROUND = "#1e1e1e";
     private static final String HIGHLIGHT_BACKGROUND = "#3a3a3a";
+    private static final String HOVER_BACKGROUND = "#2a2a2a";
+    private static final String PRESSED_BACKGROUND = "#4a4a4a";
 
     // 添加日志记录器
     private static final Logger logger = LoggerFactory.getLogger(Index.class);
@@ -346,12 +350,12 @@ public class Index implements Initializable {
             
         // 恢复之前选中的按钮
         if (currentSelectedButton != null) {
-            currentSelectedButton.setStyle("-fx-background-color: " + DEFAULT_BACKGROUND + "; -fx-background-radius: 10;");
+            animateBackgroundColor(currentSelectedButton, DEFAULT_BACKGROUND, new Timeline[]{null});
         }
             
         // 高亮当前选中的按钮
         if (selectedButton != null) {
-            selectedButton.setStyle("-fx-background-color: " + HIGHLIGHT_BACKGROUND + "; -fx-background-radius: 10;");
+            animateBackgroundColor(selectedButton, HIGHLIGHT_BACKGROUND, new Timeline[]{null});
             currentSelectedButton = selectedButton;
         }
             
@@ -369,5 +373,129 @@ public class Index implements Initializable {
                 locale = new Locale.Builder().setLanguage(languageParts[0]).build();
             }
         }
+        
+        // 为所有按钮添加悬停效果
+        setupButtonHoverEffect(fontSettingsButton);
+        setupButtonHoverEffect(languageSettingsButton);
+        setupButtonHoverEffect(initialDataButton);
+        setupButtonHoverEffect(dataBaseEditorButton);
+        setupButtonHoverEffect(resetButton);
+    }
+    
+    /**
+     * 为按钮设置悬停和按下效果（带动画）
+     * @param button 要设置效果的按钮
+     */
+    private void setupButtonHoverEffect(AnchorPane button) {
+        // 存储当前正在运行的动画，避免冲突
+        final Timeline[] currentAnimation = {null};
+        
+        button.setOnMouseEntered(event -> {
+            // 如果不是当前选中的按钮，则应用悬停颜色
+            if (button != currentSelectedButton) {
+                animateBackgroundColor(button, HOVER_BACKGROUND, currentAnimation);
+            }
+        });
+        
+        button.setOnMouseExited(event -> {
+            // 如果不是当前选中的按钮，则恢复默认颜色
+            if (button != currentSelectedButton) {
+                animateBackgroundColor(button, DEFAULT_BACKGROUND, currentAnimation);
+            }
+            // 如果是选中的按钮，不做任何操作，保持选中状态
+        });
+        
+        button.setOnMousePressed(event -> {
+            // 应用按下颜色（包括选中按钮）
+            animateBackgroundColor(button, PRESSED_BACKGROUND, currentAnimation);
+        });
+        
+        button.setOnMouseReleased(event -> {
+            // 释放鼠标后恢复到之前的状态
+            if (button == currentSelectedButton) {
+                // 如果是选中按钮，恢复到选中色
+                animateBackgroundColor(button, HIGHLIGHT_BACKGROUND, currentAnimation);
+            } else {
+                // 如果不是选中按钮，恢复到默认色
+                animateBackgroundColor(button, DEFAULT_BACKGROUND, currentAnimation);
+            }
+        });
+    }
+    
+    /**
+     * 为背景颜色变化添加动画效果
+     * @param button 目标按钮
+     * @param targetColorHex 目标颜色的十六进制值
+     * @param currentAnimation 当前动画引用数组
+     */
+    private void animateBackgroundColor(AnchorPane button, String targetColorHex, Timeline[] currentAnimation) {
+        // 停止之前的动画
+        if (currentAnimation[0] != null) {
+            currentAnimation[0].stop();
+        }
+        
+        // 解析目标颜色
+        Color targetColor = Color.web(targetColorHex);
+        
+        // 获取当前背景颜色
+        Color startColor;
+        try {
+            String currentStyle = button.getStyle();
+            if (currentStyle != null && currentStyle.contains("-fx-background-color:")) {
+                int start = currentStyle.indexOf("#");
+                if (start != -1) {
+                    int end = Math.min(start + 7, currentStyle.length());
+                    String hexColor = currentStyle.substring(start, end);
+                    startColor = Color.web(hexColor);
+                } else {
+                    startColor = Color.web(DEFAULT_BACKGROUND);
+                }
+            } else {
+                startColor = Color.web(DEFAULT_BACKGROUND);
+            }
+        } catch (Exception e) {
+            startColor = Color.web(DEFAULT_BACKGROUND);
+        }
+        
+        // 创建颜色过渡动画
+        final Color finalStartColor = startColor;
+        Transition colorTransition = new Transition() {
+            {
+                setCycleDuration(Duration.millis(150));
+                setInterpolator(Interpolator.EASE_BOTH);
+            }
+            
+            @Override
+            protected void interpolate(double frac) {
+                // 计算插值颜色
+                double red = finalStartColor.getRed() + (targetColor.getRed() - finalStartColor.getRed()) * frac;
+                double green = finalStartColor.getGreen() + (targetColor.getGreen() - finalStartColor.getGreen()) * frac;
+                double blue = finalStartColor.getBlue() + (targetColor.getBlue() - finalStartColor.getBlue()) * frac;
+                
+                Color currentColor = Color.color(red, green, blue);
+                String hexColor = toHexColor(currentColor);
+                
+                // 更新按钮背景色
+                button.setStyle("-fx-background-color: " + hexColor + "; -fx-background-radius: 10;");
+            }
+        };
+        
+        // 播放动画
+        colorTransition.play();
+        
+        // 保存动画引用（用于可能的中断）
+        currentAnimation[0] = new Timeline(new KeyFrame(Duration.millis(150)));
+    }
+    
+    /**
+     * 将 Color 对象转换为十六进制颜色字符串
+     * @param color 颜色对象
+     * @return 十六进制颜色字符串
+     */
+    private String toHexColor(Color color) {
+        int r = (int) Math.round(color.getRed() * 255);
+        int g = (int) Math.round(color.getGreen() * 255);
+        int b = (int) Math.round(color.getBlue() * 255);
+        return String.format("#%02x%02x%02x", r, g, b);
     }
 }

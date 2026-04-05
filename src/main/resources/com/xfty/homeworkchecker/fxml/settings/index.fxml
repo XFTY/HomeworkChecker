@@ -170,16 +170,16 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="dataBaseEditorButton" onMouseClicked="#onDataBaseEditorClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
+                  <AnchorPane fx:id="resetButton" onMouseClicked="#onResetClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="186.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../icon/数据.png" />
+                                    <Image url="@../../icon/重置.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.databaseEditor" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.reset" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>
@@ -206,16 +206,16 @@
                         </HBox>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="resetButton" onMouseClicked="#onResetClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
+                  <AnchorPane fx:id="dataBaseEditorButton" disable="true" onMouseClicked="#onDataBaseEditorClicked" opacity="0.0" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="186.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <children>
                               <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
-                                    <Image url="@../../icon/重置.png" />
+                                    <Image url="@../../icon/数据.png" />
                                  </image>
                               </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.reset" textFill="WHITE">
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.databaseEditor" textFill="WHITE">
                                  <font>
                                     <Font size="15.0" />
                                  </font>

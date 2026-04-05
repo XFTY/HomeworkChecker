@@ -6,6 +6,9 @@ import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -44,9 +47,13 @@ public class EditMainService {
     // UI 组件引用
     private final Label lockStatusLabel;
     private final HBox lockModelShowingArea;
+    private TextArea editMain;
+    
+    // 缩进状态跟踪
+    private String currentIndentation = "";
     
     /**
-     * 构造函数
+     * 构造函数（兼容旧版本）
      * @param lockStatusLabel 锁定状态标签
      * @param lockModelShowingArea 锁定模式显示区域
      */
@@ -60,6 +67,21 @@ public class EditMainService {
         this.lockModelShowingArea = lockModelShowingArea;
         this.cuteWarnings = Idf.cuteWarningsIdf;
         logger.debug("EditMainService initialized with lockStatusLabel and lockModelShowingArea");
+    }
+    
+    /**
+     * 设置TextArea引用并初始化按键监听
+     * @param editMain 编辑文本区域
+     */
+    public void setEditMain(TextArea editMain) {
+        if (editMain == null) {
+            logger.error("Cannot set editMain: textarea is null");
+            return;
+        }
+        
+        this.editMain = editMain;
+        setupKeyPressHandler();
+        logger.debug("EditMain set and key press handler initialized");
     }
     
     /**
@@ -238,5 +260,87 @@ public class EditMainService {
         }
         
         logger.info("EditMainService resource cleanup completed");
+    }
+    
+    /**
+     * 设置按键事件处理器，监听回车键以自动填充缩进
+     */
+    private void setupKeyPressHandler() {
+        if (editMain == null) {
+            logger.warn("Cannot setup key press handler: editMain is null");
+            return;
+        }
+        
+        editMain.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
+            if (event.getCode() == KeyCode.ENTER) {
+                handleEnterKey(event);
+            }
+        });
+        
+        logger.debug("Key press handler registered for editMain");
+    }
+    
+    /**
+     * 处理回车键事件，自动填充当前行的缩进
+     * @param event 按键事件
+     */
+    private void handleEnterKey(KeyEvent event) {
+        if (editMain == null) {
+            return;
+        }
+        
+        try {
+            int caretPosition = editMain.getCaretPosition();
+            String text = editMain.getText();
+            
+            // 找到当前行的起始位置
+            int lineStart = text.lastIndexOf('\n', caretPosition - 1);
+            lineStart = (lineStart == -1) ? 0 : lineStart + 1;
+            
+            // 找到当前行的结束位置（光标位置或行尾）
+            int lineEnd = text.indexOf('\n', caretPosition);
+            lineEnd = (lineEnd == -1) ? text.length() : lineEnd;
+            
+            // 提取从行首到光标位置的所有空白字符（包括中间的）
+            StringBuilder indent = new StringBuilder();
+            boolean foundNonWhitespace = false;
+            
+            for (int i = lineStart; i < caretPosition; i++) {
+                char c = text.charAt(i);
+                if (c == ' ' || c == '\t') {
+                    // 如果已经遇到过非空白字符，后续的空白也计入缩进
+                    indent.append(c);
+                } else {
+                    foundNonWhitespace = true;
+                }
+            }
+            
+            // 如果光标后面还有内容，检查是否应该继续缩进
+            // 只有当光标在行尾或者后面都是空白时才应用缩进
+            if (caretPosition < lineEnd) {
+                String afterCursor = text.substring(caretPosition, lineEnd).trim();
+                if (!afterCursor.isEmpty()) {
+                    // 光标后面有非空白内容，不自动缩进
+                    logger.trace("Cursor has non-whitespace content after it, skipping auto-indent");
+                    return;
+                }
+            }
+            
+            currentIndentation = indent.toString();
+            logger.trace("Detected indentation: '{}', foundNonWhitespace: {}", currentIndentation, foundNonWhitespace);
+            
+            // 延迟插入缩进，确保在默认换行行为之后执行
+            javafx.application.Platform.runLater(() -> {
+                if (!currentIndentation.isEmpty()) {
+                    int newCaretPosition = editMain.getCaretPosition();
+                    editMain.insertText(newCaretPosition, currentIndentation);
+                    editMain.positionCaret(newCaretPosition + currentIndentation.length());
+                    logger.debug("Auto-indented with: '{}'", currentIndentation);
+                }
+            });
+            
+        } catch (Exception e) {
+            logger.error("Error handling enter key for auto-indentation", e);
+        }
     }
 }
