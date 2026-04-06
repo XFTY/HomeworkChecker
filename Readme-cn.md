@@ -1,11 +1,11 @@
 # HomeworkChecker 
-适用于在 **教室大屏展示作业** 的一款 **轻量级** 作业检查工具 📚
+适用于在 **教室大屏展示作业** 的一款作业查看工具 📚
 
 ![](https://img.shields.io/badge/license-GNU_GPL_V3-green.svg)
 ![](https://img.shields.io/badge/language-Java-orange.svg)
 
 
-![](docs/pic/en/img-sftMain.png)
+![](docs/pic/en/20260406/mainpage.png)
 
 ## HomeworkChecker 有哪些 ✨亮点 🌟
 
@@ -22,15 +22,16 @@ HomeworkChecker 自带作业数据库，可以轻松实现历史作业查询。
 
 ### 3.设置界面 - 个性化你的 HomeworkChecker ⚙️
 
-你可以随时自拟定软件，让 HomeworkChecker 真正与您并驾齐驱！
+你可以随时自拟定软件，让 HomeworkChecker 真正与您并驾齐驱！  
+*从1.5版本开始，设置界面进行了较大更改。
 
-![](docs/pic/en/settings-show.png)
+![](docs/pic/en/20260406/settings.png)
 
 ### 4. 多语言支持 🌍
 
 截止 v1.4-snapshot 版本，HomeworkChecker已经支持 **11种** 语言，供您随意挑选
 
-![](docs/pic/en/language-show.png)
+![](docs/pic/en/20260406/lang.png)
 
  * 当然，如果翻译有问题，您可以随时发起 issue ，我会尽力解决问题！
 
@@ -44,15 +45,27 @@ HomeworkChecker 自带作业数据库，可以轻松实现历史作业查询。
 HomeworkChecker **不提供** 32位操作系统使用的程序  
 当然，现在的32位电脑已经非常稀少了，所以这点各位大可不必担心😄
 
- - 访问 [发行版发布页面](https://github.com/XFTY/HomeworkChecker/releases)
- - 根据您的电脑操作系统和体系架构下载文件
-   - 比如，您正在使用 Windows 操作系统，则下载带有[Win_x64]的 **.zip** 文件
+1. 访问 [发行版发布页面](https://github.com/XFTY/HomeworkChecker/releases)
+2. 下载 (.exe)安装程序或(.zip)文件
 
-### 2. 解压文件 📂
+### 如果您选择下载.exe文件 📦
+#### 双击打开 .exe 文件
+看到如下画面
+![](docs/pic/en/20260406/install.png)
+
+点击安装即可
+
+#### 运行 HomeworkChecker ▶️
+您可以在 Windows 的**开始菜单**中找到 HomeworkChecker
+![](docs/pic/en/20260406/installWhere.png)  
+运行 **HomeworkCheckerLauncher**即可！
+
+### 如果您选择下载.zip文件 📂
+#### 解压文件
 解压文件后，你将看到以下文件
 ![](docs/pic/global/file.png)
 
-### 3. 运行 HomeworkChecker ▶️
+#### 运行 HomeworkChecker ▶️
 今后，如果您需要运行 HomeworkChecker，  
 双击 ```HomeworkCheckerLauncher.vbs```即可！
 
