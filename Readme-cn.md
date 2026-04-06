@@ -45,7 +45,7 @@ HomeworkChecker 自带作业数据库，可以轻松实现历史作业查询。
 HomeworkChecker **不提供** 32位操作系统使用的程序  
 当然，现在的32位电脑已经非常稀少了，所以这点各位大可不必担心😄
 
-1. 访问 [发行版发布页面](https://github.com/XFTY/HomeworkChecker/releases)
+1. 访问 [发行版发布页面](https://gitee.com/XFTYC/HomeworkChecker/releases/latest)
 2. 下载 (.exe)安装程序或(.zip)文件
 
 ### 如果您选择下载.exe文件 📦
