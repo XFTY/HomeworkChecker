@@ -9,6 +9,7 @@ import java.util.ResourceBundle;
 
 public class Idf {
     public static String softwareVersion = "1.6.0 - Beta";
+    public static boolean UpdaterTestMode = true;
 
     public static String year;
     public static String month;
@@ -106,4 +107,7 @@ public class Idf {
     
     // 单例管理器引用
     public static SingletonInstanceManager singletonManager;
+    
+    // 设置窗口关闭按钮引用（用于更新期间禁用）
+    public static volatile javafx.scene.shape.Circle settingsWindowCloseButton;
 }

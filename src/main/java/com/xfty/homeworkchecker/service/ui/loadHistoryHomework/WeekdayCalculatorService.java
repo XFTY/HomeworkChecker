@@ -1,6 +1,5 @@
 package com.xfty.homeworkchecker.service.ui.loadHistoryHomework;
 
-import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -10,9 +9,9 @@ import java.time.format.DateTimeFormatter;
 /**
  * 工作日计算器 - 负责计算本周和上周的日期
  */
-public class WeekdayCalculator {
+public class WeekdayCalculatorService {
     
-    private static final Logger logger = LoggerFactory.getLogger(WeekdayCalculator.class);
+    private static final Logger logger = LoggerFactory.getLogger(WeekdayCalculatorService.class);
     private static final DateTimeFormatter FILE_NAME_FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd");
     
     /**

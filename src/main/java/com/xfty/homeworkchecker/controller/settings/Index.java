@@ -21,6 +21,7 @@ import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
+import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -51,6 +52,12 @@ public class Index implements Initializable {
     
     @FXML
     private AnchorPane resetButton;
+
+    @FXML
+    private AnchorPane updaterButton;
+    
+    @FXML
+    private Circle windowCloseButton;
 
     private Locale locale;
 
@@ -283,6 +290,40 @@ public class Index implements Initializable {
         logger.info("Exiting onResetClicked");
     }
 
+    @FXML
+    private void onUpdaterClicked() {
+        logger.info("Entering onUpdaterClicked, current openPageCode: {}", openPageCode);
+        
+        if (openPageCode != null && openPageCode.equals("updater")) {
+            logger.debug("Updater page already open, returning");
+            return;
+        }
+        openPageCode = "updater";
+        logger.debug("Setting openPageCode to: {}", openPageCode);
+        
+        // 高亮对应的按钮
+        highlightButton(updaterButton);
+
+        try {
+            logger.debug("Loading FXML file for updater");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/settings/updater.fxml"));
+            if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
+                loader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
+                logger.debug("Applied language bundle for locale: {}", locale);
+            }
+            Parent root = loader.load();
+            logger.info("Successfully loaded updater.fxml");
+            
+            // 应用淡入淡出动画
+            applyFadeAnimation(root);
+            logger.info("Applied fade animation for updater page");
+        } catch (Exception e) {
+            logger.error("Failed to open updater", e);
+        }
+        
+        logger.info("Exiting onUpdaterClicked");
+    }
+
     /**
      * 为 ScrollPane 应用淡入淡出动画效果
      * @param newContent 新内容节点
@@ -364,6 +405,10 @@ public class Index implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
+        // 保存关闭按钮引用到Idf
+        Idf.settingsWindowCloseButton = windowCloseButton;
+        logger.info("Settings window close button reference saved");
+        
         if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
             String languageCode = Idf.userLanguage.getString("language");
             String[] languageParts = languageCode.split("_");
@@ -380,6 +425,7 @@ public class Index implements Initializable {
         setupButtonHoverEffect(initialDataButton);
         setupButtonHoverEffect(dataBaseEditorButton);
         setupButtonHoverEffect(resetButton);
+        setupButtonHoverEffect(updaterButton);
     }
     
     /**

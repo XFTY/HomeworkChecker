@@ -1,9 +1,9 @@
 package com.xfty.homeworkchecker.controller;
 
 import com.xfty.homeworkchecker.Idf;
-import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.WeekdayCalculator;
-import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.HomeworkContentFetcher;
-import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.ButtonStateManager;
+import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.WeekdayCalculatorService;
+import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.HomeworkContentFetcherService;
+import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.ButtonStateManagerService;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -29,9 +29,9 @@ public class LoadHistoryHomework implements Initializable {
     private static final Logger logger = LoggerFactory.getLogger(LoadHistoryHomework.class);
 
     // Service layer components
-    private final WeekdayCalculator weekdayCalculator = new WeekdayCalculator();
-    private final HomeworkContentFetcher contentFetcher = new HomeworkContentFetcher();
-    private final ButtonStateManager buttonStateManager = new ButtonStateManager();
+    private final WeekdayCalculatorService weekdayCalculatorService = new WeekdayCalculatorService();
+    private final HomeworkContentFetcherService contentFetcher = new HomeworkContentFetcherService();
+    private final ButtonStateManagerService buttonStateManagerService = new ButtonStateManagerService();
 
     @FXML
     private DatePicker datePicker;
@@ -99,7 +99,7 @@ public class LoadHistoryHomework implements Initializable {
     
     @FXML
     private void handleLastWeekButton() {
-        String[] fileNames = weekdayCalculator.getLastWeekendFileNames();
+        String[] fileNames = weekdayCalculatorService.getLastWeekendFileNames();
         
         String finalFilename = "unKnown";
         String homeworkContent = null;
@@ -123,14 +123,14 @@ public class LoadHistoryHomework implements Initializable {
     
     @FXML
     private void handleMonButton() {
-        String fileName = weekdayCalculator.getCurrentWeekMonday(LocalDate.now())
+        String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
                                           .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         handleWeekdayButtonClick(fileName);
     }
     
     @FXML
     private void handleTusButton() {
-        String fileName = weekdayCalculator.getCurrentWeekMonday(LocalDate.now())
+        String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
                                           .plusDays(1)
                                           .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         handleWeekdayButtonClick(fileName);
@@ -138,7 +138,7 @@ public class LoadHistoryHomework implements Initializable {
     
     @FXML
     private void handleWedButton() {
-        String fileName = weekdayCalculator.getCurrentWeekMonday(LocalDate.now())
+        String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
                                           .plusDays(2)
                                           .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         handleWeekdayButtonClick(fileName);
@@ -146,7 +146,7 @@ public class LoadHistoryHomework implements Initializable {
     
     @FXML
     private void handleThuButton() {
-        String fileName = weekdayCalculator.getCurrentWeekMonday(LocalDate.now())
+        String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
                                           .plusDays(3)
                                           .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         handleWeekdayButtonClick(fileName);
@@ -154,7 +154,7 @@ public class LoadHistoryHomework implements Initializable {
     
     @FXML
     private void handleFriButton() {
-        String fileName = weekdayCalculator.getCurrentWeekMonday(LocalDate.now())
+        String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
                                           .plusDays(4)
                                           .format(DateTimeFormatter.ofPattern("yyyyMMdd"));
         handleWeekdayButtonClick(fileName);
@@ -229,19 +229,19 @@ public class LoadHistoryHomework implements Initializable {
      * Initialize all weekday buttons state based on homework data availability
      */
     private void initializeWeekdayButtons() {
-        String[] allWeekdays = weekdayCalculator.getAllWeekdaysFileNames();
+        String[] allWeekdays = weekdayCalculatorService.getAllWeekdaysFileNames();
         String[] homeworkContexts = contentFetcher.getHomeworkContextsByFileNames(allWeekdays);
         
         List<Button> buttons = Arrays.asList(lastweekBt, monBt, tusBt, wedBt, thuBt, friBt);
         List<ImageView> imageViews = Arrays.asList(lastweekIv, monIv, tusIv, wedIv, thuIv, firIv);
         
         boolean hasLastWeekendData = homeworkContexts[0] != null || homeworkContexts[1] != null;
-        buttonStateManager.setButtonState(lastweekBt, lastweekIv, hasLastWeekendData);
+        buttonStateManagerService.setButtonState(lastweekBt, lastweekIv, hasLastWeekendData);
         
         for (int i = 2; i < homeworkContexts.length; i++) {
             int buttonIndex = i - 2;
             boolean hasData = homeworkContexts[i] != null;
-            buttonStateManager.setButtonState(buttons.get(buttonIndex), imageViews.get(buttonIndex), hasData);
+            buttonStateManagerService.setButtonState(buttons.get(buttonIndex), imageViews.get(buttonIndex), hasData);
         }
         
         logger.info("Initialized weekday buttons with {} files", allWeekdays.length);

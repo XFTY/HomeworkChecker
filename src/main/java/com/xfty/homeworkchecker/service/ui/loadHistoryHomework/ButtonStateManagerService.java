@@ -10,9 +10,9 @@ import java.util.Objects;
 /**
  * 按钮状态管理器 - 负责管理按钮和 ImageView 的状态（启用/禁用，绿灯/红灯）
  */
-public class ButtonStateManager {
+public class ButtonStateManagerService {
     
-    private static final Logger logger = LoggerFactory.getLogger(ButtonStateManager.class);
+    private static final Logger logger = LoggerFactory.getLogger(ButtonStateManagerService.class);
     
     private static final Image GREEN_IMAGE;
     private static final Image RED_IMAGE;

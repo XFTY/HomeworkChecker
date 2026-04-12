@@ -1,11 +1,14 @@
 module com.xfty.homeworkchecker {
     requires javafx.controls;
     requires javafx.fxml;
+    requires javafx.web;
     requires org.slf4j;
     requires org.apache.commons.io;
     requires com.alibaba.fastjson2;
     requires java.desktop;
     requires fastjson;
+    requires okhttp3;
+    requires org.commonmark;
 
 
     opens com.xfty.homeworkchecker to javafx.fxml;

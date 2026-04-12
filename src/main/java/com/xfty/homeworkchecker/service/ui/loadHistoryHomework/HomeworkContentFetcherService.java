@@ -7,12 +7,12 @@ import org.slf4j.LoggerFactory;
 /**
  * 作业内容获取器 - 负责从数据库获取作业内容
  */
-public class HomeworkContentFetcher {
+public class HomeworkContentFetcherService {
     
-    private static final Logger logger = LoggerFactory.getLogger(HomeworkContentFetcher.class);
+    private static final Logger logger = LoggerFactory.getLogger(HomeworkContentFetcherService.class);
     private final HomeworkDatabase homeworkDatabase;
     
-    public HomeworkContentFetcher() {
+    public HomeworkContentFetcherService() {
         try {
             this.homeworkDatabase = new HomeworkDatabase();
             logger.debug("HomeworkContentFetcher initialized successfully");
