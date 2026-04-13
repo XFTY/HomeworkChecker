@@ -2,6 +2,38 @@
 chcp 65001 >nul
 setlocal enabledelayedexpansion
 
+REM Check for administrator privileges
+net session >nul 2>&1
+if %errorLevel% neq 0 (
+    echo [INFO] Requesting administrator privileges...
+    
+    :retry_admin
+    if "%*"=="" (
+        powershell -Command "Start-Process '%~f0' -Verb RunAs" 2>nul
+    ) else (
+        powershell -Command "Start-Process '%~f0' -ArgumentList '%*' -Verb RunAs" 2>nul
+    )
+    
+    REM Check if elevation was successful
+    net session >nul 2>&1
+    if %errorLevel% neq 0 (
+        echo.
+        echo [WARNING] Administrator privilege authorization was canceled or failed!
+        echo.
+        choice /C YN /M "Would you like to retry? Press Y to retry, N to exit"
+        if errorlevel 2 (
+            echo [INFO] Exiting updater...
+            pause
+            exit /b 1
+        )
+        if errorlevel 1 (
+            echo.
+            echo [INFO] Retrying administrator privilege request...
+            goto :retry_admin
+        )
+    )
+)
+
 echo ========================================
 echo    HomeworkChecker Updater
 echo ========================================
@@ -95,9 +127,15 @@ echo.
 echo [INFO] Replacing old files with new version...
 echo [
 
-REM Count total files to copy
+REM Count total files to copy (exclude updater.bat itself)
 for /f %%i in ('dir "%TEMP_EXTRACT_DIR%\*.*" /s /b /a-d ^| find /c /v ""') do set TOTAL_FILES=%%i
 set COPIED_FILES=0
+
+REM Get the path of this script relative to install directory
+set "SCRIPT_PATH=%~f0"
+set "UPDATER_IN_INSTALL=false"
+echo "!SCRIPT_PATH!" | findstr /I /C:"!INSTALL_DIR!" >nul 2>&1
+if not errorlevel 1 set "UPDATER_IN_INSTALL=true"
 
 REM Copy files with progress tracking
 for /f "delims=" %%F in ('dir "%TEMP_EXTRACT_DIR%\*.*" /s /b /a-d') do (
@@ -105,22 +143,37 @@ for /f "delims=" %%F in ('dir "%TEMP_EXTRACT_DIR%\*.*" /s /b /a-d') do (
     set "REL_PATH=!REL_PATH:%TEMP_EXTRACT_DIR%=!"
     set "DEST_FILE=%INSTALL_DIR%!REL_PATH!"
     
-    REM Create destination directory if needed
-    for %%D in ("!DEST_FILE!") do (
-        if not exist "%%~dpD" mkdir "%%~dpD" >nul 2>&1
+    REM Skip if this is the updater.bat itself and it's in the install directory
+    set "SKIP_COPY=false"
+    if "!UPDATER_IN_INSTALL!"=="true" (
+        if /I "!DEST_FILE!"=="!SCRIPT_PATH!" (
+            echo [INFO] Skipping updater.bat to avoid self-deletion
+            set "SKIP_COPY=true"
+        )
     )
     
-    copy /Y "%%F" "!DEST_FILE!" >nul 2>&1
-    set /a COPIED_FILES+=1
+    if not "!SKIP_COPY!"=="true" (
+        REM Create destination directory if needed
+        for %%D in ("!DEST_FILE!") do (
+            if not exist "%%~dpD" mkdir "%%~dpD" >nul 2>&1
+        )
+        
+        copy /Y "%%F" "!DEST_FILE!" >nul 2>&1
+    )
     
+    set /a COPIED_FILES+=1
     REM Calculate and display progress
     set /a PROGRESS=(COPIED_FILES * 100) / TOTAL_FILES
     set /a BAR_LENGTH=PROGRESS / 2
     set "BAR="
-    for /L %%B in (1,1,!BAR_LENGTH!) do set "BAR=!BAR!="
     set "SPACE="
+    if !BAR_LENGTH! GTR 0 (
+        for /L %%B in (1,1,!BAR_LENGTH!) do set "BAR=!BAR!="
+    )
     set /a SPACE_COUNT=50-BAR_LENGTH
-    for /L %%S in (1,1,!SPACE_COUNT!) do set "SPACE=!SPACE! "
+    if !SPACE_COUNT! GTR 0 (
+        for /L %%S in (1,1,!SPACE_COUNT!) do set "SPACE=!SPACE! "
+    )
     
     <nul set /p "=[!PROGRESS%% |!BAR!!SPACE!| !PROGRESS%%]"
 )
@@ -132,6 +185,23 @@ echo [INFO] Cleaning up temporary files...
 rmdir /s /q "%TEMP_EXTRACT_DIR%"
 
 echo [INFO] Update completed successfully!
+echo.
+
+REM Ask user if they want to delete the update package
+echo [INFO] Update package location: %UPDATE_PACKAGE%
+choice /C YN /M "Would you like to delete the update package?"
+if errorlevel 2 (
+    echo [INFO] Update package kept at: %UPDATE_PACKAGE%
+) else (
+    echo [INFO] Deleting update package...
+    del /F /Q "%UPDATE_PACKAGE%"
+    if errorlevel 1 (
+        echo [WARNING] Failed to delete update package. You may need to delete it manually.
+    ) else (
+        echo [INFO] Update package deleted successfully!
+    )
+)
+
 echo.
 echo [INFO] Starting HomeworkChecker...
 

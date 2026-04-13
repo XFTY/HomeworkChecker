@@ -28,6 +28,7 @@ import java.security.KeyManagementException;
 import java.security.NoSuchAlgorithmException;
 import java.security.SecureRandom;
 import java.security.cert.X509Certificate;
+import java.text.MessageFormat;
 import java.util.List;
 import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
@@ -184,7 +185,7 @@ public class Updater {
             // 已是最新版本
             logger.info("Software is up to date");
             updaterTitle.setText(getString("updater.upToDate.title"));
-            updaterSubTitle.setText(String.format(getString("updater.upToDate.content"), currentVersion));
+            updaterSubTitle.setText(MessageFormat.format(getString("updater.upToDate.content"), currentVersion));
             updaterProcess.setProgress(1.0);
             updaterInstallNow.setDisable(true);
             
@@ -193,17 +194,17 @@ public class Updater {
         } else {
             // 有新版本可用
             logger.info("New version available: {}", latestVersion);
-            updaterTitle.setText(getString("updater.newVersionAvailable.title"));
-            updaterSubTitle.setText(String.format(getString("updater.newVersion.content"), latestVersion));
+            updaterTitle.setText(latestVersion);
+            updaterSubTitle.setText("下方为详情信息");
             updaterProcess.setProgress(1.0);
             updaterInstallNow.setDisable(false); // 启用安装按钮
             
-            // 保存下载链接（查找包含"win"的.zip文件）
+            // 保存下载链接（查找包含"win"的.msi文件）
             List<String> urls = httpClient.getDownloadUrls();
-            this.downloadUrl = findWindowsZipUrl(urls);
+            this.downloadUrl = findWindowsMsiUrl(urls);
             
             if (this.downloadUrl == null) {
-                logger.warn("No Windows .zip download URL found");
+                logger.warn("No Windows .msi download URL found");
             } else {
                 logger.info("Found download URL: {}", this.downloadUrl);
             }
@@ -262,6 +263,18 @@ public class Updater {
         if (osName.contains("win")) {
             if (downloadUrl == null || downloadUrl.isEmpty()) {
                 showErrorMessage("没有可用的下载链接");
+                return;
+            }
+            
+            // 检查文件是否已经下载过
+            File installerFile = getDownloadFilePath();
+            if (installerFile.exists()) {
+                logger.info("Installer file already exists: {}", installerFile.getAbsolutePath());
+                Platform.runLater(() -> {
+                    updaterTitle.setText("文件已存在");
+                    updaterSubTitle.setText("正在启动安装程序...");
+                    runInstallerAndExit(installerFile);
+                });
                 return;
             }
             
@@ -389,14 +402,15 @@ public class Updater {
                     logger.info("Download completed successfully");
                     Platform.runLater(() -> {
                         updaterTitle.setText("下载完成！");
-                        updaterSubTitle.setText("文件已保存至: " + getDownloadFilePath().getAbsolutePath());
+                        updaterSubTitle.setText("正在启动安装程序...");
                         updaterProcess.setProgress(1.0);
                         
                         // 启用关闭按钮
                         disableSettingsCloseButton(false);
                         updaterCheckUpdate.setDisable(false);
                         
-                        // TODO: 自动安装功能可以在这里添加
+                        // 运行下载的.msi文件并退出程序
+                        runInstallerAndExit(getDownloadFilePath());
                     });
                     
                 } catch (IOException e) {
@@ -440,6 +454,62 @@ public class Updater {
     }
     
     /**
+     * 运行安装程序并退出应用
+     * @param installerFile 安装程序文件
+     */
+    private void runInstallerAndExit(File installerFile) {
+        if (!installerFile.exists()) {
+            logger.error("Installer file not found: {}", installerFile.getAbsolutePath());
+            showErrorMessage("安装文件不存在");
+            return;
+        }
+        
+        try {
+            logger.info("Starting installer: {}", installerFile.getAbsolutePath());
+            
+            // 使用Runtime.exec()启动msiexec来安装.msi文件
+            String installerPath = installerFile.getAbsolutePath();
+            ProcessBuilder processBuilder = new ProcessBuilder("msiexec", "/i", installerPath);
+            processBuilder.start();
+            
+            logger.info("Installer launched, shutting down application...");
+            
+            // 启动后台线程执行完全退出和清理
+            Thread shutdownThread = new Thread(() -> {
+                try {
+                    Thread.sleep(2000);
+                    
+                    logger.info("Cleaning up resources before exit...");
+                    
+                    // 关闭下载客户端，释放连接池
+                    if (downloadClient != null) {
+                        downloadClient.dispatcher().executorService().shutdown();
+                        downloadClient.connectionPool().evictAll();
+                        if (downloadClient.cache() != null) {
+                            downloadClient.cache().close();
+                        }
+                    }
+                    
+                    logger.info("Exiting application now");
+                    
+                    // 强制退出JVM，确保所有资源都被释放
+                    System.exit(0);
+                } catch (Exception e) {
+                    logger.error("Error during shutdown: {}", e.getMessage());
+                    // 即使出错也强制退出
+                    System.exit(0);
+                }
+            });
+            shutdownThread.setDaemon(true);
+            shutdownThread.start();
+            
+        } catch (IOException e) {
+            logger.error("Failed to launch installer: {}", e.getMessage());
+            showErrorMessage("无法启动安装程序: " + e.getMessage());
+        }
+    }
+    
+    /**
      * 禁用/启用设置窗口关闭按钮
      * @param disable true为禁用，false为启用
      */
@@ -454,18 +524,18 @@ public class Updater {
     }
     
     /**
-     * 查找包含"win"的.zip下载链接（不区分大小写）
+     * 查找包含"win"的.msi下载链接（不区分大小写）
      * @param urls 下载链接列表
      * @return 匹配的URL，如果没有找到则返回null
      */
-    private String findWindowsZipUrl(List<String> urls) {
+    private String findWindowsMsiUrl(List<String> urls) {
         if (urls == null || urls.isEmpty()) {
             return null;
         }
         
         for (String url : urls) {
             String lowerUrl = url.toLowerCase();
-            if (lowerUrl.contains("win") && lowerUrl.endsWith(".zip")) {
+            if (lowerUrl.contains("win") && lowerUrl.endsWith(".msi")) {
                 return url;
             }
         }
