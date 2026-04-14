@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 public class Idf {
-    public static String softwareVersion = "1.6.0 - Beta";
-    public static boolean UpdaterTestMode = false;
+    public static String softwareVersion = "1.6.1 - Beta";
+    public static boolean UpdaterTestMode = true;
 
     public static String year;
     public static String month;
