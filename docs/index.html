@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HomeworkChecker - 教室作业展示利器</title>
+  <link rel="icon" href="pic/icons/logo.png" type="image/png">
+  <script src="https://cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+  <!-- Vue 3 -->
+  <script src="https://cdn.jsdelivr.net/npm/vue@3.3.4/dist/vue.global.prod.js"></script>
+  <!-- Element Plus -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/element-plus@2.4.0/dist/index.css">
+  <script src="https://cdn.jsdelivr.net/npm/element-plus@2.4.0/dist/index.full.min.js"></script>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Canvas粒子背景 -->
+  <canvas id="particle-bg"></canvas>
+  
+  <!-- 导航栏 -->
+  <nav class="glass-nav">
+    <div class="nav-container">
+      <div class="nav-logo">
+        <img src="pic/icons/logo.png" alt="Logo">
+        <span>HomeworkChecker</span>
+      </div>
+      <ul class="nav-links">
+        <li><a href="#features">功能特性</a></li>
+        <li><a href="#screenshots">界面展示</a></li>
+        <li><a href="#download">下载</a></li>
+        <li><a href="#tech">技术栈</a></li>
+      </ul>
+    </div>
+  </nav>
+  
+  <!-- Hero Section -->
+  <section class="hero">
+    <div class="hero-content">
+      <h1 class="hero-title">HomeworkChecker</h1>
+      <p class="hero-subtitle">教室作业展示利器</p>
+      <div class="hero-features">
+        <div class="feature-tag">
+          <img src="pic/icons/数据.png" alt="保存">
+          <span>隐式保存</span>
+        </div>
+        <div class="feature-tag">
+          <img src="pic/icons/历史.png" alt="历史">
+          <span>历史查询</span>
+        </div>
+        <div class="feature-tag">
+          <img src="pic/icons/网络.png" alt="多语言">
+          <span>11种语言</span>
+        </div>
+      </div>
+      <div class="hero-buttons">
+        <a href="#download" class="btn btn-primary">立即下载</a>
+        <a href="https://github.com/XFTY/HomeworkChecker" target="_blank" class="btn btn-secondary">查看文档</a>
+      </div>
+    </div>
+    <div class="hero-glow"></div>
+  </section>
+
+  <!-- Features Section -->
+  <section id="features" class="features">
+    <h2 class="section-title">核心功能</h2>
+    <div class="features-grid">
+      <div class="glass-card feature-card">
+        <div class="card-icon">
+          <img src="pic/icons/数据.png" alt="隐式保存">
+        </div>
+        <h3>隐式保存</h3>
+        <p>内容修改自动保存到数据库，SHA256完整性校验防止数据损坏，彻底解决忘记保存问题</p>
+      </div>
+      
+      <div class="glass-card feature-card">
+        <div class="card-icon">
+          <img src="pic/icons/历史.png" alt="历史查询">
+        </div>
+        <h3>历史查询</h3>
+        <p>内置作业数据库，支持按日期快速检索，轻松回溯任意日期的作业记录</p>
+      </div>
+      
+      <div class="glass-card feature-card">
+        <div class="card-icon">
+          <img src="pic/icons/网络.png" alt="多语言">
+        </div>
+        <h3>多语言支持</h3>
+        <p>支持11种语言（中英法西阿俄等），适合国际学校和多语言教学环境</p>
+      </div>
+      
+      <div class="glass-card feature-card">
+        <div class="card-icon">
+          <img src="pic/icons/lock/lock.png" alt="锁定机制">
+        </div>
+        <h3>锁定机制</h3>
+        <p>默认锁定防止误触，60+条可爱提示语，Ctrl+~快捷键快速切换编辑状态</p>
+      </div>
+      
+      <div class="glass-card feature-card">
+        <div class="card-icon">
+          <img src="pic/icons/截屏.png" alt="一键截屏">
+        </div>
+        <h3>一键截屏</h3>
+        <p>截图自动保存到剪切板，快速分享作业内容到班级群</p>
+      </div>
+      
+      <div class="glass-card feature-card">
+        <div class="card-icon">
+          <img src="pic/icons/设置.png" alt="个性化设置">
+        </div>
+        <h3>个性化设置</h3>
+        <p>自定义字体、字号（0-100px）、初始模板，打造专属的作业展示体验</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Screenshots Section -->
+  <section id="screenshots" class="screenshots">
+    <h2 class="section-title">界面展示</h2>
+    <div id="carousel-app" class="carousel-container">
+      <el-carousel :interval="4000" motion-blur height="500px">
+        <el-carousel-item v-for="(item, index) in screenshots" :key="index">
+          <div class="glass-card screenshot-card">
+            <img :src="item.image" :alt="item.title">
+            <div class="screenshot-caption">{{ item.caption }}</div>
+          </div>
+        </el-carousel-item>
+      </el-carousel>
+    </div>
+  </section>
+
+  <!-- Download Section -->
+  <section id="download" class="download">
+    <h2 class="section-title">立即下载</h2>
+    <div class="download-grid">
+      <div class="glass-card download-card">
+        <div class="download-header">
+          <img src="pic/icons/进入.png" alt="" class="download-icon">
+          <h3>GitHub Releases</h3>
+          <p>最新版本及历史版本均可在此获取</p>
+        </div>
+        <a href="https://github.com/XFTY/HomeworkChecker/releases" target="_blank" class="btn btn-primary btn-large download-btn">
+          <img src="pic/icons/进入.png" alt="下载">
+          前往 GitHub 下载
+        </a>
+      </div>
+      <div class="glass-card download-card gitee-card">
+        <div class="download-header">
+          <img src="pic/icons/进入.png" alt="" class="download-icon">
+          <h3>Gitee Releases</h3>
+          <p>国内用户推荐使用 Gitee 镜像下载，速度更快</p>
+        </div>
+        <a href="https://gitee.com/XFTYC/HomeworkChecker/releases" target="_blank" class="btn btn-large download-btn gitee-btn">
+          <img src="pic/icons/进入.png" alt="下载">
+          前往 Gitee 下载
+        </a>
+      </div>
+    </div>
+    <div class="glass-card system-req-card">
+      <div class="system-requirements">
+        <h4>系统要求</h4>
+        <ul>
+          <li>✅ Windows 10 / 11（x64 架构）</li>
+          <li> 推荐 Windows 10 21H2 及以上版本</li>
+          <li>❌ 不支持 32 位系统</li>
+          <li>🔜 macOS / Linux 支持计划中</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- Tech Stack Section -->
+  <section id="tech" class="tech-stack">
+    <h2 class="section-title">技术栈</h2>
+    <div class="tech-grid">
+      <div class="glass-card tech-card">
+        <h3>核心技术</h3>
+        <div class="tech-items">
+          <div class="tech-item">
+            <span class="tech-name">Java 25</span>
+            <span class="tech-desc">开发语言</span>
+          </div>
+          <div class="tech-item">
+            <span class="tech-name">JavaFX 25.0.1</span>
+            <span class="tech-desc">UI框架</span>
+          </div>
+          <div class="tech-item">
+            <span class="tech-name">Maven</span>
+            <span class="tech-desc">构建工具</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card tech-card">
+        <h3>关键依赖</h3>
+        <div class="tech-items">
+          <div class="tech-item">
+            <span class="tech-name">FastJSON2</span>
+            <span class="tech-desc">JSON解析</span>
+          </div>
+          <div class="tech-item">
+            <span class="tech-name">OkHttp 4.12.0</span>
+            <span class="tech-desc">HTTP请求</span>
+          </div>
+          <div class="tech-item">
+            <span class="tech-name">Logback</span>
+            <span class="tech-desc">日志记录</span>
+          </div>
+          <div class="tech-item">
+            <span class="tech-name">CommonMark</span>
+            <span class="tech-desc">Markdown渲染</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="glass-card tech-card">
+        <h3>架构模式</h3>
+        <div class="tech-items">
+          <div class="tech-item">
+            <span class="tech-name">MVC</span>
+            <span class="tech-desc">设计模式</span>
+          </div>
+          <div class="tech-item">
+            <span class="tech-name">Service Layer</span>
+            <span class="tech-desc">业务逻辑层</span>
+          </div>
+          <div class="tech-item">
+            <span class="tech-name">JSON Database</span>
+            <span class="tech-desc">数据存储</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <div class="footer-content">
+      <div class="footer-links">
+        <a href="https://github.com/XFTY/HomeworkChecker" target="_blank">
+          <img src="pic/icons/网络.png" alt="GitHub">
+          GitHub仓库
+        </a>
+        <a href="https://github.com/XFTY/HomeworkChecker/issues" target="_blank">
+          <img src="pic/icons/数据.png" alt="Issues">
+          问题反馈
+        </a>
+      </div>
+      <div class="footer-license">
+        <p>开源协议：GNU GPL V3 🔓</p>
+        <p>Copyright © XFTY, All Rights Reserved. ©️</p>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
