@@ -8,7 +8,7 @@
 :root {
   --bg-primary: #1e1e1e;
   --bg-secondary: #2d2d2d;
-  --bg-glass: rgba(45, 45, 45, 0.6);
+  --bg-glass: rgba(45, 45, 45, 0.25);
   --accent-blue: #5a9cf0;
   --accent-blue-hover: #7ab3f8;
   --text-primary: #ffffff;
@@ -96,6 +96,188 @@ body {
 
 .nav-links a:hover {
   color: var(--accent-blue);
+}
+
+/* 语言切换器样式 - 炫酷版本 */
+.language-switcher {
+  margin-left: 2rem;
+  position: relative;
+}
+
+.language-switcher .el-dropdown-link {
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.6rem 1.2rem;
+  border-radius: 12px;
+  font-size: 0.95rem;
+  font-weight: 600;
+  position: relative;
+  overflow: hidden;
+  background: linear-gradient(135deg, rgba(90, 156, 240, 0.15), rgba(122, 179, 248, 0.15));
+  border: none !important;
+  outline: none !important;
+  backdrop-filter: blur(10px);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  color: var(--accent-blue);
+  text-shadow: 0 0 10px rgba(90, 156, 240, 0.5);
+  box-shadow: none !important;
+}
+
+/* 发光边框动画 */
+.language-switcher .el-dropdown-link::before {
+  content: '';
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  bottom: -2px;
+  border-radius: 14px;
+  background: linear-gradient(45deg, 
+    transparent 30%, 
+    rgba(90, 156, 240, 0.8) 50%, 
+    transparent 70%);
+  background-size: 200% 200%;
+  animation: borderGlow 3s ease-in-out infinite;
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.language-switcher .el-dropdown-link:hover::before {
+  opacity: 1;
+}
+
+/* 背景光效 */
+.language-switcher .el-dropdown-link::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, 
+    transparent, 
+    rgba(90, 156, 240, 0.3), 
+    transparent);
+  transition: left 0.5s ease;
+}
+
+.language-switcher .el-dropdown-link:hover::after {
+  left: 100%;
+}
+
+/* 悬停效果 */
+.language-switcher .el-dropdown-link:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 
+    0 0 20px rgba(90, 156, 240, 0.4),
+    0 0 40px rgba(90, 156, 240, 0.2),
+    inset 0 0 20px rgba(90, 156, 240, 0.1);
+  border: none;
+}
+
+/* 图标旋转动画 */
+.language-switcher .el-dropdown-link img {
+  transition: transform 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+  filter: drop-shadow(0 0 5px rgba(90, 156, 240, 0.6));
+}
+
+.language-switcher .el-dropdown-link:hover img {
+  transform: rotate(180deg) scale(1.1);
+}
+
+/* 文字发光脉冲 */
+@keyframes textPulse {
+  0%, 100% {
+    text-shadow: 0 0 10px rgba(90, 156, 240, 0.5);
+  }
+  50% {
+    text-shadow: 
+      0 0 20px rgba(90, 156, 240, 0.8),
+      0 0 30px rgba(90, 156, 240, 0.6),
+      0 0 40px rgba(90, 156, 240, 0.4);
+  }
+}
+
+.language-switcher .el-dropdown-link:hover {
+  animation: textPulse 2s ease-in-out infinite;
+}
+
+/* 边框发光动画 */
+@keyframes borderGlow {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+/* 粒子装饰点 */
+.language-switcher::before {
+  content: '';
+  position: absolute;
+  width: 4px;
+  height: 4px;
+  background: var(--accent-blue);
+  border-radius: 50%;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  opacity: 0;
+  box-shadow: 0 0 10px var(--accent-blue);
+  transition: all 0.3s ease;
+}
+
+.language-switcher:hover::before {
+  animation: particleOrbit 2s linear infinite;
+  opacity: 1;
+}
+
+@keyframes particleOrbit {
+  0% {
+    transform: translate(-50%, -50%) rotate(0deg) translateX(40px);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) rotate(360deg) translateX(40px);
+    opacity: 0;
+  }
+}
+
+/* 点击波纹效果 */
+.language-switcher .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(90, 156, 240, 0.3);
+  transform: scale(0);
+  animation: rippleEffect 0.6s linear;
+  pointer-events: none;
+}
+
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
+    opacity: 0;
+  }
+}
+
+/* Element Plus 下拉菜单深色主题适配 */
+.el-dropdown-menu {
+  background-color: var(--bg-secondary) !important;
+  border: none !important;
+  box-shadow: 0 4px 20px var(--shadow-color) !important;
+}
+
+.el-dropdown-menu__item {
+  color: var(--text-primary) !important;
+}
+
+.el-dropdown-menu__item:hover {
+  background-color: rgba(90, 156, 240, 0.2) !important;
+  color: var(--accent-blue) !important;
 }
 
 .nav-links a::after {
@@ -265,27 +447,58 @@ section {
 
 /* 液态玻璃卡片 */
 .glass-card {
-  background: rgba(255, 255, 255, 0.08);
-  backdrop-filter: blur(28px) saturate(120%);
-  -webkit-backdrop-filter: blur(28px) saturate(120%);
-  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(30, 30, 30, 0.1);
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  border: 1px solid rgba(255, 255, 255, 0.04);
   border-radius: 20px;
   box-shadow: 
-    0 8px 32px rgba(0, 0, 0, 0.35),
-    0 0 0 1px rgba(255, 255, 255, 0.04) inset,
-    0 1px 0 rgba(255, 255, 255, 0.12) inset;
+    0 8px 32px rgba(0, 0, 0, 0.12),
+    0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+    0 1px 0 rgba(255, 255, 255, 0.05) inset;
   transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  position: relative;
+  overflow: hidden;
+}
+
+/* 光折射边框效果 */
+.glass-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 20px;
+  padding: 1px;
+  background: linear-gradient(
+    135deg,
+    rgba(90, 156, 240, 0.4),
+    rgba(122, 179, 248, 0.2),
+    rgba(255, 255, 255, 0.3),
+    rgba(122, 179, 248, 0.2),
+    rgba(90, 156, 240, 0.4)
+  );
+  -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  pointer-events: none;
+  opacity: 0.6;
+  transition: opacity 0.35s ease;
+}
+
+.glass-card:hover::before {
+  opacity: 1;
 }
 
 .glass-card:hover {
-  transform: translateY(-6px) scale(1.02);
-  background: rgba(255, 255, 255, 0.12);
+  background: rgba(30, 30, 30, 0.25);
   box-shadow: 
-    0 16px 48px rgba(0, 0, 0, 0.4),
-    0 0 40px rgba(90, 156, 240, 0.08),
-    0 0 0 1px rgba(255, 255, 255, 0.08) inset,
-    0 1px 0 rgba(255, 255, 255, 0.2) inset;
-  border-color: rgba(255, 255, 255, 0.18);
+    0 16px 48px rgba(0, 0, 0, 0.25),
+    0 0 40px rgba(90, 156, 240, 0.1),
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 1px 0 rgba(255, 255, 255, 0.12) inset;
+  border-color: rgba(255, 255, 255, 0.08);
 }
 
 /* Features Section */
@@ -483,6 +696,8 @@ section {
 /* Gitee 卡片 */
 .gitee-card {
   --gitee: #e6461a;
+  --glow-color: rgba(230, 70, 26, 0.15);
+  --glow-shadow: rgba(230, 70, 26, 0.3);
 }
 
 .gitee-card:hover {

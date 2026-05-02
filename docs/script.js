@@ -1,3 +1,123 @@
+// 多语言配置
+const i18n = {
+  zh: {
+    features: '功能特性',
+    screenshots: '界面展示',
+    download: '下载',
+    techStack: '技术栈',
+    subtitle: '教室作业展示利器',
+    autoSave: '隐式保存',
+    historyQuery: '历史查询',
+    multiLang: '11种语言',
+    downloadNow: '立即下载',
+    viewDocs: '查看文档',
+    coreFeatures: '核心功能',
+    autoSaveTitle: '隐式保存',
+    autoSaveDesc: '内容修改自动保存到数据库，SHA256完整性校验防止数据损坏，彻底解决忘记保存问题',
+    historyQueryTitle: '历史查询',
+    historyQueryDesc: '内置作业数据库，支持按日期快速检索，轻松回溯任意日期的作业记录',
+    multiLangTitle: '多语言支持',
+    multiLangDesc: '支持11种语言（中英法西阿俄等），适合国际学校和多语言教学环境',
+    lockMechanismTitle: '锁定机制',
+    lockMechanismDesc: '默认锁定防止误触，60+条可爱提示语，Ctrl+~快捷键快速切换编辑状态',
+    screenshotTitle: '一键截屏',
+    screenshotDesc: '截图自动保存到剪切板，快速分享作业内容到班级群',
+    customSettingsTitle: '个性化设置',
+    customSettingsDesc: '自定义字体、字号（0-100px）、初始模板，打造专属的作业展示体验',
+    interfaceShowcase: '界面展示',
+    githubReleasesDesc: '最新版本及历史版本均可在此获取',
+    giteeReleasesDesc: '国内用户推荐使用 Gitee 镜像下载，速度更快',
+    goToGithub: '前往 GitHub 下载',
+    goToGitee: '前往 Gitee 下载',
+    systemRequirements: '系统要求',
+    winRequirement: '✅ Windows 10 / 11（x64 架构）',
+    winRecommend: ' 推荐 Windows 10 21H2 及以上版本',
+    no32bit: '❌ 不支持 32 位系统',
+    macLinuxComing: '🔜 macOS / Linux 支持计划中',
+    coreTech: '核心技术',
+    devLang: '开发语言',
+    uiFramework: 'UI框架',
+    buildTool: '构建工具',
+    keyDependencies: '关键依赖',
+    jsonParse: 'JSON解析',
+    httpRequest: 'HTTP请求',
+    logging: '日志记录',
+    markdownRender: 'Markdown渲染',
+    archPattern: '架构模式',
+    designPattern: '设计模式',
+    businessLogic: '业务逻辑层',
+    dataStorage: '数据存储',
+    githubRepo: 'GitHub仓库',
+    issueFeedback: '问题反馈',
+    license: '开源协议：GNU GPL V3 🔓',
+    mainInterface: '主界面',
+    mainInterfaceCaption: '主界面 - 简洁的作业编辑区',
+    historyQueryCaption: '历史作业查询 - 快速检索过往记录',
+    settingsInterface: '设置界面',
+    settingsInterfaceCaption: '设置界面 - 个性化配置中心',
+    languageSettings: '语言设置',
+    languageSettingsCaption: '多语言支持 - 11种语言可选'
+  },
+  en: {
+    features: 'Features',
+    screenshots: 'Screenshots',
+    download: 'Download',
+    techStack: 'Tech Stack',
+    subtitle: 'Classroom Homework Display Tool',
+    autoSave: 'Auto Save',
+    historyQuery: 'History Query',
+    multiLang: '11 Languages',
+    downloadNow: 'Download Now',
+    viewDocs: 'View Docs',
+    coreFeatures: 'Core Features',
+    autoSaveTitle: 'Implicit Save',
+    autoSaveDesc: 'Content changes are automatically saved to database with SHA256 integrity check to prevent data corruption',
+    historyQueryTitle: 'History Query',
+    historyQueryDesc: 'Built-in homework database supports quick date-based retrieval for easy backtracking',
+    multiLangTitle: 'Multi-language Support',
+    multiLangDesc: 'Supports 11 languages (Chinese, English, French, Spanish, Arabic, Russian, etc.)',
+    lockMechanismTitle: 'Lock Mechanism',
+    lockMechanismDesc: 'Default locked state prevents accidental touches, 60+ cute prompts, Ctrl+~ shortcut',
+    screenshotTitle: 'One-click Screenshot',
+    screenshotDesc: 'Screenshots automatically saved to clipboard for quick sharing to class groups',
+    customSettingsTitle: 'Personalized Settings',
+    customSettingsDesc: 'Customize fonts, font size (0-100px), initial templates for your unique experience',
+    interfaceShowcase: 'Interface Showcase',
+    githubReleasesDesc: 'Get the latest and historical versions here',
+    giteeReleasesDesc: 'Recommended for users in China, faster download speed',
+    goToGithub: 'Download from GitHub',
+    goToGitee: 'Download from Gitee',
+    systemRequirements: 'System Requirements',
+    winRequirement: '✅ Windows 10 / 11 (x64 architecture)',
+    winRecommend: ' Recommended Windows 10 21H2 or later',
+    no32bit: '❌ 32-bit systems not supported',
+    macLinuxComing: '🔜 macOS / Linux support coming soon',
+    coreTech: 'Core Technology',
+    devLang: 'Development Language',
+    uiFramework: 'UI Framework',
+    buildTool: 'Build Tool',
+    keyDependencies: 'Key Dependencies',
+    jsonParse: 'JSON Parsing',
+    httpRequest: 'HTTP Requests',
+    logging: 'Logging',
+    markdownRender: 'Markdown Rendering',
+    archPattern: 'Architecture Pattern',
+    designPattern: 'Design Pattern',
+    businessLogic: 'Business Logic Layer',
+    dataStorage: 'Data Storage',
+    githubRepo: 'GitHub Repository',
+    issueFeedback: 'Issue Feedback',
+    license: 'Open Source License: GNU GPL V3 🔓',
+    mainInterface: 'Main Interface',
+    mainInterfaceCaption: 'Main Interface - Simple Homework Editing Area',
+    historyQueryCaption: 'History Homework Query - Quick Search Past Records',
+    settingsInterface: 'Settings Interface',
+    settingsInterfaceCaption: 'Settings Interface - Personalized Configuration Center',
+    languageSettings: 'Language Settings',
+    languageSettingsCaption: 'Multi-language Support - 11 Languages Available'
+  }
+};
+
 // Canvas粒子背景系统
 class ParticleSystem {
   constructor() {
@@ -128,46 +248,139 @@ class ParticleSystem {
 }
 
 // Element Plus Carousel Vue 应用
+let mainApp = null;
+
 document.addEventListener('DOMContentLoaded', () => {
   const { createApp } = Vue;
   
-  const carouselApp = createApp({
+  // 创建主应用实例
+  mainApp = createApp({
     data() {
       return {
+        currentLang: localStorage.getItem('language') || 'zh',
         screenshots: [
           {
             image: 'pic/en/20260406/mainpage.png',
-            title: '主界面',
-            caption: '主界面 - 简洁的作业编辑区'
+            title: 'mainInterface',
+            caption: 'mainInterfaceCaption'
           },
           {
             image: 'pic/en/historical-homework-search.png',
-            title: '历史查询',
-            caption: '历史作业查询 - 快速检索过往记录'
+            title: 'historyQuery',
+            caption: 'historyQueryCaption'
           },
           {
             image: 'pic/en/20260406/settings.png',
-            title: '设置界面',
-            caption: '设置界面 - 个性化配置中心'
+            title: 'settingsInterface',
+            caption: 'settingsInterfaceCaption'
           },
           {
             image: 'pic/en/20260406/lang.png',
-            title: '语言设置',
-            caption: '多语言支持 - 11种语言可选'
+            title: 'languageSettings',
+            caption: 'languageSettingsCaption'
           }
         ]
       };
+    },
+    methods: {
+      t(key) {
+        return i18n[this.currentLang][key] || key;
+      },
+      handleLanguageChange(command) {
+        this.currentLang = command;
+        localStorage.setItem('language', command);
+        document.documentElement.lang = command === 'zh' ? 'zh-CN' : 'en';
+        // 触发重新渲染
+        this.$forceUpdate();
+      }
+    },
+    mounted() {
+      // 设置初始语言
+      document.documentElement.lang = this.currentLang === 'zh' ? 'zh-CN' : 'en';
     }
   });
   
-  carouselApp.use(ElementPlus);
-  carouselApp.mount('#carousel-app');
+  mainApp.use(ElementPlus);
+  mainApp.mount('#app');
 });
 
 // Anime.js动画
 document.addEventListener('DOMContentLoaded', () => {
   // 初始化粒子背景
   new ParticleSystem();
+  
+  // 卡片鼠标跟随光照效果
+  const cards = document.querySelectorAll('.glass-card');
+  
+  document.addEventListener('mousemove', (e) => {
+    const mouseX = e.clientX;
+    const mouseY = e.clientY;
+    
+    cards.forEach(card => {
+      const rect = card.getBoundingClientRect();
+      
+      // 计算鼠标到卡片边界的最近距离
+      const closestX = Math.max(rect.left, Math.min(mouseX, rect.right));
+      const closestY = Math.max(rect.top, Math.min(mouseY, rect.bottom));
+      
+      const distanceX = mouseX - closestX;
+      const distanceY = mouseY - closestY;
+      const distance = Math.sqrt(distanceX * distanceX + distanceY * distanceY);
+      
+      // 触发距离：300px
+      const triggerDistance = 300;
+      
+      if (distance < triggerDistance) {
+        // 计算光照强度（距离越近，光照越强）
+        const intensity = 1 - (distance / triggerDistance);
+        
+        // 计算光照位置（相对于卡片，限制在 0-100% 范围内）
+        const x = Math.max(0, Math.min(100, ((mouseX - rect.left) / rect.width) * 100));
+        const y = Math.max(0, Math.min(100, ((mouseY - rect.top) / rect.height) * 100));
+        
+        // 检查是否为 Gitee 卡片
+        const isGiteeCard = card.classList.contains('gitee-card');
+        const glowColor = isGiteeCard ? `rgba(230, 70, 26, ${intensity * 0.15})` : `rgba(90, 156, 240, ${intensity * 0.15})`;
+        const glowShadow = isGiteeCard ? `rgba(230, 70, 26, ${intensity * 0.3})` : `rgba(90, 156, 240, ${intensity * 0.3})`;
+        
+        // 应用光照效果
+        card.style.background = `radial-gradient(circle at ${x}% ${y}%, ${glowColor}, rgba(30, 30, 30, 0.15))`;
+        card.style.boxShadow = `
+          0 8px 32px rgba(0, 0, 0, 0.15),
+          0 0 ${intensity * 30}px ${glowShadow},
+          0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+          0 1px 0 rgba(255, 255, 255, 0.06) inset
+        `;
+      } else {
+        // 恢复默认样式
+        card.style.background = 'rgba(30, 30, 30, 0.15)';
+        card.style.boxShadow = `
+          0 8px 32px rgba(0, 0, 0, 0.15),
+          0 0 0 1px rgba(255, 255, 255, 0.02) inset,
+          0 1px 0 rgba(255, 255, 255, 0.06) inset
+        `;
+      }
+    });
+  });
+  
+  // 语言切换按钮点击波纹效果
+  const langSwitcher = document.querySelector('.language-switcher .el-dropdown-link');
+  if (langSwitcher) {
+    langSwitcher.addEventListener('click', function(e) {
+      const rect = this.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      
+      const ripple = document.createElement('span');
+      ripple.classList.add('ripple');
+      ripple.style.left = x + 'px';
+      ripple.style.top = y + 'px';
+      
+      this.appendChild(ripple);
+      
+      setTimeout(() => ripple.remove(), 600);
+    });
+  }
   
   // Hero区域入场动画
   anime.timeline({
@@ -274,27 +487,6 @@ document.addEventListener('DOMContentLoaded', () => {
         targets: btn,
         scale: 1,
         duration: 200,
-        easing: 'easeOutCubic'
-      });
-    });
-  });
-  
-  // 功能卡片悬停光晕效果
-  document.querySelectorAll('.feature-card').forEach(card => {
-    card.addEventListener('mouseenter', () => {
-      anime({
-        targets: card.querySelector('.card-icon'),
-        scale: 1.1,
-        duration: 300,
-        easing: 'easeOutCubic'
-      });
-    });
-    
-    card.addEventListener('mouseleave', () => {
-      anime({
-        targets: card.querySelector('.card-icon'),
-        scale: 1,
-        duration: 300,
         easing: 'easeOutCubic'
       });
     });
