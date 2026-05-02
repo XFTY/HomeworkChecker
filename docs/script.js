@@ -282,16 +282,20 @@ document.addEventListener('DOMContentLoaded', () => {
         ]
       };
     },
+    computed: {
+      // 使用计算属性确保响应式
+      i18nData() {
+        return i18n[this.currentLang];
+      }
+    },
     methods: {
       t(key) {
-        return i18n[this.currentLang][key] || key;
+        return this.i18nData[key] || key;
       },
       handleLanguageChange(command) {
         this.currentLang = command;
         localStorage.setItem('language', command);
         document.documentElement.lang = command === 'zh' ? 'zh-CN' : 'en';
-        // 触发重新渲染
-        this.$forceUpdate();
       }
     },
     mounted() {
