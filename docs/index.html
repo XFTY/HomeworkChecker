@@ -14,7 +14,21 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <div id="app">
+  <!-- 加载动画 -->
+  <div id="loading-screen">
+    <div class="loader-wrapper">
+      <div class="loader-ring"></div>
+      <div class="loader-logo">
+        <img src="pic/icons/logo.png" alt="Logo">
+      </div>
+      <div class="loader-bar-track">
+        <div class="loader-bar-fill" id="loader-bar"></div>
+      </div>
+      <div class="loader-text" id="loader-text">Loading<span class="loader-dots"></span></div>
+    </div>
+  </div>
+
+  <div id="app" style="opacity: 0; visibility: hidden;">
   <!-- Canvas粒子背景 -->
   <canvas id="particle-bg"></canvas>
   

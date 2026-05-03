@@ -1,3 +1,56 @@
+// ===== 加载动画控制 =====
+(function() {
+  var ls = document.getElementById('loading-screen');
+  var app = document.getElementById('app');
+  var bar = document.getElementById('loader-bar');
+  var textEl = document.querySelector('.loader-text');
+  var dots = 0;
+
+  var dotsInterval = setInterval(function() {
+    dots = (dots + 1) % 4;
+    textEl.textContent = 'Loading' + '.'.repeat(dots);
+  }, 400);
+
+  anime({
+    targets: bar,
+    width: '100%',
+    duration: 2000,
+    easing: 'easeInOutCubic'
+  });
+
+  anime({
+    targets: textEl,
+    opacity: 1,
+    duration: 500,
+    delay: 300,
+    easing: 'easeOutCubic'
+  });
+
+  setTimeout(function() {
+    clearInterval(dotsInterval);
+    anime({
+      targets: '.loader-wrapper',
+      opacity: 0,
+      scale: 0.95,
+      duration: 500,
+      easing: 'easeOutCubic'
+    });
+    anime({
+      targets: ls,
+      opacity: 0,
+      duration: 800,
+      delay: 300,
+      easing: 'easeInCubic',
+      complete: function() {
+        ls.style.visibility = 'hidden';
+        ls.style.pointerEvents = 'none';
+        app.style.opacity = '1';
+        app.style.visibility = 'visible';
+      }
+    });
+  }, 2500);
+})();
+
 // 多语言配置
 const i18n = {
   zh: {
