@@ -3,9 +3,17 @@ package com.xfty.homeworkchecker.service.ui.mainPage;
 import com.alibaba.fastjson.JSONObject;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import com.xfty.homeworkchecker.Idf;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
@@ -14,13 +22,22 @@ import javafx.scene.image.WritableImage;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.time.LocalDate;
+import java.time.format.TextStyle;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -35,11 +52,14 @@ public class TopButtonService {
      * Screenshot service for handling screenshot operations
      */
     public static class ScreenshotService {
-        
+
         private final TextArea editMain;
-        
-        public ScreenshotService(TextArea editMain) {
+        private final Button screenShotButton;
+        private boolean animating;
+
+        public ScreenshotService(TextArea editMain, Button screenShotButton) {
             this.editMain = editMain;
+            this.screenShotButton = screenShotButton;
         }
         
         /**
@@ -49,23 +69,83 @@ public class TopButtonService {
             logger.info("Taking screenshot");
             
             try {
-                logger.debug("Creating snapshot of editMain");
-                WritableImage editMainPage = editMain.snapshot(null, null);
-                logger.debug("Snapshot created successfully, dimensions: {}x{}", 
-                    editMainPage.getWidth(), editMainPage.getHeight());
+                String textContent = editMain.getText();
+                logger.debug("Text content length: {}", textContent.length());
+
+                LocalDate today = LocalDate.now();
+                String dateText = today.getYear() + "\u5E74"
+                    + String.format("%02d", today.getMonthValue()) + "\u6708"
+                    + String.format("%02d", today.getDayOfMonth()) + "\u65E5 "
+                    + today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.CHINESE);
+
+                int imageWidth = (int) editMain.getWidth();
+                int headerHeight = 52;
+                int padding = 12;
+                int contentWidth = Math.max(imageWidth - padding * 2, 1);
+
+                Font contentFont = new Font(editMain.getFont().getFamily(), 16);
+                Font dateFont = new Font(16);
+
+                List<String> wrappedLines = wrapText(textContent, contentFont, contentWidth);
+                if (wrappedLines.isEmpty()) {
+                    wrappedLines.add("");
+                }
+                double lineHeight = computeLineHeight(contentFont);
+                int contentAreaHeight = (int) (wrappedLines.size() * lineHeight + padding * 2);
+
+                int totalHeight = headerHeight + contentAreaHeight;
+
+                Canvas canvas = new Canvas(imageWidth, totalHeight);
+                GraphicsContext gc = canvas.getGraphicsContext2D();
+
+                // Draw header background
+                gc.setFill(Color.web("#1e1e1e"));
+                gc.fillRect(0, 0, imageWidth, headerHeight);
+
+                // Draw separator line
+                gc.setStroke(Color.web("#3a3a3a"));
+                gc.setLineWidth(1);
+                gc.strokeLine(0, headerHeight - 0.5, imageWidth, headerHeight - 0.5);
+
+                // Draw date text
+                gc.setFont(dateFont);
+                Text measureText = new Text(dateText);
+                measureText.setFont(dateFont);
+                double textHeight = measureText.getLayoutBounds().getHeight();
+                gc.setFill(Color.WHITE);
+                gc.fillText(dateText, 16, (headerHeight - textHeight) / 2 + textHeight * 0.85);
+
+                // Draw content background (same color as editMain)
+                gc.setFill(Color.web("#2d2d2d"));
+                gc.fillRect(0, headerHeight, imageWidth, contentAreaHeight);
+
+                // Draw text content line by line
+                gc.setFill(Color.WHITE);
+                gc.setFont(contentFont);
+                double y = headerHeight + padding + lineHeight * 0.85;
+                for (String line : wrappedLines) {
+                    if (!line.isEmpty()) {
+                        gc.fillText(line, padding, y);
+                    }
+                    y += lineHeight;
+                }
+
+                WritableImage resultImage = canvas.snapshot(null, null);
+                logger.debug("Composite image created with text content, dimensions: {}x{}",
+                    resultImage.getWidth(), resultImage.getHeight());
 
                 Clipboard clipboard = Clipboard.getSystemClipboard();
                 logger.debug("Getting system clipboard");
-                
+
                 ClipboardContent content = new ClipboardContent();
-                content.putImage(editMainPage);
+                content.putImage(resultImage);
                 logger.debug("Image content added to clipboard");
 
                 clipboard.setContent(content);
-                logger.info("Screenshot saved to clipboard");
+                logger.info("Screenshot saved to clipboard with date overlay and text content");
 
-                showSuccessAlert();
-                logger.debug("Screenshot success alert shown");
+                animateButtonSuccess();
+                logger.debug("Screenshot success animation shown");
 
             } catch (Exception e) {
                 logger.error("Failed to save screenshot", e);
@@ -75,16 +155,115 @@ public class TopButtonService {
             
             logger.debug("Screenshot operation completed");
         }
+
+        private List<String> wrapText(String text, Font font, double maxWidth) {
+            List<String> lines = new ArrayList<>();
+            Text measurer = new Text();
+            measurer.setFont(font);
+            for (String paragraph : text.split("\n", -1)) {
+                if (paragraph.isEmpty()) {
+                    lines.add("");
+                    continue;
+                }
+                StringBuilder currentLine = new StringBuilder();
+                for (int i = 0; i < paragraph.length(); i++) {
+                    String testStr = currentLine.toString() + paragraph.charAt(i);
+                    measurer.setText(testStr);
+                    if (measurer.getLayoutBounds().getWidth() > maxWidth && !currentLine.isEmpty()) {
+                        lines.add(currentLine.toString());
+                        currentLine = new StringBuilder(String.valueOf(paragraph.charAt(i)));
+                    } else {
+                        currentLine.append(paragraph.charAt(i));
+                    }
+                }
+                if (!currentLine.isEmpty()) {
+                    lines.add(currentLine.toString());
+                }
+            }
+            return lines;
+        }
+
+        private double computeLineHeight(Font font) {
+            Text t = new Text("A");
+            t.setFont(font);
+            return t.getLayoutBounds().getHeight() + 4;
+        }
         
         /**
-         * Show success alert after screenshot
+         * Animate button to show screenshot success — green blink for 6 seconds
+         * with fade-in (300ms) and fade-out (300ms) transitions
          */
-        private void showSuccessAlert() {
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle(Idf.userLanguageBundle.getString("mainpage.snapshot.success.title"));
-            alert.setHeaderText(Idf.userLanguageBundle.getString("mainpage.snapshot.success.title"));
-            alert.setContentText(Idf.userLanguageBundle.getString("mainpage.snapshot.success.header"));
-            alert.showAndWait();
+        private void animateButtonSuccess() {
+            if (animating) return;
+            animating = true;
+
+            String originalText = screenShotButton.getText();
+            String originalStyle = screenShotButton.getStyle();
+
+            Color lightGreen = Color.web("#66bb6a");
+            Color darkGreen = Color.web("#1b5e20");
+
+            String successText = Idf.userLanguageBundle.getString("mainpage.snapshot.success.button");
+            screenShotButton.setText(successText);
+
+            ObjectProperty<Color> bgColorProp = new SimpleObjectProperty<>(getButtonBackgroundColor());
+            bgColorProp.addListener((obs, oldColor, newColor) -> {
+                String webColor = String.format("#%02x%02x%02x",
+                    (int) (newColor.getRed() * 255),
+                    (int) (newColor.getGreen() * 255),
+                    (int) (newColor.getBlue() * 255));
+                screenShotButton.setStyle("-fx-background-color: " + webColor + "; -fx-text-fill: white;");
+            });
+
+            double fadeIn = 300;
+            double blinkTotal = 6000;
+            double fadeOut = 300;
+
+            Timeline timeline = new Timeline();
+
+            // Phase 1: Fade in (0→300ms) — bg: originalBg → lightGreen
+            timeline.getKeyFrames().setAll(
+                new KeyFrame(Duration.ZERO,
+                    new KeyValue(bgColorProp, getButtonBackgroundColor(), Interpolator.LINEAR)),
+                new KeyFrame(Duration.millis(fadeIn),
+                    new KeyValue(bgColorProp, lightGreen, Interpolator.LINEAR))
+            );
+
+            // Phase 2: Blink (300→6300ms, 3 cycles of 2s)
+            for (int i = 0; i < 3; i++) {
+                double cycleStart = fadeIn + i * 2000;
+                timeline.getKeyFrames().addAll(
+                    new KeyFrame(Duration.millis(cycleStart + 1000),
+                        new KeyValue(bgColorProp, darkGreen, Interpolator.LINEAR)),
+                    new KeyFrame(Duration.millis(cycleStart + 2000),
+                        new KeyValue(bgColorProp, lightGreen, Interpolator.LINEAR))
+                );
+            }
+
+            // Phase 3: Fade out (6300→6600ms) — bg: lightGreen → originalBg
+            timeline.getKeyFrames().addAll(
+                new KeyFrame(Duration.millis(fadeIn + blinkTotal),
+                    new KeyValue(bgColorProp, lightGreen, Interpolator.LINEAR)),
+                new KeyFrame(Duration.millis(fadeIn + blinkTotal + fadeOut), e -> {
+                    animating = false;
+                    screenShotButton.setText(originalText);
+                    screenShotButton.setStyle(originalStyle);
+                },
+                    new KeyValue(bgColorProp, getButtonBackgroundColor(), Interpolator.LINEAR))
+            );
+
+            timeline.play();
+        }
+
+        private Color getButtonBackgroundColor() {
+            Background bg = screenShotButton.getBackground();
+            if (bg != null && !bg.getFills().isEmpty()) {
+                Paint fill = bg.getFills().get(0).getFill();
+                if (fill instanceof Color) {
+                    return (Color) fill;
+                }
+            }
+            return Color.web("#2d2d2d");
         }
         
         /**

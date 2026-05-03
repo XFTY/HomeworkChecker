@@ -55,6 +55,8 @@ public class MainPage implements Initializable {
     private Stage primaryStage;
 
     @FXML
+    private Button screenShotButton;
+    @FXML
     private Button historyHomeworkButton;
     @FXML
     private Button settingsButton;
@@ -120,7 +122,7 @@ public class MainPage implements Initializable {
         popupService = new PopupService(
             centerShowingArea, blackPane, centerOutBox, showingMainArea
         );
-        screenshotService = new TopButtonService.ScreenshotService(editMain);
+        screenshotService = new TopButtonService.ScreenshotService(editMain, screenShotButton);
         historyHomeworkService = new TopButtonService.HistoryHomeworkService(popupService);
         settingsService = new TopButtonService.SettingsService(
             popupService, homeworkDatabase, editMain, this::clearTodayHomework
