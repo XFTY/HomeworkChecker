@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="650.0" prefWidth="900.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.setupWizard.SetupWizardController">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="650.0" prefWidth="900.0" spacing="10.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER" prefHeight="80.0" prefWidth="900.0" spacing="40.0">
+               <children>
+                  <VBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <Circle fx:id="step1Circle" fill="#575757" radius="10.0" stroke="#575757" strokeType="INSIDE" />
+                        <Label fx:id="step1Label" textFill="WHITE">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Separator prefWidth="60.0" style="-fx-background-color: #575757;" />
+                  <VBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <Circle fx:id="step2Circle" fill="#1e1e1e" radius="10.0" stroke="#575757" strokeType="INSIDE" />
+                        <Label fx:id="step2Label" textFill="WHITE">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Separator prefWidth="60.0" style="-fx-background-color: #575757;" />
+                  <VBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <Circle fx:id="step3Circle" fill="#1e1e1e" radius="10.0" stroke="#575757" strokeType="INSIDE" />
+                        <Label fx:id="step3Label" textFill="WHITE">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Separator prefWidth="60.0" style="-fx-background-color: #575757;" />
+                  <VBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <Circle fx:id="step4Circle" fill="#1e1e1e" radius="10.0" stroke="#575757" strokeType="INSIDE" />
+                        <Label fx:id="step4Label" textFill="WHITE">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+                  <Separator prefWidth="60.0" style="-fx-background-color: #575757;" />
+                  <VBox alignment="CENTER" spacing="5.0">
+                     <children>
+                        <Circle fx:id="step5Circle" fill="#1e1e1e" radius="10.0" stroke="#575757" strokeType="INSIDE" />
+                        <Label fx:id="step5Label" textFill="WHITE">
+                           <font>
+                              <Font size="12.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </VBox>
+               </children>
+               <VBox.margin>
+                  <Insets top="20.0" />
+               </VBox.margin>
+            </HBox>
+            <StackPane fx:id="contentArea" prefHeight="470.0" prefWidth="900.0" VBox.vgrow="ALWAYS">
+               <VBox.margin>
+                  <Insets left="30.0" right="30.0" />
+               </VBox.margin>
+            </StackPane>
+            <HBox alignment="CENTER_RIGHT" prefHeight="60.0" prefWidth="900.0" spacing="15.0">
+               <children>
+                  <Button fx:id="backButton" disable="true" onAction="#onBackClicked" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #3a3a3a; -fx-background-radius: 8; -fx-text-fill: white; -fx-cursor: hand;">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="nextButton" onAction="#onNextClicked" prefHeight="35.0" prefWidth="120.0" style="-fx-background-color: #0080ff; -fx-background-radius: 8; -fx-text-fill: white; -fx-cursor: hand;">
+                     <font>
+                        <Font size="14.0" />
+                     </font>
+                  </Button>
+               </children>
+               <VBox.margin>
+                  <Insets bottom="20.0" left="30.0" right="30.0" />
+               </VBox.margin>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>

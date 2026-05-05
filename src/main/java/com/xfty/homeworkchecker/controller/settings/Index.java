@@ -2,29 +2,21 @@ package com.xfty.homeworkchecker.controller.settings;
 
 import com.xfty.homeworkchecker.Entry;
 import com.xfty.homeworkchecker.Idf;
-import com.xfty.homeworkchecker.controller.MainPage;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
-import javafx.animation.Interpolator;
-import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
-import javafx.animation.Timeline;
-import javafx.animation.Transition;
+import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,7 +24,6 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
-import javafx.util.Duration;
 
 public class Index implements Initializable {
     @FXML

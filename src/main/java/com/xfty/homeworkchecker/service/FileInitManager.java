@@ -16,6 +16,50 @@ import java.nio.charset.StandardCharsets;
 public class FileInitManager {
     private static final Logger logger = LoggerFactory.getLogger(FileInitManager.class);
 
+    public boolean isFirstRun() {
+        File userDir = FileUtils.getUserDirectory();
+        File homeworkCheckerDir = new File(userDir, "homeworkChecker");
+        return !homeworkCheckerDir.exists();
+    }
+
+    public void initializeFirstRun(String languageCode, String fontFamily, double fontSize, String initTemplate) {
+        try {
+            File userDir = FileUtils.getUserDirectory();
+            File homeworkCheckerDir = new File(userDir, "homeworkChecker");
+            logger.info("First run initialization, creating directory: {}", homeworkCheckerDir.getAbsolutePath());
+
+            FileUtils.forceMkdir(homeworkCheckerDir);
+
+            File homeworkDatabaseDir = new File(homeworkCheckerDir, "homeworkDatabase");
+            FileUtils.forceMkdir(homeworkDatabaseDir);
+
+            File configDir = new File(homeworkCheckerDir, "config");
+            FileUtils.forceMkdir(configDir);
+
+            String modelConfigContent = getResourceFileContent("/modelConfig.json");
+            JSONObject configJson = JSON.parseObject(modelConfigContent);
+            configJson.getJSONObject("font").getJSONObject("fontFamily").put("defaultFontFamily", fontFamily);
+            configJson.getJSONObject("font").getJSONObject("textSize").put("ui", 20.0);
+            configJson.getJSONObject("font").getJSONObject("textSize").put("editMain", fontSize);
+            FileUtils.writeStringToFile(new File(homeworkCheckerDir, "config.json"), configJson.toJSONString(), StandardCharsets.UTF_8);
+
+            File initTempleFile = new File(homeworkCheckerDir, "initTemple.txt");
+            FileUtils.writeStringToFile(initTempleFile, initTemplate != null ? initTemplate : "", StandardCharsets.UTF_8);
+
+            JSONObject languageJson = new JSONObject();
+            languageJson.put("language", languageCode);
+            FileUtils.writeStringToFile(new File(configDir, "language.json"), languageJson.toJSONString(), StandardCharsets.UTF_8);
+
+            loadUserConfig(homeworkCheckerDir);
+            loadInitTemple(homeworkCheckerDir);
+            loadUserLanguage(homeworkCheckerDir);
+
+            logger.info("First run initialization completed");
+        } catch (Exception e) {
+            logger.error("Error during first run initialization", e);
+        }
+    }
+
     public void initializeUserDirectories() {
         try {
             // 获取用户文档目录

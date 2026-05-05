@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="470.0" prefWidth="840.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="CENTER" prefHeight="470.0" prefWidth="840.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <ImageView fitHeight="80.0" fitWidth="80.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../../icon/logo.png" />
+               </image>
+            </ImageView>
+            <Label fx:id="finishTitle" textFill="WHITE">
+               <font>
+                  <Font size="28.0" />
+               </font>
+            </Label>
+            <Label fx:id="finishDesc" textFill="#9c9c9c" wrapText="true">
+               <font>
+                  <Font size="16.0" />
+               </font>
+            </Label>
+            <VBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="400.0" spacing="8.0" style="-fx-background-color: #2a2a2a; -fx-background-radius: 10;">
+               <children>
+                  <Label fx:id="summaryLanguage" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="summaryFont" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+               </children>
+               <padding>
+                  <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
+               </padding>
+            </VBox>
+         </children>
+         <padding>
+            <Insets bottom="40.0" left="60.0" right="60.0" top="40.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

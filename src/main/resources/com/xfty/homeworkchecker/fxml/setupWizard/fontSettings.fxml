@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="470.0" prefWidth="840.0" style="-fx-background-color: transparent;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox alignment="TOP_CENTER" prefHeight="470.0" prefWidth="840.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label text="%setup.font.title" textFill="WHITE">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Label>
+            <Label text="%setup.font.family" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+             <ChoiceBox fx:id="fontFamilyChoice" prefHeight="35.0" prefWidth="350.0" stylesheets="@../../theme/darkness/choicebox.css" />
+            <Label text="%setup.font.size" textFill="WHITE">
+               <font>
+                  <Font size="14.0" />
+               </font>
+            </Label>
+            <Slider fx:id="fontSizeSlider" blockIncrement="1.0" majorTickUnit="5.0" max="40.0" min="10.0" prefHeight="14.0" prefWidth="400.0" showTickLabels="true" showTickMarks="true" snapToTicks="true" value="17.0" />
+            <Label fx:id="fontSizeLabel" text="17" textFill="#9c9c9c">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="fontPreview" disable="true" editable="false" prefHeight="120.0" prefWidth="500.0" style="-fx-background-color: #2a2a2a; -fx-text-fill: white; -fx-control-inner-background: #2a2a2a; -fx-background-radius: 8;" text="%setup.font.preview" wrapText="true" />
+         </children>
+         <padding>
+            <Insets bottom="20.0" left="40.0" right="40.0" top="20.0" />
+         </padding>
+      </VBox>
+   </children>
+</AnchorPane>

@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.*;
-import java.nio.file.StandardOpenOption;
 
 public class SingletonInstanceManager {
     private static final Logger logger = LoggerFactory.getLogger(SingletonInstanceManager.class);

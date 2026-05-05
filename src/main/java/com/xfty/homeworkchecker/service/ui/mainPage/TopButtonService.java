@@ -1,8 +1,7 @@
 package com.xfty.homeworkchecker.service.ui.mainPage;
 
-import com.alibaba.fastjson.JSONObject;
-import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import com.xfty.homeworkchecker.Idf;
+import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -17,14 +16,10 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
-import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
-import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;

@@ -5,7 +5,6 @@
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.text.Font?>
-
 <AnchorPane prefHeight="433.0" prefWidth="427.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
    <children>
       <Label layoutX="57.0" layoutY="34.0" text="数据库编辑器" textFill="WHITE">

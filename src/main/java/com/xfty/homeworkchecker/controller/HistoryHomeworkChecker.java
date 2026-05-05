@@ -7,7 +7,6 @@ import javafx.scene.control.TextArea;
 import javafx.scene.text.Font;
 
 import java.net.URL;
-import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class HistoryHomeworkChecker implements Initializable {
