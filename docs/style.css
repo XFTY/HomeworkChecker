@@ -746,9 +746,24 @@ section {
 }
 
 .system-requirements li {
-  padding: 0.5rem 0;
+  padding: 0.75rem 1rem 0.75rem 1.5rem;
+  margin-bottom: 0.5rem;
+  border-left: 3px solid var(--accent-blue);
+  background: rgba(255, 255, 255, 0.03);
+  border-radius: 0 8px 8px 0;
+  transition: all 0.25s ease;
   color: var(--text-secondary);
   font-size: 0.95rem;
+}
+
+.system-requirements li:hover {
+  background: rgba(90, 156, 240, 0.08);
+  border-left-color: var(--accent-blue-hover);
+  transform: translateX(4px);
+}
+
+.system-requirements li:last-child {
+  border-left-color: #888;
 }
 
 /* Tech Stack Section */
