@@ -1,0 +1,18 @@
+.split-pane {
+    -fx-background-color: #1e1e1e;
+}
+
+.split-pane > .split-pane-divider {
+    -fx-background-color: transparent;
+    -fx-padding: 0 3px 0 3px;
+}
+
+.split-pane > .split-pane-divider:hover {
+    -fx-background-color: #555555;
+}
+
+.split-pane > .split-pane-divider > .horizontal-grabber {
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+    -fx-shape: " ";
+}

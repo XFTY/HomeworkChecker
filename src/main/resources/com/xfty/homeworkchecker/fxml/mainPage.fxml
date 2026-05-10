@@ -58,7 +58,25 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <TextArea fx:id="editMain" layoutY="66.4" onMouseClicked="#onEditMainClicked" prefHeight="374.0" prefWidth="737.0" stylesheets="@../theme/darkness/textarea/text-area.css" wrapText="true" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="66.0" />
+             <SplitPane fx:id="mainSplitPane" dividerPositions="0.65" stylesheets="@../theme/darkness/splitPane/main-split-pane.css" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="66.0">
+               <items>
+                  <TextArea fx:id="editMain" onMouseClicked="#onEditMainClicked" stylesheets="@../theme/darkness/textarea/text-area.css" wrapText="true" />
+                    <VBox fx:id="cardContainer" spacing="4" style="-fx-background-color: #252525;" stylesheets="@../theme/darkness/card/reminder-card.css">
+                       <children>
+                           <HBox fx:id="addCardBox" alignment="CENTER" style="-fx-padding: 8 15 4 15;">
+                              <children>
+                                 <Label fx:id="addCardLabel" maxWidth="Infinity" styleClass="card-add-button" onMouseClicked="#onAddCard" text="%card.add" />
+                              </children>
+                           </HBox>
+                          <ScrollPane fx:id="cardScrollPane" fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;" VBox.vgrow="ALWAYS">
+                             <content>
+                                 <VBox fx:id="cardList" spacing="8" style="-fx-padding: 8 15 8 15;" />
+                             </content>
+                          </ScrollPane>
+                       </children>
+                    </VBox>
+               </items>
+            </SplitPane>
             <AnchorPane prefHeight="52.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
                <children>
                   <HBox fx:id="lockModelShowingArea" alignment="CENTER_LEFT" onMouseClicked="#onLockModuleClicked" prefHeight="46.0" prefWidth="606.0" spacing="5.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">

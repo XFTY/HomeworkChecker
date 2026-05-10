@@ -27,7 +27,7 @@
             </HBox>
          </children>
       </AnchorPane>
-      <ScrollPane fx:id="rightShowingArea" fitToWidth="true" layoutX="248.8" layoutY="92.0" prefHeight="476.0" prefWidth="569.0" style="-fx-background-radius: 0,0,0,0;" stylesheets="@../../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="249.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
+      <ScrollPane fx:id="rightShowingArea" fitToHeight="true" fitToWidth="true" layoutX="248.8" layoutY="92.0" prefHeight="476.0" prefWidth="569.0" style="-fx-background-radius: 0,0,0,0;" stylesheets="@../../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="249.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
          <content>
             <AnchorPane prefHeight="255.0" prefWidth="555.0">
                <children>
