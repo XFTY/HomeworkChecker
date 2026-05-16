@@ -21,27 +21,27 @@
 }
 
 .card-item.info {
-    -fx-background-color: #1a2744;
+    -fx-background-color: #263b63;
 }
 
 .card-item.info:hover {
-    -fx-background-color: #213a61;
+    -fx-background-color: #2f4c7e;
 }
 
 .card-item.warning {
-    -fx-background-color: #3a2e1a;
+    -fx-background-color: #4f3f24;
 }
 
 .card-item.warning:hover {
-    -fx-background-color: #4d3e23;
+    -fx-background-color: #635330;
 }
 
 .card-item.critical {
-    -fx-background-color: #3a1a1a;
+    -fx-background-color: #522626;
 }
 
 .card-item.critical:hover {
-    -fx-background-color: #4d2323;
+    -fx-background-color: #663030;
 }
 
 .card-body {
@@ -70,6 +70,58 @@
 
 .card-timestamp {
     -fx-text-fill: #888888;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb,
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #5a5a5a;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3px;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb:hover,
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #6a6a6a;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb:pressed,
+.scroll-pane .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: #4a4a4a;
+}
+
+.scroll-pane .scroll-bar:horizontal .track,
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #3a3a3a;
+    -fx-border-color: transparent;
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+}
+
+.scroll-pane .scroll-bar .increment-button,
+.scroll-pane .scroll-bar .decrement-button {
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+}
+
+.scroll-pane .scroll-bar .increment-arrow,
+.scroll-pane .scroll-bar .decrement-arrow {
+    -fx-background-color: #ffffff;
+    -fx-shape: "M 0 0 L 4 4 L 0 8 Z";
+    -fx-scale-shape: false;
+    -fx-padding: 3px;
+}
+
+.card-timestamp-row {
+    -fx-spacing: 4;
+    -fx-alignment: center-left;
+}
+
+.card-timestamp-row.persistent .card-timestamp {
+    -fx-text-fill: #8BC34A;
+}
+
+.card-persistent-label {
+    -fx-text-fill: #8BC34A;
 }
 
 .card-button-bar {
@@ -128,6 +180,15 @@
     -fx-border-radius: 4;
     -fx-background-radius: 4;
     -fx-padding: 6 8;
+}
+.card-edit-input .content {
+    -fx-background-color: transparent;
+    -fx-padding: 2 0;
+}
+.card-edit-input .scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
 }
 
 .card-edit-input:focused {

@@ -49,11 +49,6 @@ public class PopupService {
             logger.error("Cannot show popup: root is null");
             return null;
         }
-        if (closeButtonId == null || closeButtonId.trim().isEmpty()) {
-            logger.error("Cannot show popup: closeButtonId is null or empty");
-            return null;
-        }
-        
         logger.info("Showing popup window");
         
         try {
@@ -125,9 +120,14 @@ public class PopupService {
             centerOutBox.setMouseTransparent(false);
             
             // Setup close button handler
-            Circle windowCloseButton = (Circle) root.lookup(closeButtonId);
+            Circle windowCloseButton = null;
+            if (closeButtonId != null && !closeButtonId.trim().isEmpty()) {
+                windowCloseButton = (Circle) root.lookup(closeButtonId);
+            }
             if (windowCloseButton == null) {
-                logger.warn("Close button not found with id: {}", closeButtonId);
+                if (closeButtonId != null) {
+                    logger.warn("Close button not found with id: {}", closeButtonId);
+                }
             } else {
                 logger.debug("Close button found: {}", closeButtonId);
                 

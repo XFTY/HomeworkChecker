@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
-import java.time.LocalTime;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -146,22 +146,9 @@ public class ReminderCardService {
             File persistentFile = new File(homeworkDatabaseDir, PERSISTENT_FILE_NAME);
             Map<String, CardItem> persistentMap = new HashMap<>();
 
-            if (persistentFile.exists()) {
-                String content = FileUtils.readFileToString(persistentFile, StandardCharsets.UTF_8);
-                JSONArray existingArray = JSON.parseArray(content);
-                if (existingArray != null) {
-                    for (int i = 0; i < existingArray.size(); i++) {
-                        CardItem item = parseCardItem(existingArray.getJSONObject(i));
-                        persistentMap.put(item.getId(), item);
-                    }
-                }
-            }
-
             for (CardItem item : currentCards) {
                 if (item.isPersistent()) {
                     persistentMap.put(item.getId(), item);
-                } else {
-                    persistentMap.remove(item.getId());
                 }
             }
 
@@ -235,7 +222,7 @@ public class ReminderCardService {
     }
 
     public static String generateTimestamp() {
-        return LocalTime.now().format(DateTimeFormatter.ofPattern("HH:mm"));
+        return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
     public void addCard(CardItem item) {
