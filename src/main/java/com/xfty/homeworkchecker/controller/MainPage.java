@@ -18,6 +18,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import org.slf4j.Logger;
@@ -74,9 +75,11 @@ public class MainPage implements Initializable {
     @FXML
     private VBox cardList;
     @FXML
-    private Label addCardLabel;
+    private Button addCardButton;
     @FXML
-    private HBox addCardBox;
+    private StackPane emptyPlaceholder;
+    @FXML
+    private Label emptyHintLabel;
 
     HomeworkDatabase homeworkDatabase = new HomeworkDatabase();
 
@@ -108,7 +111,7 @@ public class MainPage implements Initializable {
         ReminderCardService reminderCardService = new ReminderCardService();
 
         cardUiService = new CardUiService(
-            cardList, addCardLabel, addCardBox,
+            cardList, addCardButton, emptyPlaceholder, emptyHintLabel,
             cardContainer, cardScrollPane,
             showingMainArea, centerShowingArea, centerOutBox, blackPane,
             mainSplitPane,
@@ -183,13 +186,11 @@ public class MainPage implements Initializable {
         editMain.setDisable(false);
         editMain.setEditable(false);
 
+        cardUiService.cleanupEmptyCardsOnStartup();
         cardUiService.loadCards();
         if (!Idf.isEditable) {
-            addCardLabel.setOpacity(0);
-            addCardLabel.setVisible(false);
-            addCardBox.setMinHeight(0);
-            addCardBox.setPrefHeight(0);
-            addCardBox.setMaxHeight(0);
+            addCardButton.setManaged(false);
+            addCardButton.setVisible(false);
         }
 
         cardUiService.setupSplitPaneListener();
@@ -258,6 +259,11 @@ public class MainPage implements Initializable {
 
     public void cleanup() {
         logger.info("Starting resource cleanup...");
+
+        if (cardUiService != null) {
+            cardUiService.cleanupEditingCard();
+            logger.info("CardUiService cleanup completed");
+        }
 
         if (editMainService != null) {
             editMainService.cleanup();

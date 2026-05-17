@@ -1,17 +1,6 @@
-.card-add-button {
-    -fx-background-color: transparent;
-    -fx-border-color: #4A90D9;
-    -fx-border-width: 1.5;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-padding: 6 24;
-    -fx-text-fill: #4A90D9;
-    -fx-font-size: 13;
-    -fx-cursor: hand;
-    -fx-alignment: center;
-}
-.card-add-button:hover {
-    -fx-background-color: rgba(74, 144, 217, 0.12);
+.empty-placeholder-label {
+    -fx-font-size: 14;
+    -fx-text-fill: #999999;
 }
 
 .card-item {
