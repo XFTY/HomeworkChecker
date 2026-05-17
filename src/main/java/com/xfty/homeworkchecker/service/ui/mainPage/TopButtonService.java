@@ -19,7 +19,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -333,6 +336,7 @@ public class TopButtonService {
         private final HomeworkDatabase homeworkDatabase;
         private final TextArea editMain;
         private final Runnable clearTodayHomeworkCallback;
+        private Runnable onFontChanged;
         
         public SettingsService(PopupService popupService, 
                               HomeworkDatabase homeworkDatabase,
@@ -342,6 +346,10 @@ public class TopButtonService {
             this.homeworkDatabase = homeworkDatabase;
             this.editMain = editMain;
             this.clearTodayHomeworkCallback = clearTodayHomeworkCallback;
+        }
+
+        public void setOnFontChanged(Runnable onFontChanged) {
+            this.onFontChanged = onFontChanged;
         }
         
         /**
@@ -413,6 +421,20 @@ public class TopButtonService {
                     logger.info("Settings window close button clicked");
                     homeworkDatabase.updateConfig(Idf.userConfig);
                     logger.info("User closed settings window");
+
+                    // Reset centerShowingArea layout state (in case settings was zoomed)
+                    AnchorPane centerShowingArea = (AnchorPane) root.getScene().lookup("#centerShowingArea");
+                    HBox centerHighControl = (HBox) root.getScene().lookup("#centerHighControl");
+                    if (centerShowingArea != null) {
+                        centerShowingArea.setPrefSize(364.0, 306.0);
+                        centerShowingArea.setMaxWidth(-1);
+                        centerShowingArea.setMaxHeight(-1);
+                        HBox.setHgrow(centerShowingArea, null);
+                    }
+                    if (centerHighControl != null) {
+                        centerHighControl.setMaxHeight(-1);
+                        VBox.setVgrow(centerHighControl, null);
+                    }
                     
                     // Update font if config is not null
                     if (Idf.userConfig != null) {
@@ -425,6 +447,9 @@ public class TopButtonService {
                                 .getJSONObject("textSize")
                                 .getInteger("editMain")));
                         logger.debug("Font updated after settings closed");
+                        if (onFontChanged != null) {
+                            onFontChanged.run();
+                        }
                     }
                     
                     // Clear homework if needed

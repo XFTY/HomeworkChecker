@@ -2,6 +2,7 @@ package com.xfty.homeworkchecker.service.ui.mainPage;
 
 import com.xfty.homeworkchecker.Idf;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
+import javafx.scene.control.TextArea;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -226,6 +227,18 @@ public class MainPageInitService {
         }
     }
     
+    public void clearTodayHomework(TextArea editMain) {
+        logger.info("Clearing today's homework");
+        if (!Idf.isEditable) {
+            editMain.setEditable(true);
+            editMain.setText(initTemplate);
+            editMain.setEditable(false);
+        } else {
+            editMain.setText(initTemplate);
+        }
+        logger.debug("Clear homework operation completed");
+    }
+
     /**
      * 内部类：封装字体配置
      */

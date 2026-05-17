@@ -8,6 +8,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Objects;
+import java.util.function.Supplier;
 
 /**
  * Edit state management service for handling editable state and auto-lock functionality
@@ -25,6 +26,7 @@ public class EditStateService {
     private final TextArea editMain;
     private final HomeworkDatabase homeworkDatabase;
     private final Runnable onLockModuleClicked;
+    private final Supplier<Boolean> isEditingCard;
     
     // State tracking
     private volatile boolean isRunning = false;
@@ -34,10 +36,12 @@ public class EditStateService {
      * @param editMain The text area for editing
      * @param homeworkDatabase Database manager for saving homework context
      * @param onLockModuleClicked Callback to trigger lock module action
+     * @param isEditingCard Supplier returning true when a card is being edited
      */
     public EditStateService(TextArea editMain, 
                            HomeworkDatabase homeworkDatabase,
-                           Runnable onLockModuleClicked) {
+                           Runnable onLockModuleClicked,
+                           Supplier<Boolean> isEditingCard) {
         if (editMain == null) {
             logger.error("Cannot initialize EditStateService: editMain is null");
             throw new IllegalArgumentException("EditMain TextArea cannot be null");
@@ -54,6 +58,7 @@ public class EditStateService {
         this.editMain = editMain;
         this.homeworkDatabase = homeworkDatabase;
         this.onLockModuleClicked = onLockModuleClicked;
+        this.isEditingCard = isEditingCard;
         logger.debug("EditStateService initialized");
     }
     
@@ -122,6 +127,10 @@ public class EditStateService {
                         timings = timings - 5;
                     }
                 } else {
+                    if (isEditingCard != null && isEditingCard.get()) {
+                        logger.debug("Card being edited, skipping auto-lock countdown");
+                        continue;
+                    }
                     timings = timings - 5;
                     logger.debug("Content unchanged, decrementing timings to {} seconds", timings);
                 }

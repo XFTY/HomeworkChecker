@@ -10,9 +10,18 @@
          <children>
             <AnchorPane prefHeight="69.0" prefWidth="767.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                <children>
-                  <HBox alignment="CENTER_RIGHT" layoutX="553.0" layoutY="24.0" prefHeight="70.0" prefWidth="514.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="237.39999999999998" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
-                     <children>
-                        <Button fx:id="screenShotButton" mnemonicParsing="false" onMouseClicked="#onscreenShotButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.view.snapshot">
+                   <HBox alignment="CENTER_RIGHT" layoutX="553.0" layoutY="24.0" prefHeight="70.0" prefWidth="514.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="237.39999999999998" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="0.0">
+                      <children>
+                         <Button fx:id="addCardButton" mnemonicParsing="false" onMouseClicked="#onAddCard" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%card.add">
+                            <graphic>
+                               <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
+                                  <image>
+                                     <Image url="@../icon/card/提示.png" />
+                                  </image>
+                               </ImageView>
+                            </graphic>
+                         </Button>
+                         <Button fx:id="screenShotButton" mnemonicParsing="false" onMouseClicked="#onscreenShotButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.view.snapshot">
                            <graphic>
                               <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
                                  <image>
@@ -58,7 +67,34 @@
                   </VBox>
                </children>
             </AnchorPane>
-            <TextArea fx:id="editMain" layoutY="66.4" onMouseClicked="#onEditMainClicked" prefHeight="374.0" prefWidth="737.0" stylesheets="@../theme/darkness/textarea/text-area.css" wrapText="true" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="66.0" />
+             <SplitPane fx:id="mainSplitPane" dividerPositions="0.65" stylesheets="@../theme/darkness/splitPane/main-split-pane.css" AnchorPane.bottomAnchor="60.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="66.0">
+               <items>
+                  <TextArea fx:id="editMain" onMouseClicked="#onEditMainClicked" stylesheets="@../theme/darkness/textarea/text-area.css" wrapText="true" />
+                     <VBox fx:id="cardContainer" style="-fx-background-color: #252525;" stylesheets="@../theme/darkness/card/reminder-card.css">
+                        <children>
+                           <StackPane VBox.vgrow="ALWAYS">
+                              <children>
+                                 <ScrollPane fx:id="cardScrollPane" fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+                                    <content>
+                                        <VBox fx:id="cardList" spacing="8" style="-fx-padding: 8 15 8 15;" />
+                                    </content>
+                                 </ScrollPane>
+                                 <StackPane fx:id="emptyPlaceholder" mouseTransparent="true" visible="false" managed="false" alignment="CENTER">
+                                    <VBox alignment="CENTER" spacing="10">
+                                       <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" opacity="0.4">
+                                          <image>
+                                             <Image url="@../icon/card/提示.png" />
+                                          </image>
+                                       </ImageView>
+                                       <Label fx:id="emptyHintLabel" styleClass="empty-placeholder-label" />
+                                    </VBox>
+                                 </StackPane>
+                              </children>
+                           </StackPane>
+                        </children>
+                     </VBox>
+               </items>
+            </SplitPane>
             <AnchorPane prefHeight="52.0" prefWidth="200.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0">
                <children>
                   <HBox fx:id="lockModelShowingArea" alignment="CENTER_LEFT" onMouseClicked="#onLockModuleClicked" prefHeight="46.0" prefWidth="606.0" spacing="5.0" AnchorPane.bottomAnchor="6.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">

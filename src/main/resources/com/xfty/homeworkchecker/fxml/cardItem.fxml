@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+ <VBox fx:id="cardRoot" styleClass="card-item" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <VBox styleClass="card-body">
+         <children>
+            <HBox fx:id="topRow" alignment="TOP_LEFT" spacing="8.0">
+               <children>
+                  <StackPane fx:id="iconContainer" styleClass="card-icon-container">
+                     <children>
+                        <ImageView fx:id="infoIcon" fitHeight="23.4" fitWidth="23.4" pickOnBounds="true" preserveRatio="true" styleClass="card-icon">
+                           <image>
+                              <Image url="@../icon/card/提示.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="warningIcon" fitHeight="23.4" fitWidth="23.4" managed="false" pickOnBounds="true" preserveRatio="true" styleClass="card-icon" visible="false">
+                           <image>
+                              <Image url="@../icon/card/警告.png" />
+                           </image>
+                        </ImageView>
+                        <ImageView fx:id="criticalIcon" fitHeight="23.4" fitWidth="23.4" managed="false" pickOnBounds="true" preserveRatio="true" styleClass="card-icon" visible="false">
+                           <image>
+                              <Image url="@../icon/card/严重.png" />
+                           </image>
+                        </ImageView>
+                     </children>
+                  </StackPane>
+                  <VBox fx:id="contentArea" styleClass="card-content-area" HBox.hgrow="ALWAYS">
+                     <children>
+                        <Label fx:id="titleLabel" styleClass="card-title" text="Title">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                        <Label fx:id="contentLabel" styleClass="card-content" text="Content">
+                           <font>
+                              <Font size="16.0" />
+                           </font>
+                        </Label>
+                        <HBox fx:id="timeRow" alignment="CENTER_LEFT" spacing="4.0" styleClass="card-timestamp-row">
+                           <children>
+                              <ImageView fx:id="timeIcon" fitHeight="14.4" fitWidth="14.4" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../icon/card/时间.png" />
+                                 </image>
+                              </ImageView>
+                              <Label fx:id="timeLabel" styleClass="card-timestamp" text="00:00">
+                                 <font>
+                                    <Font size="12.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                        </HBox>
+                     </children>
+                  </VBox>
+               </children>
+            </HBox>
+            <HBox fx:id="buttonBar" managed="false" maxWidth="1.7976931348623157E308" opacity="0.0" spacing="4.0" styleClass="card-button-bar">
+               <children>
+                  <Button fx:id="editBtn" styleClass="card-action-button">
+                     <graphic>
+                        <ImageView fitHeight="16.2" fitWidth="16.2" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icon/card/编辑.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+                  <Button fx:id="deleteBtn" styleClass="card-action-button danger">
+                     <graphic>
+                        <ImageView fitHeight="16.2" fitWidth="16.2" pickOnBounds="true" preserveRatio="true">
+                           <image>
+                              <Image url="@../icon/card/删除.png" />
+                           </image>
+                        </ImageView>
+                     </graphic>
+                  </Button>
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</VBox>

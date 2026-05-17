@@ -9,7 +9,7 @@ import java.util.ResourceBundle;
 
 public class Idf {
     public static String softwareVersion = "1.7.0 - Private Beta (在线模式内测体验)";
-    public static boolean UpdaterTestMode = true;
+    public static boolean UpdaterTestMode = false;
 
     public static String year;
     public static String month;
