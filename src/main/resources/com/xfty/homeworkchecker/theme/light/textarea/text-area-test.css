@@ -1,0 +1,58 @@
+.text-area {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-border-width: 1px;
+    -fx-border-color: #e0e0e0;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 6px;
+}
+
+.text-area .content {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+}
+
+.text-area .scroll-pane {
+    -fx-hbar-policy: never;
+    -fx-vbar-policy: never;
+}
+
+.text-area .scroll-bar:horizontal .thumb,
+.text-area .scroll-bar:vertical .thumb {
+    -fx-background-color: #cccccc;
+    -fx-background-insets: 0;
+    -fx-background-radius: 4px;
+}
+
+.text-area .scroll-bar:horizontal .thumb:hover,
+.text-area .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #bbbbbb;
+}
+
+.text-area .scroll-bar:horizontal .thumb:pressed,
+.text-area .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: #aaaaaa;
+}
+
+.text-area .scroll-bar:horizontal .track,
+.text-area .scroll-bar:vertical .track {
+    -fx-background-color: #e8e8e8;
+    -fx-border-color: transparent;
+}
+
+.text-area .scroll-bar .increment-arrow,
+.text-area .scroll-bar .decrement-arrow {
+    -fx-background-color: #333333;
+    -fx-shape: "M 0 0 L 4 4 L 0 8 Z";
+}
+
+.text-area:focused {
+    -fx-border-color: #0078d4;
+    -fx-border-width: 1px;
+}
+
+.text-area:disabled {
+    -fx-opacity: 1.0;
+    -fx-border-color: #e8e8e8;
+}

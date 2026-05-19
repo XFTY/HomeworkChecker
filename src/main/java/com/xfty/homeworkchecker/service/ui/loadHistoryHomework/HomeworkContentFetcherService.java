@@ -5,7 +5,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * 作业内容获取器 - 负责从数据库获取作业内容
+ * HomeworkContentFetcherService — 作业内容获取服务
+ * <p>
+ * 封装 HomeworkDatabase 的查询接口，提供按年/月/日或文件名读取作业内容的方法。
+ * </p>
  */
 public class HomeworkContentFetcherService {
     

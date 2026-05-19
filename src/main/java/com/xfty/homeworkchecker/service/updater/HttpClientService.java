@@ -13,6 +13,14 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
 
+/**
+ * HttpClientService — GitHub API 请求服务
+ * <p>
+ * 通过 OkHttp 向 GitHub Releases API 发起请求，获取最新 Release 的 JSON 数据。
+ * 测试模式下加载本地 githubApiTemple.json 替代网络请求。
+ * 解析工作委托给 JSONParsingService。
+ * </p>
+ */
 public class HttpClientService {
     
     private static final Logger logger = LoggerFactory.getLogger(HttpClientService.class);

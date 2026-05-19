@@ -1,0 +1,63 @@
+.choice-box {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333 !important;
+    -fx-fill: #333333 !important;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 12px;
+    -fx-border-width: 1px;
+    -fx-border-color: #e0e0e0;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 2px 6px;
+    -fx-pref-width: 180px;
+    -fx-pref-height: 24px;
+}
+
+.choice-box .open-button {
+    -fx-background-color: transparent;
+    -fx-border-width: 0;
+}
+
+.choice-box .arrow {
+    -fx-background-color: #333333;
+    -fx-shape: "M 0 0 L 4 4 L 8 0 Z";
+}
+
+.choice-box .context-menu {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #e0e0e0;
+    -fx-text-fill: #333333 !important;
+    -fx-fill: #333333 !important;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+}
+
+.choice-box .menu-item {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333 !important;
+    -fx-fill: #333333 !important;
+    -fx-padding: 2px 6px;
+}
+
+.choice-box .menu-item:hover {
+    -fx-background-color: #e8f0fa;
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: #d0ddf0;
+}
+
+.choice-box:focused {
+    -fx-border-color: #0078d4;
+    -fx-border-width: 1px;
+}
+
+.choice-box:disabled {
+    -fx-opacity: 0.7;
+    -fx-border-color: #f0f0f0;
+    -fx-text-fill: #999999;
+}
+
+.choice-box .open-button:hover {
+    -fx-background-color: #e8e8e8;
+}

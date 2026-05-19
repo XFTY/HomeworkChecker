@@ -7,7 +7,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * 工作日计算器 - 负责计算本周和上周的日期
+ * WeekdayCalculatorService — 日期计算服务
+ * <p>
+ * 计算本周/上周工作日的文件名（yyyyMMdd 格式），
+ * 用于历史作业查询中的星期快捷按钮（周一~周五 + 上周末）。
+ * </p>
  */
 public class WeekdayCalculatorService {
     

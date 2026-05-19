@@ -17,47 +17,47 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
+/**
+ * languageChooser — 语言选择对话框控制器
+ * <p>
+ * 提供 11 种语言的图形化选择界面，选中后弹出多语言确认/退出对话框。
+ * 语言变更需要重启应用生效。
+ * </p>
+ */
 public class languageChooser implements Initializable {
     private static final Logger logger = LoggerFactory.getLogger(languageChooser.class);
     
     private final HomeworkDatabase homeworkDatabase = new HomeworkDatabase();
     
-    // 定义各种语言的提示文本
+    /** 各语言的提示文本映射 [确认标题, 确认头, 确认内容, 退出标题, 退出头, 退出内容] */
     private final Map<String, String[]> languageMessages = new HashMap<>();
     
     @FXML
     private AnchorPane chineseButton;
-    
     @FXML
     private AnchorPane traditionalChineseButton;
-    
     @FXML
     private AnchorPane englishButton;
-    
     @FXML
     private AnchorPane spanishButton;
-    
     @FXML
     private AnchorPane frenchButton;
-    
     @FXML
     private AnchorPane arabicButton;
-    
     @FXML
     private AnchorPane russianButton;
-    
     @FXML
     private AnchorPane bengaliButton;
-    
     @FXML
     private AnchorPane germanButton;
-    
     @FXML
     private AnchorPane japaneseButton;
-    
     @FXML
     private AnchorPane portugueseButton;
     
+    /**
+     * 初始化语言选择界面：加载多语言提示文本，为各语言按钮绑定点击事件
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         // 初始化各语言的提示信息
@@ -109,6 +109,9 @@ public class languageChooser implements Initializable {
         });
     }
     
+    /**
+     * 初始化 11 种语言的确认/退出提示文本
+     */
     private void initializeLanguageMessages() {
         // 简体中文 [确认标题, 确认头, 确认内容, 退出标题, 退出头, 退出内容]
         languageMessages.put("zh_CN", new String[]{
@@ -221,6 +224,9 @@ public class languageChooser implements Initializable {
         });
     }
     
+    /**
+     * 处理语言选择：弹出确认对话框 → 保存语言设置 → 询问是否退出应用
+     */
     private void handleLanguageSelection(String languageCode) {
         String[] messages = languageMessages.get(languageCode);
         String languageName = getLanguageName(languageCode);
@@ -252,6 +258,9 @@ public class languageChooser implements Initializable {
         }
     }
     
+    /**
+     * 根据语言代码获取该语言的本地化名称
+     */
     private String getLanguageName(String languageCode) {
         switch (languageCode) {
             case "zh_CN": return "简体中文";
@@ -269,6 +278,9 @@ public class languageChooser implements Initializable {
         }
     }
     
+    /**
+     * 关闭语言选择窗口
+     */
     private void closeWindow() {
         // 关闭当前窗口
         Stage stage = (Stage) chineseButton.getScene().getWindow();

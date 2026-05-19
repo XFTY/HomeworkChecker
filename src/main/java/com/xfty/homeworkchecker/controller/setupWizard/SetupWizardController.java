@@ -35,70 +35,94 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * SetupWizardController — 首次运行设置向导控制器（5 步）
+ * <p>
+ * 步骤：①欢迎（多语言轮播+动画）→ ②语言选择 → ③字体设置 → ④初始模板 → ⑤完成
+ * 每一步通过 FXML 独立文件加载，带淡入动画效果。完成后回调 FileInitManager 初始化。
+ * </p>
+ */
 public class SetupWizardController implements Initializable {
 
     private static final Logger logger = LoggerFactory.getLogger(SetupWizardController.class);
 
+    // ==================== FXML 注入 ====================
+
     @FXML
     private StackPane contentArea;
-
     @FXML
     private Button backButton;
-
     @FXML
     private Button nextButton;
 
+    // ==================== 步骤指示器 ====================
+
     @FXML
     private Circle step1Circle;
-
     @FXML
     private Circle step2Circle;
-
     @FXML
     private Circle step3Circle;
-
     @FXML
     private Circle step4Circle;
-
     @FXML
     private Circle step5Circle;
 
     @FXML
     private Label step1Label;
-
     @FXML
     private Label step2Label;
-
     @FXML
     private Label step3Label;
-
     @FXML
     private Label step4Label;
-
     @FXML
     private Label step5Label;
 
+    // ==================== 步骤状态 ====================
+
+    /** 当前步骤索引（0-4） */
     private int currentStep = 0;
     private static final int TOTAL_STEPS = 5;
 
+    // ==================== 用户选择 ====================
+
+    /** 用户选择语言代码 */
     private String selectedLanguageCode;
+    /** 用户选择字体族 */
     private String selectedFontFamily = "System";
+    /** 用户选择字号 */
     private double selectedFontSize = 17.0;
+    /** 用户输入初始模板 */
     private String initTemplate = "";
 
+    /** 系统语言包（基于系统默认 Locale） */
     private ResourceBundle wizardBundle;
+    /** 步骤语言包（用户选择语言后更新） */
     private ResourceBundle stepBundle;
 
+    /** 向导完成回调 */
     private WizardFinishedCallback onFinished;
 
+    // ==================== 动画引用 ====================
+
+    /** 语言页面标题轮播动画 */
     private Timeline languageTitleTimeline;
+    /** 欢迎页文字轮播动画 */
     private Timeline welcomeTimeline;
+    /** 欢迎页入口序列动画 */
     private SequentialTransition welcomeEntranceAnimation;
+    /** 欢迎图标浮动动画 */
     private TranslateTransition iconFloatAnimation;
 
+    /** 步骤圆圈列表 */
     private List<Circle> stepCircles;
+    /** 步骤标签列表 */
     private List<Label> stepLabels;
 
+    /**
+     * 初始化向导：加载系统 Locale 语言包，加载第 0 步（欢迎页）
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         stepCircles = Arrays.asList(step1Circle, step2Circle, step3Circle, step4Circle, step5Circle);
@@ -109,6 +133,9 @@ public class SetupWizardController implements Initializable {
         updateNavigationButtons();
     }
 
+    /**
+     * 加载系统默认 Locale 的语言包
+     */
     private void loadSystemLocaleBundle() {
         Locale systemLocale = Locale.getDefault();
         try {
@@ -119,10 +146,16 @@ public class SetupWizardController implements Initializable {
         stepBundle = wizardBundle;
     }
 
+    /**
+     * 设置向导完成回调
+     */
     public void setOnWizardFinished(WizardFinishedCallback callback) {
         this.onFinished = callback;
     }
 
+    /**
+     * 上一步按钮
+     */
     @FXML
     private void onBackClicked() {
         if (currentStep > 0) {
@@ -133,6 +166,9 @@ public class SetupWizardController implements Initializable {
         }
     }
 
+    /**
+     * 下一步/完成按钮：最后一步触发回调，否则校验→收集数据→进入下一步
+     */
     @FXML
     private void onNextClicked() {
         if (currentStep == TOTAL_STEPS - 1) {
@@ -153,6 +189,9 @@ public class SetupWizardController implements Initializable {
         updateNavigationButtons();
     }
 
+    /**
+     * 校验当前步骤数据是否完整（语言步骤必须选择语言）
+     */
     private boolean validateCurrentStep() {
         if (currentStep == 1 && selectedLanguageCode == null) {
             ResourceBundle bundle = stepBundle != null ? stepBundle : wizardBundle;
@@ -164,6 +203,9 @@ public class SetupWizardController implements Initializable {
         return true;
     }
 
+    /**
+     * 收集当前步骤的用户输入：字体步骤获取字体/字号，模板步骤获取模板内容
+     */
     private void collectCurrentStepData() {
         if (currentStep == 2) {
             Parent root = contentArea.getChildren().size() > 0 ? (Parent) contentArea.getChildren().get(0) : null;
@@ -188,6 +230,9 @@ public class SetupWizardController implements Initializable {
         }
     }
 
+    /**
+     * 加载指定步骤的 FXML 并调用对应设置方法
+     */
     private void loadStep(int step) {
         if (languageTitleTimeline != null) {
             languageTitleTimeline.stop();
@@ -242,6 +287,9 @@ public class SetupWizardController implements Initializable {
         }
     }
 
+    /**
+     * 设置欢迎页（第 0 步）：Logo + 应用名 + 多语言欢迎语轮播动画 + 图标浮动动画
+     */
     private void setupWelcomeStep(Parent root) {
         VBox rootContainer = (VBox) root.lookup("#rootContainer");
         Pane iconTextPane = (Pane) root.lookup("#iconTextPane");
@@ -383,6 +431,9 @@ public class SetupWizardController implements Initializable {
         welcomeEntranceAnimation.play();
     }
 
+    /**
+     * 设置语言选择页（第 1 步）：11 个语言按钮 + 标题轮播
+     */
     private void setupLanguageStep(Parent root) {
         GridPane grid = (GridPane) root.lookup("#languageGrid");
         if (grid == null) return;
@@ -451,6 +502,9 @@ public class SetupWizardController implements Initializable {
         }
     }
 
+    /**
+     * 选择语言：更新 stepBundle、高亮选中按钮、刷新步骤标签和导航按钮文字
+     */
     private void selectLanguage(String languageCode, Parent root) {
         selectedLanguageCode = languageCode;
         String[] parts = languageCode.split("_");
@@ -479,6 +533,9 @@ public class SetupWizardController implements Initializable {
         updateNavigationButtons();
     }
 
+    /**
+     * 根据语言代码获取对应的按钮 fx:id
+     */
     private String getLanguageButtonId(String languageCode) {
         return switch (languageCode) {
             case "zh_CN" -> "chineseButton";
@@ -496,6 +553,9 @@ public class SetupWizardController implements Initializable {
         };
     }
 
+    /**
+     * 设置字体页（第 2 步）：字体选择框 + 字号滑块 + 实时预览
+     */
     private void setupFontSettingsStep(Parent root) {
         ChoiceBox<String> fontFamilyChoice = (ChoiceBox<String>) root.lookup("#fontFamilyChoice");
         Slider fontSizeSlider = (Slider) root.lookup("#fontSizeSlider");
@@ -530,12 +590,18 @@ public class SetupWizardController implements Initializable {
         updateFontPreview(fontPreview);
     }
 
+    /**
+     * 更新字体预览区域
+     */
     private void updateFontPreview(TextArea preview) {
         if (preview != null) {
             preview.setFont(new Font(selectedFontFamily, selectedFontSize));
         }
     }
 
+    /**
+     * 设置初始模板页（第 3 步）：加载文本编辑器并填入已有模板
+     */
     private void setupTemplateStep(Parent root) {
         TextArea templateText = (TextArea) root.lookup("#templateText");
         if (templateText != null) {
@@ -543,6 +609,9 @@ public class SetupWizardController implements Initializable {
         }
     }
 
+    /**
+     * 设置完成页（第 4 步）：展示用户选择的语言和字体摘要
+     */
     private void setupFinishStep(Parent root) {
         Label finishTitle = (Label) root.lookup("#finishTitle");
         Label finishDesc = (Label) root.lookup("#finishDesc");
@@ -558,6 +627,9 @@ public class SetupWizardController implements Initializable {
         }
     }
 
+    /**
+     * 根据语言代码获取语言的本地化显示名称
+     */
     private String getLanguageDisplayName(String code) {
         return switch (code) {
             case "zh_CN" -> "简体中文";

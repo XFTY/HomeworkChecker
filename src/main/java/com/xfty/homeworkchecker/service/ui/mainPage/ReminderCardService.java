@@ -22,10 +22,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
+/**
+ * ReminderCardService — 提醒卡片数据持久化服务
+ * <p>
+ * 负责卡片的 JSON 文件读写：当日卡片写入 YYYYMMDD 文件的 warnings 数组，
+ * 持久化卡片同步至独立的 persistentCards.json。提供 SHA-256 完整性校验。
+ * </p>
+ */
 public class ReminderCardService {
     private static final Logger logger = LoggerFactory.getLogger(ReminderCardService.class);
+    /** 持久化卡片独立文件名 */
     private static final String PERSISTENT_FILE_NAME = "persistentCards.json";
 
+    /**
+     * 读取所有卡片（当日数据库中的 warnings + persistentCards.json 中的常驻卡片）
+     *
+     * @return 卡片列表
+     */
     public List<CardItem> readCards() {
         List<CardItem> cards = new ArrayList<>();
         try {
@@ -86,6 +99,12 @@ public class ReminderCardService {
         return cards;
     }
 
+    /**
+     * 写入所有卡片：当日卡片写入数据库文件 warnings 数组 + SHA-256，
+     * 持久化卡片同步到 persistentCards.json
+     *
+     * @param cards 完整的卡片列表
+     */
     public void writeCards(List<CardItem> cards) {
         try {
             File homeworkDatabaseDir = getHomeworkDatabaseDir();
@@ -141,6 +160,9 @@ public class ReminderCardService {
         }
     }
 
+    /**
+     * 将持久化卡片写入独立的 persistentCards.json 文件
+     */
     private void syncPersistentCards(File homeworkDatabaseDir, List<CardItem> currentCards) {
         try {
             File persistentFile = new File(homeworkDatabaseDir, PERSISTENT_FILE_NAME);
@@ -163,6 +185,9 @@ public class ReminderCardService {
         }
     }
 
+    /**
+     * 将 JSONObject 反序列化为 CardItem 对象
+     */
     private CardItem parseCardItem(JSONObject cardObj) {
         CardItem item = new CardItem();
         String id = cardObj.getString("id");
@@ -183,6 +208,9 @@ public class ReminderCardService {
         return item;
     }
 
+    /**
+     * 将 CardItem 序列化为 JSONObject
+     */
     private JSONObject serializeCardItem(CardItem item) {
         JSONObject cardObj = new JSONObject();
         cardObj.put("id", item.getId());
@@ -195,12 +223,22 @@ public class ReminderCardService {
         return cardObj;
     }
 
+    /**
+     * 获取 homeworkDatabase 目录的 File 对象
+     */
     private File getHomeworkDatabaseDir() {
         File userDir = FileUtils.getUserDirectory();
         File homeworkCheckerDir = new File(userDir, "homeworkChecker");
         return new File(homeworkCheckerDir, "homeworkDatabase");
     }
 
+    /**
+     * 计算 context 和 warnings JSON 联合后的 SHA-256 校验值
+     *
+     * @param context      作业内容
+     * @param warningsJson 卡片数据 JSON 字符串
+     * @return SHA-256 十六进制字符串
+     */
     public static String calculateCombinedSHA256(String context, String warningsJson) {
         try {
             MessageDigest digest = MessageDigest.getInstance("SHA-256");
@@ -221,16 +259,32 @@ public class ReminderCardService {
         }
     }
 
+    /**
+     * 生成当前日期字符串（yyyy-MM-dd 格式）
+     *
+     * @return 日期字符串
+     */
     public static String generateTimestamp() {
         return LocalDate.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd"));
     }
 
+    /**
+     * 添加一张新卡片
+     *
+     * @param item 卡片对象
+     */
     public void addCard(CardItem item) {
         List<CardItem> cards = readCards();
         cards.add(item);
         writeCards(cards);
     }
 
+    /**
+     * 更新指定索引的卡片
+     *
+     * @param index 卡片索引
+     * @param item  新的卡片数据
+     */
     public void updateCard(int index, CardItem item) {
         List<CardItem> cards = readCards();
         if (index >= 0 && index < cards.size()) {
@@ -239,6 +293,11 @@ public class ReminderCardService {
         }
     }
 
+    /**
+     * 删除指定索引的卡片
+     *
+     * @param index 卡片索引
+     */
     public void deleteCard(int index) {
         List<CardItem> cards = readCards();
         if (index >= 0 && index < cards.size()) {

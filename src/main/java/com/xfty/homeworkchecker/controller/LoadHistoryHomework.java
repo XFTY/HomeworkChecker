@@ -28,12 +28,21 @@ import java.util.List;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * LoadHistoryHomework — 历史作业查询对话框控制器
+ * <p>
+ * 提供 DatePicker 日期选择和星期快捷按钮（周一~周五 + 上周末），
+ * 按钮以绿色（有数据）/红色（无数据）指示灯反馈数据状态。
+ * </p>
+ */
 public class LoadHistoryHomework implements Initializable {
     private static final Logger logger = LoggerFactory.getLogger(LoadHistoryHomework.class);
 
-    // Service layer components
+    /** 星期计算服务 */
     private final WeekdayCalculatorService weekdayCalculatorService = new WeekdayCalculatorService();
+    /** 作业内容获取服务 */
     private final HomeworkContentFetcherService contentFetcher = new HomeworkContentFetcherService();
+    /** 按钮状态管理服务（绿灯/红灯） */
     private final ButtonStateManagerService buttonStateManagerService = new ButtonStateManagerService();
 
     @FXML
@@ -66,12 +75,18 @@ public class LoadHistoryHomework implements Initializable {
     private ImageView firIv;
 
     
+    /**
+     * 初始化历史查询对话框：初始化星期快捷按钮状态
+     */
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         logger.info("Initializing LoadHistoryHomework dialog");
         initializeWeekdayButtons();
     }
 
+    /**
+     * 确认按钮：读取 DatePicker 所选日期并查询对应作业内容
+     */
     @FXML
     private void handleConfirmButton() {
         LocalDate selectedDate = datePicker.getValue();
@@ -100,6 +115,9 @@ public class LoadHistoryHomework implements Initializable {
         }
     }
     
+    /**
+     * 上周末按钮：遍历上周五六日的作业文件，找到第一个存在的数据
+     */
     @FXML
     private void handleLastWeekButton() {
         String[] fileNames = weekdayCalculatorService.getLastWeekendFileNames();
@@ -124,6 +142,9 @@ public class LoadHistoryHomework implements Initializable {
         }
     }
     
+    /**
+     * 周一按钮
+     */
     @FXML
     private void handleMonButton() {
         String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
@@ -131,6 +152,9 @@ public class LoadHistoryHomework implements Initializable {
         handleWeekdayButtonClick(fileName);
     }
     
+    /**
+     * 周二按钮
+     */
     @FXML
     private void handleTusButton() {
         String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
@@ -139,6 +163,9 @@ public class LoadHistoryHomework implements Initializable {
         handleWeekdayButtonClick(fileName);
     }
     
+    /**
+     * 周三按钮
+     */
     @FXML
     private void handleWedButton() {
         String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
@@ -147,6 +174,9 @@ public class LoadHistoryHomework implements Initializable {
         handleWeekdayButtonClick(fileName);
     }
     
+    /**
+     * 周四按钮
+     */
     @FXML
     private void handleThuButton() {
         String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
@@ -155,6 +185,9 @@ public class LoadHistoryHomework implements Initializable {
         handleWeekdayButtonClick(fileName);
     }
     
+    /**
+     * 周五按钮
+     */
     @FXML
     private void handleFriButton() {
         String fileName = weekdayCalculatorService.getCurrentWeekMonday(LocalDate.now())
@@ -163,6 +196,9 @@ public class LoadHistoryHomework implements Initializable {
         handleWeekdayButtonClick(fileName);
     }
     
+    /**
+     * 通用工作日按钮处理：根据文件名查询作业并展示
+     */
     private void handleWeekdayButtonClick(String fileName) {
         String homeworkContent = contentFetcher.getHomeworkContextByFileName(fileName);
         
@@ -220,6 +256,9 @@ public class LoadHistoryHomework implements Initializable {
         }
     }
     
+    /**
+     * 通用警告/信息弹窗
+     */
     private void showAlert(Alert.AlertType alertType, String title, String content) {
         Alert alert = new Alert(alertType);
         alert.setTitle(title);

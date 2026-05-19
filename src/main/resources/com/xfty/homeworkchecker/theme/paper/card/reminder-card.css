@@ -1,0 +1,217 @@
+.empty-placeholder-label {
+    -fx-font-size: 14;
+    -fx-text-fill: #b8a88a;
+}
+
+.card-item {
+    -fx-background-radius: 8;
+    -fx-padding: 0;
+    -fx-border-radius: 8;
+}
+
+.card-item.info {
+    -fx-background-color: #e8dcc8;
+}
+
+.card-item.info:hover {
+    -fx-background-color: #ddd0b8;
+}
+
+.card-item.warning {
+    -fx-background-color: #f0e0c0;
+}
+
+.card-item.warning:hover {
+    -fx-background-color: #e8d4a8;
+}
+
+.card-item.critical {
+    -fx-background-color: #f0d0c8;
+}
+
+.card-item.critical:hover {
+    -fx-background-color: #e8beb4;
+}
+
+.card-body {
+    -fx-spacing: 8;
+    -fx-padding: 10;
+}
+
+.card-icon {
+    -fx-preserve-ratio: true;
+    -fx-translate-y: 2;
+}
+
+.card-content-area {
+    -fx-spacing: 3;
+}
+
+.card-title {
+    -fx-text-fill: #5c4a32;
+    -fx-wrap-text: true;
+}
+
+.card-content {
+    -fx-text-fill: #7a6a52;
+    -fx-wrap-text: true;
+}
+
+.card-timestamp {
+    -fx-text-fill: #b8a88a;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb,
+.scroll-pane .scroll-bar:vertical .thumb {
+    -fx-background-color: #d4c4a8;
+    -fx-background-insets: 0;
+    -fx-background-radius: 3px;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb:hover,
+.scroll-pane .scroll-bar:vertical .thumb:hover {
+    -fx-background-color: #c8b89c;
+}
+
+.scroll-pane .scroll-bar:horizontal .thumb:pressed,
+.scroll-pane .scroll-bar:vertical .thumb:pressed {
+    -fx-background-color: #b8a88a;
+}
+
+.scroll-pane .scroll-bar:horizontal .track,
+.scroll-pane .scroll-bar:vertical .track {
+    -fx-background-color: #efe0c0;
+    -fx-border-color: transparent;
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+}
+
+.scroll-pane .scroll-bar .increment-button,
+.scroll-pane .scroll-bar .decrement-button {
+    -fx-pref-width: 14px;
+    -fx-pref-height: 14px;
+}
+
+.scroll-pane .scroll-bar .increment-arrow,
+.scroll-pane .scroll-bar .decrement-arrow {
+    -fx-background-color: #5c4a32;
+    -fx-shape: "M 0 0 L 4 4 L 0 8 Z";
+    -fx-scale-shape: false;
+    -fx-padding: 3px;
+}
+
+.card-timestamp-row {
+    -fx-spacing: 4;
+    -fx-alignment: center-left;
+}
+
+.card-timestamp-row.persistent .card-timestamp {
+    -fx-text-fill: #6d9b4a;
+}
+
+.card-persistent-label {
+    -fx-text-fill: #6d9b4a;
+}
+
+.card-button-bar {
+    -fx-alignment: center-right;
+    -fx-spacing: 4;
+    -fx-padding: 0 4 0 0;
+}
+
+.card-action-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+    -fx-cursor: hand;
+    -fx-background-radius: 4;
+    -fx-min-width: 28;
+    -fx-min-height: 28;
+}
+
+.card-action-button:hover {
+    -fx-background-color: rgba(92, 74, 50, 0.08);
+}
+
+.card-action-button.danger:hover {
+    -fx-background-color: rgba(198, 40, 40, 0.15);
+}
+
+.card-severity-bar {
+    -fx-spacing: 6;
+    -fx-alignment: center-left;
+}
+
+.card-severity-toggle {
+    -fx-background-color: transparent;
+    -fx-background-radius: 6;
+    -fx-border-color: transparent;
+    -fx-border-radius: 6;
+    -fx-padding: 6;
+    -fx-cursor: hand;
+    -fx-opacity: 0.5;
+}
+
+.card-severity-toggle:hover {
+    -fx-background-color: rgba(92, 74, 50, 0.06);
+    -fx-opacity: 0.8;
+}
+
+.card-severity-toggle:selected {
+    -fx-background-color: rgba(92, 74, 50, 0.12);
+    -fx-opacity: 1.0;
+}
+
+.card-edit-input {
+    -fx-background-color: rgba(92, 74, 50, 0.06);
+    -fx-text-fill: #5c4a32;
+    -fx-prompt-text-fill: #b8a88a;
+    -fx-border-color: transparent;
+    -fx-border-radius: 4;
+    -fx-background-radius: 4;
+    -fx-padding: 6 8;
+}
+.card-edit-input .content {
+    -fx-background-color: transparent;
+    -fx-padding: 2 0;
+}
+.card-edit-input .scroll-bar {
+    -fx-background-color: transparent;
+    -fx-pref-width: 0;
+    -fx-pref-height: 0;
+}
+
+.card-edit-input:focused {
+    -fx-border-color: #8B7355;
+}
+
+.card-edit-text-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: #8c7a62;
+    -fx-padding: 4 12;
+    -fx-cursor: hand;
+    -fx-background-radius: 4;
+}
+
+.card-edit-text-button:hover {
+    -fx-background-color: rgba(92, 74, 50, 0.08);
+    -fx-text-fill: #5c4a32;
+}
+
+.card-edit-text-button.primary:hover {
+    -fx-background-color: rgba(139, 115, 85, 0.15);
+    -fx-text-fill: #8B7355;
+}
+
+.card-edit-text-button.danger:hover {
+    -fx-background-color: rgba(198, 40, 40, 0.15);
+    -fx-text-fill: #c62828;
+}
+
+.card-edit-text-button.persistent-toggle {
+    -fx-text-fill: #6d9b4a;
+}
+
+.card-edit-text-button.persistent-toggle:hover {
+    -fx-background-color: rgba(109, 155, 74, 0.15);
+    -fx-text-fill: #7dab5a;
+}

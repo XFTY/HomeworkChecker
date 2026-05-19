@@ -11,7 +11,11 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Popup service for managing popup windows and animations
+ * PopupService — 弹窗管理服务
+ * <p>
+ * 弹窗显示时对主界面施加高斯模糊 + 黑色半透明遮罩，弹窗本身带弹性缩放淡入/淡出动画。
+ * 关闭时反向动画后清除内容。
+ * </p>
  */
 public class PopupService {
     

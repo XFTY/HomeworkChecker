@@ -1,0 +1,28 @@
+.language-button {
+    -fx-background-color: #efe0c0;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-text-fill: #5c4a32;
+    -fx-transition: all 0.2s ease-in-out;
+}
+
+.language-button:hover {
+    -fx-background-color: #e5d0a0;
+    -fx-scale-x: 1.05;
+    -fx-scale-y: 1.05;
+}
+
+.language-button:pressed {
+    -fx-background-color: #d8c090;
+    -fx-scale-x: 0.95;
+    -fx-scale-y: 0.95;
+}
+
+.language-button:disabled {
+    -fx-opacity: 0.5;
+    -fx-cursor: default;
+}
+
+.language-button:focused {
+    -fx-effect: dropshadow(gaussian, #8B7355, 6, 0.2, 0, 0);
+}

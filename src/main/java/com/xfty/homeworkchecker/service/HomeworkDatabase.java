@@ -16,15 +16,35 @@ import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
+/**
+ * HomeworkDatabase — 作业数据库服务
+ * <p>
+ * 基于文件系统的 JSON 存储引擎：读写 ~/homeworkChecker/homeworkDatabase/YYYYMMDD 文件。
+ * 支持 V1/V2 格式，V2 含 context、warnings（提醒卡片）、dataSHA256 完整性校验。
+ * 同时提供 config.json、initTemple.txt、language.json 的写入方法。
+ * </p>
+ */
 public class HomeworkDatabase {
     private static final Logger logger = LoggerFactory.getLogger(HomeworkDatabase.class);
 
+    /**
+     * 获取今日作业内容（基于 Idf 中的当前日期）
+     *
+     * @return 作业内容，无数据返回 null
+     */
     public String getTodayHomeworkContext() {
         return getHomeworkContext(Idf.year, Idf.month, Idf.day);
     }
 
+    /**
+     * 按年/月/日获取作业内容
+     *
+     * @param year  年份
+     * @param month 月份
+     * @param day   日期
+     * @return 作业内容，无数据返回 null
+     */
     public String getHomeworkContext(String year, String month, String day) {
-        // 构造日期文件名 (格式: YYYYMMDD)
         String dateFileName = year + month + day;
         return getHomeworkContextByFile(dateFileName);
     }
@@ -39,6 +59,12 @@ public class HomeworkDatabase {
         return getHomeworkContextByFile(fileName);
     }
 
+    /**
+     * 读取指定文件的 JSON 内容，校验 SHA-256 完整性后返回 context 字段
+     *
+     * @param fileName 文件名（YYYYMMDD）
+     * @return 作业内容，文件不存在或异常返回 null
+     */
     private String getHomeworkContextByFile(String fileName) {
         try {
             File userDir = FileUtils.getUserDirectory();
@@ -80,6 +106,12 @@ public class HomeworkDatabase {
         }
     }
 
+    /**
+     * 将今日作业内容写入数据库文件（V2 格式，含完整性校验）
+     * 保留已有 warnings 数据，计算并写入 dataSHA256
+     *
+     * @param context 作业内容
+     */
     public void writeHomeworkContextByDay(String context) {
         try {
             File userDir = FileUtils.getUserDirectory();

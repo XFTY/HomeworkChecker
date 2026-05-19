@@ -12,6 +12,13 @@ import java.nio.channels.FileChannel;
 import java.nio.channels.FileLock;
 import java.nio.file.*;
 
+/**
+ * SingletonInstanceManager — 单例实例管理服务
+ * <p>
+ * 通过 FileLock 防止多开，WatchService 监听 repeatedly.start 信号文件。
+ * 第二实例启动时创建信号文件，已有实例检测到后自动聚焦窗口。
+ * </p>
+ */
 public class SingletonInstanceManager {
     private static final Logger logger = LoggerFactory.getLogger(SingletonInstanceManager.class);
     private static final String LOCK_FILENAME = "progress.lock";

@@ -4,7 +4,11 @@ import org.commonmark.parser.Parser;
 import org.commonmark.renderer.html.HtmlRenderer;
 
 /**
- * Markdown to HTML converter with dark theme styling
+ * HtmlBuilder — Markdown → HTML 转换服务
+ * <p>
+ * 使用 CommonMark 库将 Markdown 文本渲染为 HTML，
+ * 并包裹深色主题样式，用于 WebView 中的更新日志展示。
+ * </p>
  */
 public class HtmlBuilder {
     

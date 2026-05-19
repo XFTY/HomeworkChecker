@@ -1,0 +1,64 @@
+.check-box {
+    -fx-font-family: "Microsoft YaHei UI";
+    -fx-font-size: 12px;
+    -fx-text-fill: #5c4a32;
+    -fx-label-padding: 0px 0px 0px 4px;
+}
+
+.check-box .box {
+    -fx-background-color: #faf3e0;
+    -fx-background-radius: 4px;
+    -fx-border-radius: 4px;
+    -fx-border-width: 1px;
+    -fx-border-color: #d4a574;
+    -fx-pref-width: 16px;
+    -fx-pref-height: 16px;
+    -fx-shape: null;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: #faf3e0;
+    -fx-shape: "M 2 4 L 4 6 L 8 2";
+    -fx-stroke: #faf3e0;
+    -fx-stroke-width: 1.5;
+    -fx-fill: transparent;
+}
+
+.check-box:hover .box {
+    -fx-background-color: #f0e4c8;
+    -fx-border-color: #c8a060;
+}
+
+.check-box:pressed .box {
+    -fx-background-color: #e5d0a0;
+    -fx-border-color: #8B7355;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #8B7355;
+    -fx-border-color: #8B7355;
+}
+
+.check-box:focused .box {
+    -fx-border-color: #8B7355;
+    -fx-border-width: 2px;
+}
+
+.check-box:disabled {
+    -fx-opacity: 0.6;
+}
+
+.check-box:disabled .box {
+    -fx-background-color: #f0e8d8;
+    -fx-border-color: #e0d0b8;
+}
+
+.check-box:indeterminate .mark {
+    -fx-background-color: #8B7355;
+    -fx-shape: "M 0 4 L 10 4";
+    -fx-stroke-width: 2px;
+    -fx-stroke: #faf3e0;
+    -fx-fill: transparent;
+}

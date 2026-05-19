@@ -16,6 +16,13 @@ import java.io.File;
 import java.text.MessageFormat;
 import java.util.ResourceBundle;
 
+/**
+ * Updater — 更新页面控制器
+ * <p>
+ * 管理检查更新按钮和安装按钮的交互，通过 WebView 显示更新日志 HTML，
+ * 通过 ProgressBar 显示下载进度。安装过程调用 UpdaterService 完成。
+ * </p>
+ */
 public class Updater {
     
     private static final Logger logger = LoggerFactory.getLogger(Updater.class);

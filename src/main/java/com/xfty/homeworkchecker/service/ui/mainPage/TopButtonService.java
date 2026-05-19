@@ -40,14 +40,21 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 /**
- * Top button service for managing top bar button actions
+ * TopButtonService — 顶栏按钮服务
+ * <p>
+ * 管理主界面顶栏的按钮功能：截屏（Canvas 合成 + 剪切板）、历史作业弹窗、设置弹窗、关于弹窗。
+ * 每个功能作为独立静态内部类实现。
+ * </p>
  */
 public class TopButtonService {
     
     private static final Logger logger = LoggerFactory.getLogger(TopButtonService.class);
     
     /**
-     * Screenshot service for handling screenshot operations
+     * ScreenshotService — 截屏服务（内部类）
+     * <p>
+     * 将编辑区内容渲染为图片（含日期头部），保存到系统剪贴板，带按钮闪烁动画反馈。
+     * </p>
      */
     public static class ScreenshotService {
 

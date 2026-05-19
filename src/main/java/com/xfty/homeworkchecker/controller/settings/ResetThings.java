@@ -5,6 +5,13 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 
+/**
+ * ResetThings — 重置页面控制器
+ * <p>
+ * 提供重置今日作业的功能：确认后标记 needHomeworkShowingAreaClear，
+ * 在主界面下一次刷新时生效。
+ * </p>
+ */
 public class ResetThings {
 
     private static final org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(ResetThings.class);
@@ -12,6 +19,9 @@ public class ResetThings {
     @FXML
     private Button clearAllHomeworkContentButton;
 
+    /**
+     * 重置今日作业：弹出确认对话框 → 标记清理标志 → 禁用按钮
+     */
     @FXML
     private void onResetHomeworkClicked() {
         // 处理按钮点击事件

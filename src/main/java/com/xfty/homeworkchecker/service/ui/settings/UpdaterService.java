@@ -23,7 +23,11 @@ import java.util.ResourceBundle;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 更新服务类 - 处理所有更新相关的业务逻辑
+ * UpdaterService — 更新业务服务
+ * <p>
+ * 负责完整的更新流程：GitHub API 版本检查、OkHttp 下载 .msi 安装包、
+ * 下载进度/剩余时间计算、msiexec 安装并退出应用。
+ * </p>
  */
 public class UpdaterService {
     

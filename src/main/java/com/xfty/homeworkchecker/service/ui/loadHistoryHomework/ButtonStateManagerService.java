@@ -9,7 +9,11 @@ import org.slf4j.LoggerFactory;
 import java.util.Objects;
 
 /**
- * 按钮状态管理器 - 负责管理按钮和 ImageView 的状态（启用/禁用，绿灯/红灯）
+ * ButtonStateManagerService — 按钮状态管理服务
+ * <p>
+ * 管理历史作业查询按钮的状态：有数据→绿灯可用，无数据→红灯禁用。
+ * 预加载 green.png / red.png 图标资源。
+ * </p>
  */
 public class ButtonStateManagerService {
     

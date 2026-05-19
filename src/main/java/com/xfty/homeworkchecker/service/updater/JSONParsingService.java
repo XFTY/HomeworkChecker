@@ -10,6 +10,13 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * JSONParsingService — JSON 解析服务
+ * <p>
+ * 从 GitHub Release API 返回的 JSON 中提取 tag_name、name、body、
+ * assets 下载链接、版本类型检测。所有方法均为静态工具方法。
+ * </p>
+ */
 public class JSONParsingService {
     
     /**

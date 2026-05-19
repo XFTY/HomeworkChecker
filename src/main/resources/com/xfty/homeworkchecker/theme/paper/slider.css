@@ -1,0 +1,61 @@
+.slider {
+    -fx-font-family: "Segoe UI", sans-serif;
+}
+
+.slider .track {
+    -fx-background-color: #d4c4a8;
+    -fx-background-radius: 3px;
+    -fx-background-insets: 0;
+    -fx-border-width: 0;
+    -fx-height: 6px;
+}
+
+.slider .fill {
+    -fx-background-color: #8B7355;
+    -fx-background-radius: 3px;
+    -fx-background-insets: 0;
+}
+
+.slider .thumb {
+    -fx-background-color: #faf3e0;
+    -fx-background-insets: 0;
+    -fx-background-radius: 6px;
+    -fx-border-color: #8B7355;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-pref-width: 12px;
+    -fx-pref-height: 12px;
+}
+
+.slider .thumb:hover {
+    -fx-background-color: #f0e8d0;
+    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.1;
+}
+
+.slider .thumb:pressed {
+    -fx-background-color: #e5dcc0;
+    -fx-border-color: #7a6348;
+}
+
+.slider:focused .thumb {
+    -fx-border-color: #8B7355;
+    -fx-border-width: 2px;
+}
+
+.slider:disabled {
+    -fx-opacity: 0.6;
+}
+
+.slider:disabled .track {
+    -fx-background-color: #ddd0b8;
+}
+
+.slider:disabled .fill {
+    -fx-background-color: #c8b89c;
+}
+
+.slider:disabled .thumb {
+    -fx-background-color: #d4c4a8;
+    -fx-border-color: #c8b89c;
+}

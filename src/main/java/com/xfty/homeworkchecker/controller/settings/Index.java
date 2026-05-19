@@ -28,56 +28,67 @@ import java.net.URL;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
+/**
+ * Index — 设置主页导航控制器
+ * <p>
+ * 6 个侧栏按钮（字体/语言/主题/初始数据/数据库编辑器/重置/更新），
+ * 点击后通过淡入淡出动画切换右侧内容区域。含缩放按钮和按钮悬停效果。
+ * </p>
+ */
 public class Index implements Initializable {
     @FXML
     private ScrollPane rightShowingArea;
-    
+
     @FXML
     private AnchorPane fontSettingsButton;
-    
     @FXML
     private AnchorPane languageSettingsButton;
-    
+    @FXML
+    private AnchorPane themeSettingsButton;
     @FXML
     private AnchorPane initialDataButton;
-    
     @FXML
     private AnchorPane dataBaseEditorButton;
-    
     @FXML
     private AnchorPane resetButton;
-
     @FXML
     private AnchorPane updaterButton;
-    
+
     @FXML
     private Circle windowCloseButton;
-
     @FXML
     private Circle windowZoomButton;
 
+    /** 当前语言 Locale */
     private Locale locale;
 
+    /** 当前打开的页面标识 */
     private String openPageCode;
-    
-    // 当前选中的按钮
+
+    /** 当前高亮的导航按钮 */
     private AnchorPane currentSelectedButton;
-    
-    // 高亮颜色
+
+    // ==================== 导航按钮颜色常量 ====================
+
     private static final String DEFAULT_BACKGROUND = "#1e1e1e";
     private static final String HIGHLIGHT_BACKGROUND = "#3a3a3a";
     private static final String HOVER_BACKGROUND = "#2a2a2a";
     private static final String PRESSED_BACKGROUND = "#4a4a4a";
 
-    // 添加日志记录器
     private static final Logger logger = LoggerFactory.getLogger(Index.class);
 
     private final HomeworkDatabase homeworkDatabase = new HomeworkDatabase();
 
+    /** 窗口是否最大化 */
     private boolean isMaximized = false;
+    /** 原始窗口宽（用于恢复） */
     private double originalPrefWidth = 818.0;
+    /** 原始窗口高（用于恢复） */
     private double originalPrefHeight = 509.0;
 
+    /**
+     * 字体设置按钮：在右侧区域加载 homeworkArea.fxml
+     */
     @FXML
     private void onFontSettingsClicked() {
         logger.info("Entering onFontSettingsClicked, current openPageCode: {}", openPageCode);
@@ -114,6 +125,9 @@ public class Index implements Initializable {
         logger.info("Exiting onFontSettingsClicked");
     }
 
+    /**
+     * 语言设置按钮：在右侧区域加载 languageChooser.fxml
+     */
     @FXML
     private void onLanguageSettingsClicked() {
         logger.info("Entering onLanguageSettingsClicked, current openPageCode: {}", openPageCode);
@@ -149,6 +163,44 @@ public class Index implements Initializable {
         logger.info("Exiting onLanguageSettingsClicked");
     }
 
+    /**
+     * 主题设置按钮：在右侧区域加载 theme.fxml
+     */
+    @FXML
+    private void onThemeSettingsClicked() {
+        logger.info("Entering onThemeSettingsClicked, current openPageCode: {}", openPageCode);
+
+        if (openPageCode != null && openPageCode.equals("theme")) {
+            logger.debug("Theme page already open, returning");
+            return;
+        }
+        openPageCode = "theme";
+        logger.debug("Setting openPageCode to: {}", openPageCode);
+
+        highlightButton(themeSettingsButton);
+
+        try {
+            logger.debug("Loading FXML file for theme settings");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/settings/theme.fxml"));
+            if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
+                loader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
+                logger.debug("Applied language bundle for locale: {}", locale);
+            }
+            Parent root = loader.load();
+            logger.info("Successfully loaded theme.fxml");
+
+            applyFadeAnimation(root);
+            logger.info("Applied fade animation for theme page");
+        } catch (Exception e) {
+            logger.error("Failed to open theme settings", e);
+        }
+
+        logger.info("Exiting onThemeSettingsClicked");
+    }
+
+    /**
+     * 初始模板编辑按钮：在右侧显示初始模板编辑器，文本变化时自动保存
+     */
     @FXML
     private void onSetInitialDataClicked() {
         logger.info("Entering onSetInitialDataClicked, current openPageCode: {}", openPageCode);
@@ -223,6 +275,9 @@ public class Index implements Initializable {
         logger.info("Exiting onSetInitialDataClicked");
     }
 
+    /**
+     * 数据库编辑器按钮：在右侧区域加载 dataBaseEditor.fxml
+     */
     @FXML
     private void onDataBaseEditorClicked() {
         logger.info("Entering onDataBaseEditorClicked, current openPageCode: {}", openPageCode);
@@ -257,6 +312,9 @@ public class Index implements Initializable {
         logger.info("Exiting onDataBaseEditorClicked");
     }
 
+    /**
+     * 重置按钮：在右侧区域加载 reset.fxml
+     */
     @FXML
     private void onResetClicked() {
         logger.info("Entering onResetClicked, current openPageCode: {}", openPageCode);
@@ -291,6 +349,9 @@ public class Index implements Initializable {
         logger.info("Exiting onResetClicked");
     }
 
+    /**
+     * 更新按钮：在右侧区域加载 updater.fxml
+     */
     @FXML
     private void onUpdaterClicked() {
         logger.info("Entering onUpdaterClicked, current openPageCode: {}", openPageCode);
@@ -404,6 +465,9 @@ public class Index implements Initializable {
         logger.debug("Button highlighted successfully");
     }
 
+    /**
+     * 初始化设置导航页：保存关闭按钮引用、初始化 Locale、为所有按钮添加悬停效果
+     */
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         // 保存关闭按钮引用到Idf
@@ -423,6 +487,7 @@ public class Index implements Initializable {
         // 为所有按钮添加悬停效果
         setupButtonHoverEffect(fontSettingsButton);
         setupButtonHoverEffect(languageSettingsButton);
+        setupButtonHoverEffect(themeSettingsButton);
         setupButtonHoverEffect(initialDataButton);
         setupButtonHoverEffect(dataBaseEditorButton);
         setupButtonHoverEffect(resetButton);

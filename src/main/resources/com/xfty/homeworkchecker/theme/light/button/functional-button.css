@@ -1,0 +1,37 @@
+.functional-button {
+    -fx-background-color: #ffffff;
+    -fx-text-fill: #333333;
+    -fx-font-family: "System";
+    -fx-font-size: 12px;
+    -fx-font-weight: 500;
+    -fx-border-width: 1px;
+    -fx-border-color: #e0e0e0;
+    -fx-background-radius: 6px;
+    -fx-border-radius: 6px;
+    -fx-padding: 6px 12px;
+    -fx-effect: null;
+}
+
+.functional-button:hover {
+    -fx-background-color: #f0f0f0;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.functional-button:pressed {
+    -fx-background-color: #e0e0e0;
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+}
+
+.functional-button:disabled {
+    -fx-background-color: #f5f5f5;
+    -fx-text-fill: #aaaaaa;
+    -fx-opacity: 0.7;
+}
+
+.functional-button:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-width: 1px;
+    -fx-border-color: #0078d4;
+}

@@ -13,15 +13,35 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.charset.StandardCharsets;
 
+/**
+ * FileInitManager — 文件系统初始化服务
+ * <p>
+ * 负责首次运行的目录结构创建、config.json/initTemple.txt/language.json 生成，
+ * 以及运行时的目录完整性检查与缺失文件恢复。
+ * </p>
+ */
 public class FileInitManager {
     private static final Logger logger = LoggerFactory.getLogger(FileInitManager.class);
 
+    /**
+     * 检测是否为首次运行（判断 ~/homeworkChecker/ 目录是否存在）
+     *
+     * @return true 表示首次运行
+     */
     public boolean isFirstRun() {
         File userDir = FileUtils.getUserDirectory();
         File homeworkCheckerDir = new File(userDir, "homeworkChecker");
         return !homeworkCheckerDir.exists();
     }
 
+    /**
+     * 首次运行完整初始化：创建目录结构、写入 config.json/initTemple.txt/language.json
+     *
+     * @param languageCode 语言代码
+     * @param fontFamily   字体族
+     * @param fontSize     字号
+     * @param initTemplate 初始作业模板
+     */
     public void initializeFirstRun(String languageCode, String fontFamily, double fontSize, String initTemplate) {
         try {
             File userDir = FileUtils.getUserDirectory();

@@ -8,11 +8,19 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DatabaseManager — 数据库文件清单服务
+ * <p>
+ * 获取 homeworkDatabase 目录下的所有文件名，用于数据库编辑器中的文件列表展示。
+ * </p>
+ */
 public class DatabaseManager {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseManager.class);
+
     /**
-     * 获取指定路径下所有文件的文件名列表
-     * @return 文件名列表
+     * 获取 homeworkDatabase 目录下所有文件的文件名列表
+     *
+     * @return 文件名列表（按文件系统顺序）
      */
     public List<String> getAllDatabaseFileName() {
         List<String> fileNames = new ArrayList<>();
