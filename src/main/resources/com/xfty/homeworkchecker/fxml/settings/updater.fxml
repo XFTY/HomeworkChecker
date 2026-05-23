@@ -8,7 +8,7 @@
 <?import javafx.scene.web.WebView?>
 <AnchorPane minHeight="-Infinity" minWidth="-Infinity" prefHeight="409.0" prefWidth="550.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.settings.Updater">
    <children>
-      <Label layoutX="14.0" layoutY="21.0" text="HomeworkChecker 更新" textFill="WHITE" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="21.0">
+      <Label layoutX="14.0" layoutY="21.0" text="%updater.title" textFill="WHITE" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="21.0">
          <font>
             <Font size="18.0" />
          </font>
@@ -20,12 +20,12 @@
                   <Image url="@../../icon/检测更新.png" />
                </image>
             </ImageView>
-            <Label fx:id="updaterTitle" layoutX="40.0" layoutY="17.0" text="准备就绪" textFill="WHITE">
+            <Label fx:id="updaterTitle" layoutX="40.0" layoutY="17.0" text="" textFill="WHITE">
                <font>
                   <Font size="15.0" />
                </font>
             </Label>
-            <Label fx:id="updaterSubTitle" layoutX="40.0" layoutY="37.0" text="点击下方按钮检查更新" textFill="#9c9c9c" />
+            <Label fx:id="updaterSubTitle" layoutX="40.0" layoutY="37.0" text="" textFill="#9c9c9c" />
             <ProgressBar fx:id="updaterProcess" layoutY="61.0" prefHeight="18.0" prefWidth="540.0" progress="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.20000000000004547" />
          </children>
       </AnchorPane>
@@ -33,8 +33,8 @@
          <children>
             <HBox alignment="CENTER_RIGHT" prefHeight="33.0" prefWidth="200.0" spacing="5.0" AnchorPane.bottomAnchor="14.0" AnchorPane.rightAnchor="14.0">
                <children>
-                  <Button fx:id="updaterCheckUpdate" mnemonicParsing="false" styleClass="functional-button" stylesheets="@../../theme/darkness/button/functional-button.css" text="检查更新" />
-                  <Button fx:id="updaterInstallNow" disable="true" mnemonicParsing="false" style="-fx-background-color: #0080ff;" styleClass="functional-button" stylesheets="@../../theme/darkness/button/functional-button.css" text="现在安装" />
+                  <Button fx:id="updaterCheckUpdate" mnemonicParsing="false" styleClass="functional-button" stylesheets="@../../theme/darkness/button/functional-button.css" text="%updater.checkUpdate" />
+                  <Button fx:id="updaterInstallNow" disable="true" mnemonicParsing="false" style="-fx-background-color: #0080ff;" styleClass="functional-button" stylesheets="@../../theme/darkness/button/functional-button.css" text="%updater.installNow" />
                </children>
             </HBox>
             <WebView fx:id="updaterWebView" opacity="0.0" prefHeight="195.0" prefWidth="384.0" AnchorPane.bottomAnchor="55.0" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" AnchorPane.topAnchor="23.0" />

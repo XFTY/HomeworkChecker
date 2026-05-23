@@ -1,10 +1,13 @@
 package com.xfty.homeworkchecker;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.xfty.homeworkchecker.controller.MainPage;
 import com.xfty.homeworkchecker.service.SingletonInstanceManager;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 
 import java.util.List;
+import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Idf {
@@ -37,6 +40,20 @@ public class Idf {
     public static JSONObject userLanguage;
 
     public volatile static ResourceBundle userLanguageBundle;
+
+    public static Stage primaryStage;
+    public static MainPage mainPageController;
+
+    public static void reloadLanguageBundle(String languageCode) {
+        String[] languageParts = languageCode.split("_");
+        Locale locale;
+        if (languageParts.length == 2) {
+            locale = new Locale.Builder().setLanguage(languageParts[0]).setRegion(languageParts[1]).build();
+        } else {
+            locale = new Locale.Builder().setLanguage(languageParts[0]).build();
+        }
+        userLanguageBundle = ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale);
+    }
 
     public static volatile boolean needHomeworkShowingAreaClear = false;
 

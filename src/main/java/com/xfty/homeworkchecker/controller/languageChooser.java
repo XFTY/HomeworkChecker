@@ -1,7 +1,10 @@
 package com.xfty.homeworkchecker.controller;
 
 import com.alibaba.fastjson2.JSONObject;
+import com.xfty.homeworkchecker.Entry;
+import com.xfty.homeworkchecker.Idf;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
+import javafx.stage.Window;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Alert;
@@ -20,8 +23,8 @@ import java.util.ResourceBundle;
 /**
  * languageChooser — 语言选择对话框控制器
  * <p>
- * 提供 11 种语言的图形化选择界面，选中后弹出多语言确认/退出对话框。
- * 语言变更需要重启应用生效。
+ * 提供 11 种语言的图形化选择界面，选中后弹出多语言确认对话框。
+ * 语言变更后自动重建界面，无需重启。
  * </p>
  */
 public class languageChooser implements Initializable {
@@ -225,7 +228,7 @@ public class languageChooser implements Initializable {
     }
     
     /**
-     * 处理语言选择：弹出确认对话框 → 保存语言设置 → 询问是否退出应用
+     * 处理语言选择：弹出确认对话框 → 保存语言设置 → 立即切换语言（无需重启）
      */
     private void handleLanguageSelection(String languageCode) {
         String[] messages = languageMessages.get(languageCode);
@@ -244,17 +247,17 @@ public class languageChooser implements Initializable {
             languageJson.put("language", languageCode);
             homeworkDatabase.changeLanguage(languageJson);
             
-            // 询问用户是否要退出软件以应用更改
-            Alert exitAlert = new Alert(Alert.AlertType.CONFIRMATION);
-            exitAlert.setTitle(messages[3]); // 退出标题
-            exitAlert.setHeaderText(messages[4]); // 退出头
-            exitAlert.setContentText(messages[5]); // 退出内容
+            // 重载语言包并重建界面（无需重启）
+            Idf.reloadLanguageBundle(languageCode);
             
-            Optional<ButtonType> exitResult = exitAlert.showAndWait();
-            if (exitResult.isPresent() && exitResult.get() == ButtonType.OK) {
-                // 退出软件
-                System.exit(0);
+            // 如果是以独立窗口打开（旧版设置），关闭该窗口
+            Window currentWindow = chineseButton.getScene().getWindow();
+            if (currentWindow != Idf.primaryStage && currentWindow instanceof Stage) {
+                ((Stage) currentWindow).close();
             }
+            
+            // 重建主场景以应用新语言
+            Entry.rebuildScene();
         }
     }
     

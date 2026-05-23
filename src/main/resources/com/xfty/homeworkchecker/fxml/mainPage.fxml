@@ -45,16 +45,8 @@
                                     <Image url="@../icon/设置.png" />
                                  </image>
                               </ImageView>
-                           </graphic></Button>
-                        <Button fx:id="aboutButton" mnemonicParsing="false" onMouseClicked="#onAboutButtonPressed" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%main.about">
-                           <graphic>
-                              <ImageView fitHeight="15.0" fitWidth="13.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../icon/关于.png" />
-                                 </image>
-                              </ImageView>
-                           </graphic></Button>
-                     </children>
+                            </graphic></Button>
+                      </children>
                   </HBox>
                   <VBox alignment="CENTER_LEFT" layoutX="14.0" layoutY="12.0" prefHeight="70.0" prefWidth="441.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="15.0" AnchorPane.topAnchor="0.0">
                      <children>

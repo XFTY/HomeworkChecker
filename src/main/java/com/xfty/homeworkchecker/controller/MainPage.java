@@ -36,8 +36,6 @@ public class MainPage implements Initializable {
     private Button historyHomeworkButton;
     @FXML
     private Button settingsButton;
-    @FXML
-    private Button aboutButton;
 
     @FXML
     private Label titleLabel;
@@ -87,7 +85,6 @@ public class MainPage implements Initializable {
     private TopButtonService.ScreenshotService screenshotService;
     private TopButtonService.HistoryHomeworkService historyHomeworkService;
     private TopButtonService.SettingsService settingsService;
-    private TopButtonService.AboutService aboutService;
     private PopupService popupService;
     private EditMainService editMainService;
     private EditStateService editStateService;
@@ -140,7 +137,6 @@ public class MainPage implements Initializable {
                 cardUiService.loadCards();
             }
         });
-        aboutService = new TopButtonService.AboutService(popupService);
         editStateService = new EditStateService(
             editMain, homeworkDatabase, this::onLockModuleClicked,
             cardUiService::isEditingCard
@@ -151,7 +147,6 @@ public class MainPage implements Initializable {
         logger.debug("PopupService initialized with UI components");
         logger.debug("HistoryHomeworkService initialized");
         logger.debug("SettingsService initialized");
-        logger.debug("AboutService initialized");
         logger.debug("EditStateService initialized with editMain and homeworkDatabase");
 
         logger.debug("Current date: {}-{}-{}", Idf.year, Idf.month, Idf.day);
@@ -240,15 +235,6 @@ public class MainPage implements Initializable {
             Idf.isPreviewWindowShowing = true;
             logger.debug("Set isPreviewWindowShowing to true");
             settingsService.openSettingsDialog();
-        });
-    }
-
-    @FXML
-    protected void onAboutButtonPressed() {
-        cardUiService.checkActiveCardEditing(() -> {
-            Idf.isPreviewWindowShowing = true;
-            logger.debug("Set isPreviewWindowShowing to true");
-            aboutService.openAboutDialog();
         });
     }
 

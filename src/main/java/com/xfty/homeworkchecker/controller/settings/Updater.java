@@ -70,6 +70,9 @@ public class Updater {
         // 初始状态：禁用安装按钮
         updaterInstallNow.setDisable(true);
         
+        // 设置初始空闲状态文本
+        resetToIdleState();
+        
         logger.info("Updater controller initialized");
     }
     
@@ -97,7 +100,7 @@ public class Updater {
             @Override
             public void onUpdateAvailable(String version, String updateInfoHtml) {
                 updaterTitle.setText(version);
-                updaterSubTitle.setText("下方为详情信息");
+                updaterSubTitle.setText(getString("updater.details"));
                 updaterProcess.setProgress(1.0);
                 updaterInstallNow.setDisable(false); // 启用安装按钮
                 
@@ -131,8 +134,8 @@ public class Updater {
      * 重置为空闲状态
      */
     private void resetToIdleState() {
-        updaterTitle.setText(getString("updater.checking"));
-        updaterSubTitle.setText(getString("updater.connecting"));
+        updaterTitle.setText(getString("updater.ready"));
+        updaterSubTitle.setText(getString("updater.ready.description"));
         updaterProcess.setProgress(0.0);
         updaterCheckUpdate.setDisable(false);
     }
@@ -152,8 +155,8 @@ public class Updater {
                 disableSettingsCloseButton(true);
                 
                 // 更新UI状态
-                updaterTitle.setText("正在下载更新...");
-                updaterSubTitle.setText("计算剩余时间...");
+                updaterTitle.setText(getString("updater.downloading"));
+                updaterSubTitle.setText(getString("updater.calculatingTime"));
                 updaterProcess.setProgress(0.0);
             }
             
@@ -167,8 +170,8 @@ public class Updater {
             
             @Override
             public void onDownloadCompleted(File installerFile) {
-                updaterTitle.setText("下载完成！");
-                updaterSubTitle.setText("正在启动安装程序...");
+                updaterTitle.setText(getString("updater.downloadComplete"));
+                updaterSubTitle.setText(getString("updater.startingInstaller"));
                 updaterProcess.setProgress(1.0);
                 
                 // 启用关闭按钮
@@ -181,8 +184,8 @@ public class Updater {
             
             @Override
             public void onFileExists(File installerFile) {
-                updaterTitle.setText("文件已存在");
-                updaterSubTitle.setText("正在启动安装程序...");
+                updaterTitle.setText(getString("updater.fileExists"));
+                updaterSubTitle.setText(getString("updater.startingInstaller"));
                 updaterService.runInstallerAndExit(installerFile);
             }
             
@@ -228,11 +231,9 @@ public class Updater {
      */
     private void showUnsupportedPlatformAlert() {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Unsupported Platform");
-        alert.setHeaderText("Automatic update not supported on this platform");
-        alert.setContentText("Automatic update is only supported on Windows.\n\n" +
-                "Please visit the following link to download the update manually:\n" +
-                "https://github.com/XFTY/Homeworkchecker/releases");
+        alert.setTitle(getString("updater.unsupported.title"));
+        alert.setHeaderText(getString("updater.unsupported.header"));
+        alert.setContentText(getString("updater.unsupported.content"));
         alert.showAndWait();
     }
     
@@ -242,7 +243,7 @@ public class Updater {
      */
     private void showErrorMessage(String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Error");
+        alert.setTitle(getString("updater.error.title"));
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();

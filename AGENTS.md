@@ -1,56 +1,67 @@
-# HomeworkChecker — Agents 备忘录
+使用简体中文回答
 
-## 构建命令
+{file:SUM.md}是项目架构，每次进行计划规划时读取这个文件，并在更改项目结构后更新这个文件
 
-```bash
-mvn compile          # 编译
-mvn test             # 运行测试
-mvn package          # 打包
-mvn clean compile    # 清理并编译
+Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+
+**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+
+## 1. Think Before Coding
+
+**Don't assume. Don't hide confusion. Surface tradeoffs.**
+
+Before implementing:
+- State your assumptions explicitly. If uncertain, ask.
+- If multiple interpretations exist, present them - don't pick silently.
+- If a simpler approach exists, say so. Push back when warranted.
+- If something is unclear, stop. Name what's confusing. Ask.
+
+## 2. Simplicity First
+
+**Minimum code that solves the problem. Nothing speculative.**
+
+- No features beyond what was asked.
+- No abstractions for single-use code.
+- No "flexibility" or "configurability" that wasn't requested.
+- No error handling for impossible scenarios.
+- If you write 200 lines and it could be 50, rewrite it.
+
+Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
+
+## 3. Surgical Changes
+
+**Touch only what you must. Clean up only your own mess.**
+
+When editing existing code:
+- Don't "improve" adjacent code, comments, or formatting.
+- Don't refactor things that aren't broken.
+- Match existing style, even if you'd do it differently.
+- If you notice unrelated dead code, mention it - don't delete it.
+
+When your changes create orphans:
+- Remove imports/variables/functions that YOUR changes made unused.
+- Don't remove pre-existing dead code unless asked.
+
+The test: Every changed line should trace directly to the user's request.
+
+## 4. Goal-Driven Execution
+
+**Define success criteria. Loop until verified.**
+
+Transform tasks into verifiable goals:
+- "Add validation" → "Write tests for invalid inputs, then make them pass"
+- "Fix the bug" → "Write a test that reproduces it, then make it pass"
+- "Refactor X" → "Ensure tests pass before and after"
+
+For multi-step tasks, state a brief plan:
+```
+1. [Step] → verify: [check]
+2. [Step] → verify: [check]
+3. [Step] → verify: [check]
 ```
 
-**注意：** 运行前需设置环境变量 `$env:JAVA_HOME = "D:\Program Files\java25"`
+Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
 
-## 项目规则
+---
 
-### 架构
-- **MVC + Service Layer**：FXML 是 View，controller/ 包是 Controller，service/ 包是业务逻辑
-- Controller 通过 `@FXML` 注入 UI 组件，不直接操作 Scene Graph API
-- Service 通过构造器注入所需依赖（Controller 在 `initialize()` 中实例化 Service）
-
-### FXML 约定
-- 所有 FXML 放在 `src/main/resources/com/xfty/homeworkchecker/fxml/`
-- 所有 CSS 放在 `src/main/resources/com/xfty/homeworkchecker/theme/darkness/` 下按组件分类子目录
-- 所有图标放在 `src/main/resources/com/xfty/homeworkchecker/icon/`
-- 国际化 key 用 `%key.name%` 格式引用
-- 新 FXML 文件添加后需更新 `summarize.md` 中的映射表
-
-### CSS 约定
-- 每个组件一个独立 CSS 文件，按目录分组（`button/`, `textarea/`, `splitPane/` 等）
-- 深色主题，基础背景色 `#1e1e1e`
-- JavaFX CSS 选择器使用标准类名（`.split-pane`, `.text-area` 等）
-
-### Java 约定
-- 不添加注释（除非被要求）
-- 日志使用 SLF4J + Logback（`LoggerFactory.getLogger()`）
-- 全局状态通过 `Idf.java` 静态变量共享
-- 数据库操作通过 `HomeworkDatabase.java`
-
-### 国际化
-- properties 文件放在 `src/main/resources/com/xfty/homeworkchecker/i18n/`
-- FXML 中使用 `%key.name%` 引用
-- Java 中通过 `Idf.userLanguageBundle.getString("key.name")` 获取
-
-## 新增功能 checklist
-
-1. 更新 FXML 布局
-2. 更新 Controller（添加 `@FXML` 字段和事件处理方法）
-3. 添加 CSS 样式（如需要）
-4. 添加国际化 key（如需要）
-5. 添加图标资源（如需要）
-6. 更新 `summarize.md`（可选）
-
-## 约束
-- 不修改 `module-info.java` 除非添加新依赖
-- 不提交 `.env`、`credentials.json` 等敏感文件
-- 不执行 `git push --force` 到 main/master
+**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.

@@ -31,7 +31,7 @@ import java.util.ResourceBundle;
 /**
  * Index — 设置主页导航控制器
  * <p>
- * 6 个侧栏按钮（字体/语言/主题/初始数据/数据库编辑器/重置/更新），
+ * 侧栏按钮（字体/语言/初始数据/数据库编辑器/重置/更新/关于），
  * 点击后通过淡入淡出动画切换右侧内容区域。含缩放按钮和按钮悬停效果。
  * </p>
  */
@@ -44,8 +44,6 @@ public class Index implements Initializable {
     @FXML
     private AnchorPane languageSettingsButton;
     @FXML
-    private AnchorPane themeSettingsButton;
-    @FXML
     private AnchorPane initialDataButton;
     @FXML
     private AnchorPane dataBaseEditorButton;
@@ -53,6 +51,8 @@ public class Index implements Initializable {
     private AnchorPane resetButton;
     @FXML
     private AnchorPane updaterButton;
+    @FXML
+    private AnchorPane aboutSettingsButton;
 
     @FXML
     private Circle windowCloseButton;
@@ -161,41 +161,6 @@ public class Index implements Initializable {
         }
         
         logger.info("Exiting onLanguageSettingsClicked");
-    }
-
-    /**
-     * 主题设置按钮：在右侧区域加载 theme.fxml
-     */
-    @FXML
-    private void onThemeSettingsClicked() {
-        logger.info("Entering onThemeSettingsClicked, current openPageCode: {}", openPageCode);
-
-        if (openPageCode != null && openPageCode.equals("theme")) {
-            logger.debug("Theme page already open, returning");
-            return;
-        }
-        openPageCode = "theme";
-        logger.debug("Setting openPageCode to: {}", openPageCode);
-
-        highlightButton(themeSettingsButton);
-
-        try {
-            logger.debug("Loading FXML file for theme settings");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/settings/theme.fxml"));
-            if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
-                loader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
-                logger.debug("Applied language bundle for locale: {}", locale);
-            }
-            Parent root = loader.load();
-            logger.info("Successfully loaded theme.fxml");
-
-            applyFadeAnimation(root);
-            logger.info("Applied fade animation for theme page");
-        } catch (Exception e) {
-            logger.error("Failed to open theme settings", e);
-        }
-
-        logger.info("Exiting onThemeSettingsClicked");
     }
 
     /**
@@ -386,6 +351,38 @@ public class Index implements Initializable {
         logger.info("Exiting onUpdaterClicked");
     }
 
+    @FXML
+    private void onAboutSettingsClicked() {
+        logger.info("Entering onAboutSettingsClicked, current openPageCode: {}", openPageCode);
+
+        if (openPageCode != null && openPageCode.equals("about")) {
+            logger.debug("About page already open, returning");
+            return;
+        }
+        openPageCode = "about";
+        logger.debug("Setting openPageCode to: {}", openPageCode);
+
+        highlightButton(aboutSettingsButton);
+
+        try {
+            logger.debug("Loading FXML file for about settings");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/settings/about.fxml"));
+            if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
+                loader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
+                logger.debug("Applied language bundle for locale: {}", locale);
+            }
+            Parent root = loader.load();
+            logger.info("Successfully loaded about.fxml");
+
+            applyFadeAnimation(root);
+            logger.info("Applied fade animation for about page");
+        } catch (Exception e) {
+            logger.error("Failed to open about settings", e);
+        }
+
+        logger.info("Exiting onAboutSettingsClicked");
+    }
+
     /**
      * 为 ScrollPane 应用淡入淡出动画效果
      * @param newContent 新内容节点
@@ -487,11 +484,11 @@ public class Index implements Initializable {
         // 为所有按钮添加悬停效果
         setupButtonHoverEffect(fontSettingsButton);
         setupButtonHoverEffect(languageSettingsButton);
-        setupButtonHoverEffect(themeSettingsButton);
         setupButtonHoverEffect(initialDataButton);
         setupButtonHoverEffect(dataBaseEditorButton);
         setupButtonHoverEffect(resetButton);
         setupButtonHoverEffect(updaterButton);
+        setupButtonHoverEffect(aboutSettingsButton);
 
         // 设置缩放按钮点击事件
         windowZoomButton.setOnMouseClicked(event -> toggleWindowZoom());

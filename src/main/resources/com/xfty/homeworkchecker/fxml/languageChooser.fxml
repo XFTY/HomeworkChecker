@@ -130,6 +130,6 @@
             </AnchorPane>
          </children>
       </GridPane>
-      <TextArea editable="false" layoutX="36.0" layoutY="21.0" prefHeight="74.0" prefWidth="200.0" text="1.简体中文&#10;2.繁体中文&#10;3.英语&#10;4.西班牙语&#10;5.法语&#10;6.阿拉伯语&#10;7.俄语&#10;8.孟加拉语&#10;9.德语&#10;10.日语&#10;11.葡萄牙语&#10;&#10;留一手笔记，省得到时候他们认识我我不认识他" visible="false" wrapText="true" />
+      <TextArea editable="false" layoutX="36.0" layoutY="21.0" prefHeight="74.0" prefWidth="200.0" visible="false" wrapText="true" />
    </children>
 </AnchorPane>

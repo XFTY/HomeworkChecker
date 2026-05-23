@@ -15,7 +15,7 @@
                         <Image url="@../icon/右上角箭头.png" />
                     </image>
                 </ImageView>
-                <Label text="开源软件许可声明" textFill="WHITE">
+                <Label text="%opensource.title" textFill="WHITE">
                     <font>
                         <Font size="23.0" />
                     </font>

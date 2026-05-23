@@ -13,6 +13,12 @@ import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.xfty.homeworkchecker.service.HomeworkDatabase;
+import javafx.animation.FadeTransition;
+import javafx.scene.Parent;
+import javafx.scene.control.TextArea;
+import javafx.util.Duration;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -33,6 +39,7 @@ public class Entry extends Application {
     @Override
     public void start(Stage stage) throws IOException {
         initDate();
+        Idf.primaryStage = stage;
 
         FileInitManager fileInitManager = new FileInitManager();
         boolean firstRun = fileInitManager.isFirstRun();
@@ -104,6 +111,7 @@ public class Entry extends Application {
             }
 
             mainPageController = fxmlLoader.getController();
+            Idf.mainPageController = mainPageController;
 
             stage.setOnCloseRequest(windowEvent -> {
                 logger.info("Application closing requested");
@@ -125,15 +133,7 @@ public class Entry extends Application {
 
     private void loadUserLanguageBundle() {
         if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
-            String languageCode = Idf.userLanguage.getString("language");
-            String[] languageParts = languageCode.split("_");
-            Locale locale;
-            if (languageParts.length == 2) {
-                locale = new Locale.Builder().setLanguage(languageParts[0]).setRegion(languageParts[1]).build();
-            } else {
-                locale = new Locale.Builder().setLanguage(languageParts[0]).build();
-            }
-            Idf.userLanguageBundle = ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale);
+            Idf.reloadLanguageBundle(Idf.userLanguage.getString("language"));
         }
     }
 
@@ -174,6 +174,98 @@ public class Entry extends Application {
             if (e instanceof InterruptedException) {
                 Thread.currentThread().interrupt();
             }
+        }
+    }
+
+    public static void rebuildScene() {
+        Stage stage = Idf.primaryStage;
+        if (stage == null) {
+            logger.error("Primary stage is null, cannot rebuild scene");
+            return;
+        }
+
+        Scene oldScene = stage.getScene();
+        if (oldScene != null) {
+            Parent oldRoot = oldScene.getRoot();
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), oldRoot);
+            fadeOut.setFromValue(1.0);
+            fadeOut.setToValue(0.0);
+            fadeOut.setOnFinished(e -> buildNewScene(stage));
+            fadeOut.play();
+        } else {
+            buildNewScene(stage);
+        }
+    }
+
+    private static void buildNewScene(Stage stage) {
+        try {
+            // Save current homework content before rebuilding
+            Scene oldScene = stage.getScene();
+            if (oldScene != null) {
+                TextArea editMain = (TextArea) oldScene.lookup("#editMain");
+                if (editMain != null) {
+                    HomeworkDatabase db = new HomeworkDatabase();
+                    db.writeHomeworkContextByDay(editMain.getText());
+                }
+            }
+
+            // Cleanup old controller
+            if (Idf.mainPageController != null) {
+                Idf.mainPageController.cleanup();
+                Idf.mainPageController = null;
+            }
+
+            // Build new scene with current language bundle
+            String languageCode = Idf.userLanguage != null ? Idf.userLanguage.getString("language") : null;
+
+            FXMLLoader fxmlLoader = new FXMLLoader(Entry.class.getResource("fxml/mainPage.fxml"));
+            if (languageCode != null) {
+                String[] languageParts = languageCode.split("_");
+                Locale locale;
+                if (languageParts.length == 2) {
+                    locale = new Locale.Builder().setLanguage(languageParts[0]).setRegion(languageParts[1]).build();
+                } else {
+                    locale = new Locale.Builder().setLanguage(languageParts[0]).build();
+                }
+                fxmlLoader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
+            }
+            Parent newRoot = fxmlLoader.load();
+            newRoot.setOpacity(0.0);
+            Scene newScene = new Scene(newRoot, 1000, 600);
+
+            stage.setTitle(Idf.userLanguageBundle != null ? Idf.userLanguageBundle.getString("entry.window.title") : "HomeworkChecker");
+            stage.setScene(newScene);
+            stage.getIcons().add(new Image(Objects.requireNonNull(Entry.class.getResourceAsStream("icon/logo.png"))));
+            stage.show();
+
+            // Fade in new scene
+            FadeTransition fadeIn = new FadeTransition(Duration.millis(300), newRoot);
+            fadeIn.setFromValue(0.0);
+            fadeIn.setToValue(1.0);
+            fadeIn.play();
+
+            if (Idf.singletonManager != null) {
+                Idf.singletonManager.startWatchService(stage);
+            }
+
+            MainPage newController = fxmlLoader.getController();
+            Idf.mainPageController = newController;
+
+            stage.setOnCloseRequest(windowEvent -> {
+                logger.info("Application closing requested");
+                Idf.isSoftwareClosing = true;
+                if (newController != null) {
+                    newController.cleanup();
+                }
+                try {
+                    Thread.sleep(100);
+                } catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                }
+                logger.info("Application closed");
+            });
+        } catch (IOException e) {
+            logger.error("Failed to rebuild scene", e);
         }
     }
 

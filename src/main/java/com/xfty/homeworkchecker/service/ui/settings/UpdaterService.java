@@ -199,7 +199,7 @@ public class UpdaterService {
         // Windows系统
         if (osName.contains("win")) {
             if (downloadUrl == null || downloadUrl.isEmpty()) {
-                installCallback.onError("没有可用的下载链接");
+                installCallback.onError(getString("updater.noDownloadUrl"));
                 return;
             }
             
@@ -242,7 +242,7 @@ public class UpdaterService {
             public void onFailure(Call call, IOException e) {
                 logger.error("Download failed: {}", e.getMessage());
                 Platform.runLater(() -> {
-                    installCallback.onError("下载失败: " + e.getMessage());
+                    installCallback.onError(getString("updater.downloadFailed") + e.getMessage());
                 });
             }
             
@@ -251,7 +251,7 @@ public class UpdaterService {
                 if (!response.isSuccessful()) {
                     logger.error("Download failed with status code: {}", response.code());
                     Platform.runLater(() -> {
-                        installCallback.onError("下载失败，状态码: " + response.code());
+                        installCallback.onError(getString("updater.downloadFailed") + response.code());
                     });
                     return;
                 }
@@ -297,13 +297,13 @@ public class UpdaterService {
                                     
                                     String remainingTimeText;
                                     if (remainingTimeSeconds < 60) {
-                                        remainingTimeText = "剩余时间<1分钟";
+                                        remainingTimeText = getString("updater.remainingTime.lessThanMinute");
                                     } else if (remainingMinutes < 60) {
-                                        remainingTimeText = String.format("剩余时间约%d分%d秒", remainingMinutes, remainingSeconds);
+                                        remainingTimeText = String.format(getString("updater.remainingTime.minutes"), remainingMinutes, remainingSeconds);
                                     } else {
                                         long hours = remainingMinutes / 60;
                                         long mins = remainingMinutes % 60;
-                                        remainingTimeText = String.format("剩余时间约%d小时%d分", hours, mins);
+                                        remainingTimeText = String.format(getString("updater.remainingTime.hours"), hours, mins);
                                     }
                                     
                                     Platform.runLater(() -> {
@@ -334,7 +334,7 @@ public class UpdaterService {
                 } catch (IOException e) {
                     logger.error("Error saving file: {}", e.getMessage());
                     Platform.runLater(() -> {
-                        installCallback.onError("保存文件时出错: " + e.getMessage());
+                        installCallback.onError(getString("updater.saveError") + e.getMessage());
                     });
                 }
             }
