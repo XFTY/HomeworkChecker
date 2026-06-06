@@ -9,6 +9,12 @@
     -fx-border-radius: 8;
 }
 
+.card-item.drag-over {
+    -fx-border-color: #4A90D9;
+    -fx-border-width: 0 0 0 4;
+    -fx-border-radius: 8;
+}
+
 .card-item.info {
     -fx-background-color: #263b63;
 }

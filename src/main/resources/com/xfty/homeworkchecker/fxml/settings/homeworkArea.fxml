@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<VBox maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="412.0" prefWidth="462.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
+<VBox prefWidth="462.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
    <children>
       <AnchorPane prefHeight="53.0" prefWidth="442.0">
          <children>
@@ -47,6 +47,29 @@
             </Label>
             <Label fx:id="scrollValueDisplay" layoutX="14.0" layoutY="27.0" text="%settings.font.size.current" textFill="WHITE" />
             <TextArea fx:id="editMainTest" disable="true" editable="false" layoutX="31.2" layoutY="72.0" prefHeight="149.0" prefWidth="366.0" stylesheets="@../../theme/darkness/textarea/text-area-test.css" text="%settings.font.size.demo" AnchorPane.leftAnchor="31.0" AnchorPane.rightAnchor="31.0" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="170.0" prefWidth="442.0">
+         <children>
+            <Label layoutX="14.0" layoutY="8.0" text="%settings.imagecard.header" textFill="WHITE" AnchorPane.leftAnchor="14.0" AnchorPane.topAnchor="8.0">
+               <font>
+                  <Font name="System Bold" size="15.0" />
+               </font>
+            </Label>
+            <Label layoutX="14.0" layoutY="31.0" text="%settings.imagecard.slider.min" textFill="WHITE" />
+            <Slider fx:id="imageSliderMin" layoutX="14.0" layoutY="50.0" max="500.0" min="1.0" prefHeight="14.0" prefWidth="400.0" stylesheets="@../../theme/darkness/slider.css" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+            <Label fx:id="imageSliderMinValue" layoutX="380.0" layoutY="28.0" text="50" textFill="#aaaaaa" AnchorPane.rightAnchor="14.0">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label layoutX="14.0" layoutY="80.0" text="%settings.imagecard.slider.max" textFill="WHITE" />
+            <Slider fx:id="imageSliderMax" layoutX="14.0" layoutY="99.0" max="2000.0" min="100.0" prefHeight="14.0" prefWidth="400.0" stylesheets="@../../theme/darkness/slider.css" AnchorPane.leftAnchor="14.0" AnchorPane.rightAnchor="14.0" />
+            <Label fx:id="imageSliderMaxValue" layoutX="380.0" layoutY="77.0" text="800" textFill="#aaaaaa" AnchorPane.rightAnchor="14.0">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
          </children>
       </AnchorPane>
    </children>

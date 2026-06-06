@@ -64,7 +64,7 @@ HomeworkChecker/
 │       │       └── HtmlBuilder.java          # Markdown→HTML 暗色主题转换 (未被引用, 功能被 UpdaterService.generateUpdateInfoHtml() 替代)
 │       │
 │       └── resources/                # 资源文件
-│           ├── fxml/                 # 23个 FXML 界面布局文件
+│           ├── fxml/                 # 24个 FXML 界面布局文件
 │           │   ├── mainPage.fxml             # 主界面 (SplitPane 左: editMain, 右: cardContainer)
 │           │   ├── settings.fxml             # 设置窗口
 │           │   ├── about.fxml / updateWhat.fxml / openSourceLicence.fxml
@@ -76,15 +76,14 @@ HomeworkChecker/
 │           │   ├── setupWizard/             # 向导子步骤 (5个)
 │           │   │   ├── welcome.fxml / language.fxml / fontSettings.fxml
 │           │   │   ├── initialTemplate.fxml / finish.fxml
-│           │   └── settings/                # 设置子页面 (7个)
+│           │   └── settings/                # 设置子页面 (8个)
 │           │       ├── index.fxml / homeworkArea.fxml / homeworkArea-back.fxml
-│   │       ├── dataBaseEditor.fxml / reset.fxml / updater.fxml
+│   │       ├── about.fxml / dataBaseEditor.fxml / reset.fxml / updater.fxml
 │           │
 │           ├── theme/                 # 主题 CSS (3套 × 13个 = 39个文件)
 │           │   ├── darkness/               # 暗色主题 (默认)
 │           │   ├── light/                  # 亮色主题
 │           │   ├── paper/                  # 纸张质感主题
-│           │   └── darker/                 # (空目录, 预留)
 │           │
 │           │   darkness/、light/、paper/ 各自含:
 │           │   ├── mainPage.css
@@ -101,12 +100,13 @@ HomeworkChecker/
 │           │   ├── es_ES / fr_FR / de_DE / ja_JP / pt_PT
 │           │   ├── ru_RU / ar_SA / bn_BD
 │           │
-│           ├── icon/                 # 图标资源 (21个PNG + 1个PSD)
+│           ├── icon/                 # 图标资源 (38个PNG + 1个PSD)
 │           │   ├── logo.png / logo-classic.png / close.png
 │           │   ├── lock/lock.png / unlock.png
 │           │   ├── light/green.png / red.png
 │           │   ├── topbar/ (窗口控制按钮)
-│           │   └── card/ (7个: 编辑/警告/删除/时间/时间-back/提示/严重)
+│           │   ├── card/ (7个: 编辑/警告/删除/时间/时间-back/提示/严重)
+│           │   └── background/ (背景图片)
 │           │
 │           ├── config/               # 配置模板
 │           │   └── modelConfigV1.json
@@ -126,8 +126,6 @@ HomeworkChecker/
 │
 ├── .github/ISSUE_TEMPLATE/          # GitHub Issue 模板 (6个, 中英双版)
 │
-├── HomeworkChecker-cache/           # 安装缓存 (Advanced Installer)
-├── HomeworkChecker-SetupFiles/      # 安装包 (MSI)
 ├── HomeworkChecker.aip              # Advanced Installer 项目文件
 ├── HomeworkCheckerLauncher.vbs      # VBS 启动器
 ├── app.bat                          # CMD 启动脚本
@@ -135,29 +133,6 @@ HomeworkChecker/
 ├── logo.ico                         # 应用图标
 │
 ├── .idea/                           # IntelliJ IDEA 配置
-├── .lingma/                         # Lingma AI 配置
-├── cloud-sync/                      # 云同步功能设计文档（按模块拆分）
-│   ├── server/                      # 服务端方案（Spring Boot）
-│   │   ├── 01-overview.md               # 项目概述与技术栈
-│   │   ├── 02-project-structure.md      # 项目包结构
-│   │   ├── 03-data-model.md             # 数据模型与表设计
-│   │   ├── 04-api-design.md             # API 接口设计
-│   │   ├── 05-auth-system.md            # 认证与权限体系
-│   │   ├── 06-web-frontend.md           # Web 前端设计（darkness主题）
-│   │   ├── 07-conflict-resolution.md    # 冲突处理机制
-│   │   ├── 08-security.md               # 安全加固方案
-│   │   └── 09-deployment.md             # 部署方案
-│   └── client/                      # 客户端修改方案（JavaFX 同步模块）
-│       ├── 01-overview.md               # 概述与模块结构
-│       ├── 02-config.md                 # 配置扩展与设置UI
-│       ├── 03-sync-flow.md              # 推送/拉取/轮询/迁移流程
-│       ├── 04-hmac-signing.md           # HMAC 签名模块
-│       ├── 05-conflict-ui.md            # 冲突处理 UI
-│       └── 06-existing-changes.md       # 现有代码修改点
-├── .agents/                         # AI Agent 技能库 (39个技能文件)
-├── .agents.7z                       # 技能库压缩包
-├── skills-lock.json                 # 技能锁文件
-│
 ├── AGENTS.md                        # AI Agent 构建/规则备忘录
 ├── .gitignore / LICENSE / Readme.md / Readme-cn.md
 │
@@ -186,7 +161,7 @@ HomeworkChecker/
 **MVC + Service Layer** 分层架构：
 
 - **Model**: `Idf.java` (全局状态池，所有模块通过静态变量共享配置、语言包、缓存)
-- **View**: 22 个 FXML 布局 + 39 个主题 CSS (darkness 默认主题)
+- **View**: 24 个 FXML 布局 + 39 个主题 CSS (darkness 默认主题)
 - **Controller**: `controller/` 包处理 FXML 事件、UI 状态切换
 - **Service**: `service/` 包封装所有业务逻辑，`service/ui/` 子包按功能模块组织
 - **数据持久化**: JSON 文件数据库 (`用户目录/homeworkChecker/` 下存储 `config.json`, `homeworkDatabase/YYYYMMDD`, `initTemple.txt`, `config/language.json`)
@@ -246,7 +221,7 @@ MainPage 交互流程:
 | `ReminderCardService.java` | 卡片数据 CRUD + SHA256 校验 + persistentCards.json 同步; 被 `CardUiService` 调用 |
 | `UpdaterService.java` | 依赖 `HttpClientService` (GitHub API), OkHttp 下载, CommonMark 渲染 HTML; 内部 `generateUpdateInfoHtml()` 替代了 `HtmlBuilder` |
 | `SetupWizardController.java` | 管理5步向导，依赖 `Entry` 加载子步骤 FXML |
-| `Settings/Index.java` | 设置面板导航，动态加载设置子页面到右侧区域 |
+| `Settings/Index.java` | 设置面板导航，动态加载设置子页面到右侧区域（含 about.fxml） |
 | `LoadHistoryHomework.java` | 依赖 `WeekdayCalculatorService`, `HomeworkContentFetcherService`, `ButtonStateManagerService` |
 
 ---
@@ -301,6 +276,7 @@ homeworkChecker/
 | `fxml/settings/updater.fxml` | `controller.settings.Updater` |
 | `fxml/settings/reset.fxml` | `controller.settings.ResetThings` |
 | `fxml/setupWizard.fxml` | `controller.setupWizard.SetupWizardController` |
+| `fxml/settings/about.fxml` | `controller.About` |
 
 ### 无 `fx:controller`（被其他 Controller 动态加载，无需独立控制器）
 
@@ -331,6 +307,7 @@ homeworkChecker/
 | `Index.java:242` | `fxml/settings/dataBaseEditor.fxml` | `rightShowingArea.setContent()` | 设置→数据库编辑器占位页 |
 | `Index.java:276` | `fxml/settings/reset.fxml` | `rightShowingArea.setContent()` | 设置→重置页面 |
 | `Index.java:310` | `fxml/settings/updater.fxml` | `rightShowingArea.setContent()` | 设置→软件更新页 |
+| `Index.java:369` | `fxml/settings/about.fxml` | `rightShowingArea.setContent()` | 设置→关于页面 |
 | `Settings.java:87` | `fxml/historyHomeworkChecker.fxml` | 独立 `Stage`（模态） | 初始模板编辑器（旧版） |
 | `Settings.java:130` | `fxml/languageChooser.fxml` | 独立 `Stage`（模态） | 语言选择器（旧版） |
 | `LoadHistoryHomework.java:183` | `fxml/historyHomeworkChecker.fxml` | 独立 `Stage`（模态） | 历史作业详情窗口 |

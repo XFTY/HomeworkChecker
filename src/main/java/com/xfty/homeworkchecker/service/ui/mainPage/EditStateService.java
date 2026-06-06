@@ -19,7 +19,6 @@ public class EditStateService {
     
     // Constants
     private static final int INITIAL_TIMINGS = 60; // seconds
-    private static final int RESET_TIMINGS = 30; // seconds
     private static final int CHECK_INTERVAL = 5000; // 5 seconds
     
     // Component references
@@ -119,7 +118,7 @@ public class EditStateService {
                     Idf.homeworkContextCache = editMainText;
                     try {
                         homeworkDatabase.writeHomeworkContextByDay(Idf.homeworkContextCache);
-                        timings = RESET_TIMINGS;
+                        timings = Idf.watchdogIdleTimeoutSeconds;
                         logger.info("Content changed, resetting timings to {} seconds", timings);
                     } catch (Exception e) {
                         logger.error("Failed to save homework context to database", e);

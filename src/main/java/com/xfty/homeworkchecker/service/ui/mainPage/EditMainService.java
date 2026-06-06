@@ -7,6 +7,8 @@ import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
+import javafx.scene.input.Clipboard;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
@@ -19,6 +21,7 @@ import java.util.Random;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
+import java.util.function.Function;
 
 /**
  * 编辑主页业务逻辑服务类
@@ -52,6 +55,9 @@ public class EditMainService {
     // 缩进状态跟踪
     private String currentIndentation = "";
     
+    // 图片粘贴回调：接收 JavaFX Image，返回分配的图片编号
+    private Function<Image, Integer> imagePasteHandler;
+    
     /**
      * 构造函数（兼容旧版本）
      * @param lockStatusLabel 锁定状态标签
@@ -69,6 +75,14 @@ public class EditMainService {
         logger.debug("EditMainService initialized with lockStatusLabel and lockModelShowingArea");
     }
     
+    /**
+     * 设置图片粘贴回调，当用户粘贴图片到编辑区时触发
+     * @param handler 接收 Image 对象，返回分配的图片编号
+     */
+    public void setImagePasteHandler(Function<Image, Integer> handler) {
+        this.imagePasteHandler = handler;
+    }
+
     /**
      * 设置TextArea引用并初始化按键监听
      * @param editMain 编辑文本区域
@@ -263,7 +277,7 @@ public class EditMainService {
     }
     
     /**
-     * 设置按键事件处理器，监听回车键以自动填充缩进
+     * 设置按键事件处理器，监听回车键自动缩进 + Ctrl+V 剪贴板图片检测
      */
     private void setupKeyPressHandler() {
         if (editMain == null) {
@@ -275,9 +289,39 @@ public class EditMainService {
             if (event.getCode() == KeyCode.ENTER) {
                 handleEnterKey(event);
             }
+            if (event.isControlDown() && event.getCode() == KeyCode.V) {
+                handleImagePaste(event);
+            }
         });
         
         logger.debug("Key press handler registered for editMain");
+    }
+    
+    /**
+     * 处理 Ctrl+V：检测剪贴板中是否有图片，若有则保存、创建卡片、插入文本
+     */
+    private void handleImagePaste(KeyEvent event) {
+        if (!Idf.isEditable || imagePasteHandler == null) {
+            return;
+        }
+        Clipboard clipboard = Clipboard.getSystemClipboard();
+        if (!clipboard.hasImage()) {
+            return;
+        }
+        Image image = clipboard.getImage();
+        if (image == null || image.getWidth() <= 0 || image.getHeight() <= 0) {
+            return;
+        }
+        event.consume();
+        Integer number = imagePasteHandler.apply(image);
+        if (number != null) {
+            int pos = editMain.getCaretPosition();
+            String text = "【详见图片(" + number + ")】";
+            editMain.insertText(pos, text);
+            editMain.positionCaret(pos + text.length());
+            editMain.requestFocus();
+            logger.info("Image pasted as card #{}, inserted placeholder at position {}", number, pos);
+        }
     }
     
     /**

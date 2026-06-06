@@ -122,6 +122,9 @@ public class Idf {
     public static boolean isAboutIconTriggered = false;
     public static boolean isAboutIconTriggeredAgain = false;
     
+    // 看门狗自动锁定空闲超时（秒）
+    public static int watchdogIdleTimeoutSeconds = 45;
+
     // 单例管理器引用
     public static SingletonInstanceManager singletonManager;
     

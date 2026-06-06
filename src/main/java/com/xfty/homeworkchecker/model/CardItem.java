@@ -37,6 +37,10 @@ public class CardItem {
     private String createdDate;
     /** 是否跨日期持久化保存 */
     private boolean persistent;
+    /** 图片路径（相对 homeworkDatabase 目录），null 表示非图片卡片 */
+    private String imagePath;
+    /** 图片显示宽度（像素），默认 200 */
+    private double imageWidth = 200;
 
     /** 空构造器，自动生成 UUID */
     public CardItem() {
@@ -79,4 +83,10 @@ public class CardItem {
 
     public boolean isPersistent() { return persistent; }
     public void setPersistent(boolean persistent) { this.persistent = persistent; }
+
+    public String getImagePath() { return imagePath; }
+    public void setImagePath(String imagePath) { this.imagePath = imagePath; }
+
+    public double getImageWidth() { return imageWidth; }
+    public void setImageWidth(double imageWidth) { this.imageWidth = imageWidth; }
 }

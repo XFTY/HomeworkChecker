@@ -1,6 +1,7 @@
 package com.xfty.homeworkchecker.controller;
 
 import com.xfty.homeworkchecker.Idf;
+import com.xfty.homeworkchecker.model.CardItem;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import com.xfty.homeworkchecker.service.ui.mainPage.CardUiService;
 import com.xfty.homeworkchecker.service.ui.mainPage.EditMainService;
@@ -116,6 +117,27 @@ public class MainPage implements Initializable {
             editMainService::onEditMainClicked
         );
 
+        editMainService.setImagePasteHandler(image -> {
+            String imagePath = reminderCardService.saveImageToDisk(image);
+            if (imagePath == null) {
+                logger.warn("Failed to save pasted image to disk");
+                return null;
+            }
+            int num = cardUiService.getNextImageNumber();
+            CardItem card = new CardItem(
+                CardItem.Severity.INFO,
+                "图片 " + num,
+                "",
+                ReminderCardService.generateTimestamp()
+            );
+            card.setImagePath(imagePath);
+            card.setCreatedDate(Idf.year + Idf.month + Idf.day);
+            reminderCardService.addCard(card);
+            cardUiService.loadCards();
+            logger.info("Created image card #{} with path: {}", num, imagePath);
+            return num;
+        });
+
         lockService = new LockService(
             editMain, lockStatusImageView, lockStatusLabel, homeworkDatabase
         );
@@ -211,10 +233,12 @@ public class MainPage implements Initializable {
         if (Idf.isEditable) {
             cardUiService.checkActiveCardEditing(() -> {
                 lockService.lock();
+                editStateService.stopUnlockCounter();
                 cardUiService.collapseAddCardBox();
             });
         } else {
             lockService.unlock();
+            editStateService.startUnlockCounter();
             cardUiService.expandAddCardBox();
         }
         logger.debug("New editable state: {}", Idf.isEditable);

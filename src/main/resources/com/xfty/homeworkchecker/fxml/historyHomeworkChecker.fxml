@@ -1,17 +1,38 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
 <?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 <AnchorPane prefHeight="400.0" prefWidth="600.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.HistoryHomeworkChecker">
    <children>
-      <TextArea fx:id="editMain" layoutX="24.0" layoutY="74.8" prefHeight="375.0" prefWidth="737.0" stylesheets="@../theme/darkness/textarea/text-area.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0" />
       <Label fx:id="showDate" layoutX="14.0" layoutY="10.0" text="%history.date" textFill="WHITE">
          <font>
             <Font size="21.0" />
          </font>
       </Label>
       <Label fx:id="statusDisplay" layoutX="14.0" layoutY="38.0" text="%history.readonly" textFill="WHITE" />
+      <SplitPane fx:id="mainSplitPane" dividerPositions="0.65" stylesheets="@../theme/darkness/splitPane/main-split-pane.css" AnchorPane.bottomAnchor="5.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="5.0" AnchorPane.topAnchor="60.0">
+         <items>
+            <TextArea fx:id="editMain" editable="false" stylesheets="@../theme/darkness/textarea/text-area.css" wrapText="true" />
+            <VBox fx:id="cardContainer" managed="false" style="-fx-background-color: #252525;" stylesheets="@../theme/darkness/card/reminder-card.css" visible="false">
+               <children>
+                  <StackPane VBox.vgrow="ALWAYS">
+                     <children>
+                        <ScrollPane fx:id="cardScrollPane" fitToWidth="true" style="-fx-background: transparent; -fx-background-color: transparent; -fx-border-color: transparent;">
+                           <content>
+                              <VBox fx:id="cardList" spacing="8" style="-fx-padding: 8 15 8 15;" />
+                           </content>
+                        </ScrollPane>
+                     </children>
+                  </StackPane>
+               </children>
+            </VBox>
+         </items>
+      </SplitPane>
    </children>
 </AnchorPane>

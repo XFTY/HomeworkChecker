@@ -1,5 +1,6 @@
 package com.xfty.homeworkchecker.controller;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.xfty.homeworkchecker.Idf;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import javafx.fxml.FXML;
@@ -36,6 +37,14 @@ public class Settings implements Initializable {
     private TextArea editMainTest;
     @FXML
     private Label scrollValueDisplay;
+    @FXML
+    private Slider imageSliderMin;
+    @FXML
+    private Slider imageSliderMax;
+    @FXML
+    private Label imageSliderMinValue;
+    @FXML
+    private Label imageSliderMaxValue;
 
 
     @Override
@@ -72,6 +81,41 @@ public class Settings implements Initializable {
                     homeworkDatabase.updateConfig(Idf.userConfig);
                     updateEditMainTextChanges();
                 }
+            });
+
+            // 图片卡片滑块范围设置
+            if (!Idf.userConfig.containsKey("imageCard")) {
+                Idf.userConfig.put("imageCard", new com.alibaba.fastjson2.JSONObject());
+            }
+            JSONObject imageCardConfig = Idf.userConfig.getJSONObject("imageCard");
+            if (!imageCardConfig.containsKey("sliderMin")) {
+                imageCardConfig.put("sliderMin", 50.0);
+            }
+            if (!imageCardConfig.containsKey("sliderMax")) {
+                imageCardConfig.put("sliderMax", 800.0);
+            }
+
+            Double mv = imageCardConfig.getDouble("sliderMin");
+            double minVal = mv != null ? mv : 50.0;
+            mv = imageCardConfig.getDouble("sliderMax");
+            double maxVal = mv != null ? mv : 800.0;
+            imageSliderMin.setValue(minVal);
+            imageSliderMax.setValue(maxVal);
+            imageSliderMinValue.setText(String.valueOf((int) minVal));
+            imageSliderMaxValue.setText(String.valueOf((int) maxVal));
+
+            imageSliderMin.valueProperty().addListener((obs, old, val) -> {
+                double v = val.doubleValue();
+                imageSliderMinValue.setText(String.valueOf((int) v));
+                imageCardConfig.put("sliderMin", v);
+                homeworkDatabase.updateConfig(Idf.userConfig);
+            });
+
+            imageSliderMax.valueProperty().addListener((obs, old, val) -> {
+                double v = val.doubleValue();
+                imageSliderMaxValue.setText(String.valueOf((int) v));
+                imageCardConfig.put("sliderMax", v);
+                homeworkDatabase.updateConfig(Idf.userConfig);
             });
 
             editMainTest.setFont(new Font(Idf.userConfig.getJSONObject("font").getJSONObject("fontFamily").getString("defaultFontFamily"), editMainTextSize.getValue()));

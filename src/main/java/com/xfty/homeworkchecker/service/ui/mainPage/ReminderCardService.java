@@ -5,12 +5,18 @@ import com.alibaba.fastjson2.JSONArray;
 import com.alibaba.fastjson2.JSONObject;
 import com.xfty.homeworkchecker.Idf;
 import com.xfty.homeworkchecker.model.CardItem;
+import javafx.scene.image.Image;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritablePixelFormat;
 import org.apache.commons.io.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
+import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -137,6 +143,12 @@ public class ReminderCardService {
             for (CardItem item : cards) {
                 String cd = item.getCreatedDate();
                 boolean belongsToday = (cd == null || cd.equals(today));
+
+                if (!belongsToday && !item.isPersistent() && cd != null) {
+                    item.setCreatedDate(today);
+                    belongsToday = true;
+                }
+
                 if (belongsToday || item.isPersistent()) {
                     JSONObject cardObj = serializeCardItem(item);
                     warningsArray.add(cardObj);
@@ -202,6 +214,9 @@ public class ReminderCardService {
         }
         item.setTitle(cardObj.getString("title"));
         item.setContent(cardObj.getString("content"));
+        item.setImagePath(cardObj.getString("imagePath"));
+        Double iw = cardObj.getDouble("imageWidth");
+        item.setImageWidth(iw != null ? iw : 200.0);
         item.setTimestamp(cardObj.getString("timestamp"));
         item.setCreatedDate(cardObj.getString("createdDate"));
         item.setPersistent(cardObj.getBooleanValue("persistent"));
@@ -217,6 +232,8 @@ public class ReminderCardService {
         cardObj.put("severity", item.getSeverity().name());
         cardObj.put("title", item.getTitle() != null ? item.getTitle() : "");
         cardObj.put("content", item.getContent() != null ? item.getContent() : "");
+        cardObj.put("imagePath", item.getImagePath());
+        cardObj.put("imageWidth", item.getImageWidth());
         cardObj.put("timestamp", item.getTimestamp() != null ? item.getTimestamp() : "");
         cardObj.put("createdDate", item.getCreatedDate());
         cardObj.put("persistent", item.isPersistent());
@@ -269,6 +286,63 @@ public class ReminderCardService {
     }
 
     /**
+     * 将 JavaFX Image 保存为 PNG 文件到 homeworkDatabase/images/ 目录
+     *
+     * @param image 要保存的图片
+     * @return 相对路径（如 "images/uuid.png"），失败返回 null
+     */
+    public String saveImageToDisk(Image image) {
+        try {
+            File imageDir = new File(getHomeworkDatabaseDir(), "images");
+            if (!imageDir.exists()) {
+                imageDir.mkdirs();
+            }
+
+            String fileName = UUID.randomUUID().toString() + ".png";
+            File imageFile = new File(imageDir, fileName);
+
+            int width = (int) image.getWidth();
+            int height = (int) image.getHeight();
+            PixelReader reader = image.getPixelReader();
+
+            BufferedImage bImage = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
+            for (int x = 0; x < width; x++) {
+                for (int y = 0; y < height; y++) {
+                    bImage.setRGB(x, y, reader.getArgb(x, y));
+                }
+            }
+
+            ImageIO.write(bImage, "png", imageFile);
+            logger.info("Image saved: {}", imageFile.getAbsolutePath());
+            return "images/" + fileName;
+        } catch (Exception e) {
+            logger.error("Error saving image to disk", e);
+            return null;
+        }
+    }
+
+    /**
+     * 根据相对路径加载图片，用于卡片展示
+     *
+     * @param imagePath 相对路径（如 "images/uuid.png"）
+     * @return JavaFX Image 对象，加载失败返回 null
+     */
+    public Image loadImageForCard(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) return null;
+        try {
+            File imageFile = new File(getHomeworkDatabaseDir(), imagePath);
+            if (!imageFile.exists()) {
+                logger.warn("Image file not found: {}", imageFile.getAbsolutePath());
+                return null;
+            }
+            return new Image(imageFile.toURI().toString());
+        } catch (Exception e) {
+            logger.error("Error loading image from path: {}", imagePath, e);
+            return null;
+        }
+    }
+
+    /**
      * 添加一张新卡片
      *
      * @param item 卡片对象
@@ -302,6 +376,23 @@ public class ReminderCardService {
         List<CardItem> cards = readCards();
         if (index >= 0 && index < cards.size()) {
             cards.remove(index);
+            writeCards(cards);
+        }
+    }
+
+    /**
+     * 将卡片从 fromIndex 移动到 toIndex（拖拽排序）
+     *
+     * @param fromIndex 源位置
+     * @param toIndex   目标位置
+     */
+    public void moveCard(int fromIndex, int toIndex) {
+        if (fromIndex == toIndex) return;
+        List<CardItem> cards = readCards();
+        if (fromIndex >= 0 && fromIndex < cards.size()
+            && toIndex >= 0 && toIndex < cards.size()) {
+            CardItem item = cards.remove(fromIndex);
+            cards.add(toIndex, item);
             writeCards(cards);
         }
     }

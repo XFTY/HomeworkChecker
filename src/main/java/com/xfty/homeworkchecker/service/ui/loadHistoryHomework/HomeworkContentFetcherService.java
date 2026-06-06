@@ -1,5 +1,6 @@
 package com.xfty.homeworkchecker.service.ui.loadHistoryHomework;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -98,6 +99,26 @@ public class HomeworkContentFetcherService {
         }
     }
     
+    /**
+     * 根据文件名获取该日期的警示卡片数据
+     *
+     * @param fileName 文件名 (yyyyMMdd 格式)
+     * @return warnings JSONArray，无数据返回空数组
+     */
+    public JSONArray getHomeworkWarningsByFileName(String fileName) {
+        if (fileName == null || fileName.trim().isEmpty()) {
+            logger.warn("Invalid file name: {}", fileName);
+            return new JSONArray();
+        }
+        logger.debug("Fetching homework warnings for file: {}", fileName);
+        try {
+            return homeworkDatabase.getHomeworkWarningsByFileName(fileName);
+        } catch (Exception e) {
+            logger.error("Error fetching homework warnings for file: {}", fileName, e);
+            return new JSONArray();
+        }
+    }
+
     /**
      * 检查指定日期是否有作业数据
      * @param fileName 文件名 (yyyyMMdd 格式)

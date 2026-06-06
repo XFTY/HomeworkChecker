@@ -1,5 +1,6 @@
 package com.xfty.homeworkchecker.service.ui.mainPage;
 
+import com.alibaba.fastjson2.JSONObject;
 import com.xfty.homeworkchecker.Entry;
 import com.xfty.homeworkchecker.Idf;
 import com.xfty.homeworkchecker.model.CardItem;
@@ -11,6 +12,11 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.DataFormat;
+import javafx.scene.input.Dragboard;
+import javafx.scene.input.TransferMode;
+import javafx.geometry.Insets;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -25,7 +31,9 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 /**
@@ -39,6 +47,8 @@ import java.util.Objects;
 public class CardUiService {
 
     private static final Logger logger = LoggerFactory.getLogger(CardUiService.class);
+
+    private static final DataFormat CARD_INDEX_FORMAT = new DataFormat("application/x-homeworkchecker-card-index");
 
     // ==================== UI 组件引用 ====================
 
@@ -69,6 +79,17 @@ public class CardUiService {
     private TextField cardTitleField;
     /** 编辑中的内容输入框引用 */
     private TextArea cardContentField;
+
+    /** 拖拽中的卡片节点 */
+    private Node dragNode;
+    /** 拖拽前卡片在数据列表中的原始索引 */
+    private int dragOriginalIndex = -1;
+    /** 上次预览移动到的目标索引，避免重复移动 */
+    private int currentPreviewIndex = -1;
+    /** 拖拽开始时各卡片的布局 Y 坐标（稳定基准，不受动画影响） */
+    private final Map<Node, Double> originalCardYs = new HashMap<>();
+    /** 拖拽开始时各卡片的布局高度 */
+    private final Map<Node, Double> originalCardHeights = new HashMap<>();
 
     // ==================== 字体配置 ====================
 
@@ -106,6 +127,8 @@ public class CardUiService {
         this.popupService = popupService;
         this.reminderCardService = reminderCardService;
         this.onEditMainClicked = onEditMainClicked;
+
+        setupCardListDropTarget();
     }
 
     /**
@@ -159,6 +182,21 @@ public class CardUiService {
         if (isEmpty) {
             updateEmptyHintText();
         }
+    }
+
+    /**
+     * 获取下一个图片编号（现有图片卡片数 + 1）
+     *
+     * @return 下一个图片编号
+     */
+    public int getNextImageNumber() {
+        int count = 0;
+        for (CardItem item : currentCards) {
+            if (item.getImagePath() != null && !item.getImagePath().isEmpty()) {
+                count++;
+            }
+        }
+        return count + 1;
     }
 
     /**
@@ -358,6 +396,8 @@ public class CardUiService {
         cardRoot.getStyleClass().addAll("card-item", severityStyleClass(item.getSeverity()));
         cardRoot.setFillWidth(true);
 
+        int currentIndex = index;
+
         VBox cardBody = new VBox();
         cardBody.getStyleClass().add("card-body");
 
@@ -396,7 +436,72 @@ public class CardUiService {
             timeRow.getChildren().add(persistentLabel);
         }
 
-        contentArea.getChildren().addAll(titleLabel, contentLabel, timeRow);
+        contentArea.getChildren().add(titleLabel);
+
+        Node sliderControls = null;
+        String imgPath = item.getImagePath();
+        if (imgPath != null && !imgPath.isEmpty()) {
+            Image img = reminderCardService.loadImageForCard(imgPath);
+            if (img != null) {
+                double savedWidth = item.getImageWidth();
+                ImageView imageView = new ImageView(img);
+                imageView.setPreserveRatio(true);
+                imageView.setFitWidth(savedWidth);
+                imageView.setPickOnBounds(true);
+                imageView.getStyleClass().add("card-image");
+
+                VBox imageBox = new VBox(imageView);
+                imageBox.getStyleClass().add("card-image-container");
+                imageBox.setFillWidth(true);
+                contentArea.getChildren().add(imageBox);
+
+                Separator separator = new Separator();
+                separator.getStyleClass().add("card-image-separator");
+
+                Label resizeLabel = new Label(
+                    Idf.userLanguageBundle.getString("card.image.resize")
+                );
+                resizeLabel.getStyleClass().add("card-image-resize-label");
+
+                double sMin = 50, sMax = 800;
+                try {
+                    JSONObject ic = Idf.userConfig.getJSONObject("imageCard");
+                    if (ic != null) {
+                        Double v = ic.getDouble("sliderMin");
+                        if (v != null) sMin = v;
+                        v = ic.getDouble("sliderMax");
+                        if (v != null) sMax = v;
+                    }
+                } catch (Exception e) { /* use defaults */ }
+                Slider sizeSlider = new Slider(sMin, sMax, savedWidth);
+                sizeSlider.setShowTickLabels(false);
+                sizeSlider.setShowTickMarks(false);
+                sizeSlider.setMajorTickUnit(50);
+                sizeSlider.setMinorTickCount(4);
+                sizeSlider.setPrefWidth(Double.MAX_VALUE);
+                sizeSlider.getStyleClass().add("card-image-slider");
+                sizeSlider.valueProperty().addListener((obs, old, val) ->
+                    imageView.setFitWidth(val.doubleValue())
+                );
+                sizeSlider.valueChangingProperty().addListener((obs, wasChanging, isChanging) -> {
+                    if (!isChanging) {
+                        double val = sizeSlider.getValue();
+                        CardItem cardItem = currentCards.get(currentIndex);
+                        cardItem.setImageWidth(val);
+                        reminderCardService.updateCard(currentIndex, cardItem);
+                    }
+                });
+
+                VBox sliderBox = new VBox(4, separator, resizeLabel, sizeSlider);
+                sliderBox.setPadding(new Insets(0, 10, 0, 10));
+                sliderBox.setFillWidth(true);
+                sliderControls = sliderBox;
+            }
+        } else {
+            contentArea.getChildren().add(contentLabel);
+        }
+
+        contentArea.getChildren().add(timeRow);
 
         topRow.getChildren().addAll(iconView, contentArea);
 
@@ -408,19 +513,26 @@ public class CardUiService {
         buttonBar.setUserData(null);
 
         double btnIconSize = cardFontSize * 0.9;
-        Button editBtn = buildIconButton("icon/card/编辑.png", btnIconSize, "card-action-button");
         Button deleteBtn = buildIconButton("icon/card/删除.png", btnIconSize, "card-action-button", "danger");
-
-        int currentIndex = index;
-        editBtn.setOnAction(e -> {
-            editingCardIndex = currentIndex;
-            startEditCard(currentIndex);
-        });
         deleteBtn.setOnAction(e -> deleteCard(currentIndex));
 
-        buttonBar.getChildren().addAll(editBtn, deleteBtn);
+        boolean isImageCard = imgPath != null && !imgPath.isEmpty();
+        if (isImageCard) {
+            buttonBar.getChildren().add(deleteBtn);
+        } else {
+            Button editBtn = buildIconButton("icon/card/编辑.png", btnIconSize, "card-action-button");
+            editBtn.setOnAction(e -> {
+                editingCardIndex = currentIndex;
+                startEditCard(currentIndex);
+            });
+            buttonBar.getChildren().addAll(editBtn, deleteBtn);
+        }
 
-        cardBody.getChildren().addAll(topRow, buttonBar);
+        if (sliderControls != null) {
+            cardBody.getChildren().addAll(topRow, sliderControls, buttonBar);
+        } else {
+            cardBody.getChildren().addAll(topRow, buttonBar);
+        }
         cardRoot.getChildren().add(cardBody);
 
         cardRoot.setOnMouseEntered(e -> {
@@ -466,6 +578,8 @@ public class CardUiService {
             }
         });
 
+        setupCardDragHandlers(cardRoot, index);
+
         return cardRoot;
     }
 
@@ -476,6 +590,7 @@ public class CardUiService {
      */
     private void startEditCard(int index) {
         CardItem item = currentCards.get(index);
+        if (item.getImagePath() != null && !item.getImagePath().isEmpty()) return;
 
         VBox cardRoot = (VBox) cardList.getChildren().get(index);
         cardRoot.getChildren().clear();
@@ -752,5 +867,226 @@ public class CardUiService {
             case CRITICAL -> "critical";
             default -> "info";
         };
+    }
+
+    /**
+     * 为 cardList 设置 drop 区域，使用 event filter 统一拦截 DRAG_OVER
+     */
+    private void setupCardListDropTarget() {
+        cardList.addEventFilter(javafx.scene.input.DragEvent.DRAG_OVER, event -> {
+            if (dragNode == null || !event.getDragboard().hasContent(CARD_INDEX_FORMAT)) {
+                return;
+            }
+            event.acceptTransferModes(TransferMode.MOVE);
+
+            double yInCardList = cardList.sceneToLocal(event.getSceneX(), event.getSceneY()).getY();
+            int targetIdx = computeTargetIndex(yInCardList);
+            if (targetIdx != currentPreviewIndex && targetIdx >= 0) {
+                previewMove(targetIdx);
+            }
+            event.consume();
+        });
+
+        cardList.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasContent(CARD_INDEX_FORMAT) && dragNode != null) {
+                double yInCardList = cardList.sceneToLocal(event.getSceneX(), event.getSceneY()).getY();
+                int targetIdx = computeTargetIndex(yInCardList);
+                if (targetIdx >= 0 && dragOriginalIndex >= 0 && targetIdx != dragOriginalIndex) {
+                    commitReorder(dragOriginalIndex, targetIdx);
+                    success = true;
+                }
+            }
+            if (success) {
+                dragNode = null;
+            }
+            event.setDropCompleted(success);
+            event.consume();
+        });
+    }
+
+    /**
+     * 为单张卡片根节点设置拖拽事件处理器
+     */
+    private void setupCardDragHandlers(VBox cardRoot, int index) {
+        cardRoot.setOnDragDetected(event -> {
+            if (!Idf.isEditable || editingCardIndex >= 0) {
+                return;
+            }
+            dragNode = cardRoot;
+            dragOriginalIndex = index;
+            currentPreviewIndex = index;
+
+            originalCardYs.clear();
+            originalCardHeights.clear();
+            for (Node child : cardList.getChildren()) {
+                originalCardYs.put(child, child.getBoundsInParent().getMinY());
+                originalCardHeights.put(child, child.getBoundsInLocal().getHeight());
+            }
+
+            cardRoot.setOpacity(0.5);
+            Dragboard db = cardRoot.startDragAndDrop(TransferMode.MOVE);
+            ClipboardContent content = new ClipboardContent();
+            content.put(CARD_INDEX_FORMAT, index);
+            db.setContent(content);
+            db.setDragView(cardRoot.snapshot(null, null));
+            event.consume();
+        });
+
+        cardRoot.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasContent(CARD_INDEX_FORMAT) && dragNode != null) {
+                double yInCardList = cardList.sceneToLocal(event.getSceneX(), event.getSceneY()).getY();
+                int targetIdx = computeTargetIndex(yInCardList);
+                if (targetIdx >= 0 && dragOriginalIndex >= 0 && targetIdx != dragOriginalIndex) {
+                    commitReorder(dragOriginalIndex, targetIdx);
+                    success = true;
+                }
+            }
+            if (success) {
+                dragNode = null;
+            }
+            event.setDropCompleted(success);
+            event.consume();
+        });
+
+        cardRoot.setOnDragDone(event -> {
+            if (dragNode != null) {
+                dragNode.setOpacity(1.0);
+                if (!event.isAccepted()) {
+                    loadCards();
+                }
+            }
+            dragNode = null;
+            dragOriginalIndex = -1;
+            currentPreviewIndex = -1;
+            originalCardYs.clear();
+            originalCardHeights.clear();
+        });
+    }
+
+    /**
+     * 基于拖拽开始时记录的各卡片原始 Y 和高度计算目标插入索引（不受动画/DOM修改影响）
+     */
+    private int computeTargetIndex(double mouseYInCardList) {
+        if (originalCardYs.isEmpty()) return currentPreviewIndex;
+
+        double spacing = cardList.getSpacing();
+        List<Node> sorted = new ArrayList<>(originalCardYs.keySet());
+        sorted.sort((a, b) -> Double.compare(originalCardYs.get(a), originalCardYs.get(b)));
+
+        double cumY = 0;
+        for (int j = 0; j < sorted.size(); j++) {
+            Node card = sorted.get(j);
+            double h = originalCardHeights.getOrDefault(card, 0.0);
+            double midY = cumY + h / 2;
+            if (mouseYInCardList < midY) {
+                return j;
+            }
+            cumY += h + spacing;
+        }
+        return Math.max(0, sorted.size() - 1);
+    }
+
+    /**
+     * 预览移动：重排 cardList 子节点并用 translateY 过渡动画
+     */
+    private void previewMove(int targetIdx) {
+        if (dragNode == null || targetIdx == currentPreviewIndex) return;
+        int count = cardList.getChildren().size();
+        if (count < 2) return;
+
+        double[] oldY = new double[count];
+        for (int i = 0; i < count; i++) {
+            oldY[i] = cardList.getChildren().get(i).getBoundsInParent().getMinY();
+        }
+
+        int dragIdx = cardList.getChildren().indexOf(dragNode);
+        if (dragIdx < 0) return;
+
+        double[] savedTY = new double[count];
+        for (int i = 0; i < count; i++) {
+            Node child = cardList.getChildren().get(i);
+            Timeline existing = (Timeline) child.getProperties().get("dragAnim");
+            if (existing != null) existing.stop();
+            savedTY[i] = child.getTranslateY();
+            child.setTranslateY(0);
+        }
+
+        Node node = cardList.getChildren().remove(dragIdx);
+        int clamped = Math.max(0, Math.min(targetIdx, cardList.getChildren().size()));
+        cardList.getChildren().add(clamped, node);
+
+        cardList.applyCss();
+        cardList.layout();
+
+        double[] newY = new double[count];
+        for (int i = 0; i < count; i++) {
+            newY[i] = cardList.getChildren().get(i).getBoundsInParent().getMinY();
+        }
+
+        for (int i = 0; i < count; i++) {
+            Node child = cardList.getChildren().get(i);
+            double target = oldY[i] - newY[i];
+            Timeline t = new Timeline(
+                new KeyFrame(Duration.millis(150),
+                    new KeyValue(child.translateYProperty(), 0, Interpolator.EASE_OUT)
+                )
+            );
+            child.setTranslateY(target);
+            child.getProperties().put("dragAnim", t);
+            t.play();
+        }
+
+        currentPreviewIndex = targetIdx;
+    }
+
+    /**
+     * 确认重排：持久化当前顺序并重新加载
+     */
+    private void commitReorder(int fromIndex, int toIndex) {
+        if (fromIndex == toIndex) return;
+        if (fromIndex < 0 || fromIndex >= currentCards.size()) return;
+        if (toIndex < 0 || toIndex >= currentCards.size()) return;
+
+        resetTranslateYThen(() -> {
+            CardItem moved = currentCards.remove(fromIndex);
+            currentCards.add(toIndex, moved);
+            reminderCardService.moveCard(fromIndex, toIndex);
+            loadCards();
+        });
+    }
+
+    /**
+     * 将所有卡片的 translateY 动画回 0，动画结束后执行回调
+     */
+    private void resetTranslateYThen(Runnable onDone) {
+        int count = cardList.getChildren().size();
+        if (count == 0) {
+            if (onDone != null) onDone.run();
+            return;
+        }
+        int[] completed = {0};
+        for (int i = 0; i < count; i++) {
+            Node child = cardList.getChildren().get(i);
+            Timeline existing = (Timeline) child.getProperties().get("dragAnim");
+            if (existing != null) existing.stop();
+            Timeline t = new Timeline(
+                new KeyFrame(Duration.millis(150),
+                    new KeyValue(child.translateYProperty(), 0, Interpolator.EASE_OUT)
+                )
+            );
+            child.getProperties().put("dragAnim", t);
+            t.setOnFinished(e -> {
+                child.getProperties().remove("dragAnim");
+                completed[0]++;
+                if (onDone != null && completed[0] >= count) {
+                    onDone.run();
+                }
+            });
+            t.play();
+        }
     }
 }

@@ -60,6 +60,35 @@ public class HomeworkDatabase {
     }
 
     /**
+     * 按文件名获取该日期的警示卡片数据（warnings 数组）
+     *
+     * @param fileName 文件名（YYYYMMDD）
+     * @return warnings 的 JSONArray，文件不存在或无数据返回空数组
+     */
+    public JSONArray getHomeworkWarningsByFileName(String fileName) {
+        try {
+            File userDir = FileUtils.getUserDirectory();
+            File homeworkCheckerDir = new File(userDir, "homeworkChecker");
+            File homeworkDatabaseDir = new File(homeworkCheckerDir, "homeworkDatabase");
+
+            File dateFile = new File(homeworkDatabaseDir, fileName);
+
+            if (!dateFile.exists()) {
+                logger.info("Homework file {} does not exist", fileName);
+                return new JSONArray();
+            }
+
+            String fileContent = FileUtils.readFileToString(dateFile, StandardCharsets.UTF_8);
+            JSONObject jsonObject = JSON.parseObject(fileContent);
+            JSONArray warnings = jsonObject.getJSONArray("warnings");
+            return warnings != null ? warnings : new JSONArray();
+        } catch (Exception e) {
+            logger.error("Error reading homework warnings from file {}", fileName, e);
+            return new JSONArray();
+        }
+    }
+
+    /**
      * 读取指定文件的 JSON 内容，校验 SHA-256 完整性后返回 context 字段
      *
      * @param fileName 文件名（YYYYMMDD）

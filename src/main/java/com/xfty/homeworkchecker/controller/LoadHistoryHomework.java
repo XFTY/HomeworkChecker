@@ -1,5 +1,6 @@
 package com.xfty.homeworkchecker.controller;
 
+import com.alibaba.fastjson2.JSONArray;
 import com.xfty.homeworkchecker.Idf;
 import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.ButtonStateManagerService;
 import com.xfty.homeworkchecker.service.ui.loadHistoryHomework.HomeworkContentFetcherService;
@@ -226,7 +227,11 @@ public class LoadHistoryHomework implements Initializable {
                 loader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
             }
             Parent root = loader.load();
-            
+            HistoryHomeworkChecker controller = loader.getController();
+
+            JSONArray warnings = contentFetcher.getHomeworkWarningsByFileName(date);
+            controller.setHomeworkData(content, warnings);
+
             Stage stageNl = new Stage();
             stageNl.setTitle(Idf.userLanguageBundle.getString("loadhistory.window.title"));
             stageNl.initModality(Modality.APPLICATION_MODAL);
@@ -237,12 +242,6 @@ public class LoadHistoryHomework implements Initializable {
 
             if (Idf.isMainPageMaximized) {
                 stageNl.setMaximized(true);
-            }
-            
-            javafx.scene.control.TextArea editMain = (javafx.scene.control.TextArea) root.lookup("#editMain");
-            if (editMain != null) {
-                editMain.setText(content);
-                editMain.setEditable(false);
             }
 
             stageNl.setOnCloseRequest(windowEvent -> stageNl.close());

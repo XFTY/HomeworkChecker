@@ -11,6 +11,10 @@
       "editMain": 17.0
     }
   },
+  "imageCard": {
+    "sliderMin": 50.0,
+    "sliderMax": 800.0
+  },
   "homeworkDatabase": {
     "useDefault": true,
     "userSetHomeworkDatabasePath": ""
