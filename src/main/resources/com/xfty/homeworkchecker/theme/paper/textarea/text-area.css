@@ -61,3 +61,43 @@
     -fx-opacity: 1.0;
     -fx-border-color: #e5d8c0;
 }
+
+/* 自定义右键菜单 */
+.edit-main-context-menu {
+    -fx-background-color: #faf3e0;
+    -fx-border-color: #d4a574;
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;
+    -fx-background-radius: 6px;
+    -fx-padding: 4px 0;
+    -fx-min-width: 200px;
+    -fx-text-fill: #5c4a32;
+}
+
+.edit-main-context-menu .menu-item {
+    -fx-background-color: transparent;
+    -fx-padding: 8px 24px;
+    -fx-font-size: 12px;
+}
+
+.edit-main-context-menu .menu-item .label {
+    -fx-text-fill: #5c4a32;
+}
+
+.edit-main-context-menu .menu-item:hover {
+    -fx-background-color: #efe0c0;
+}
+
+.edit-main-context-menu .menu-item:focused {
+    -fx-background-color: #e5d0a0;
+}
+
+.edit-main-context-menu .menu-item:disabled .label {
+    -fx-text-fill: #b8a88a;
+    -fx-opacity: 1.0;
+}
+
+.edit-main-context-menu .separator .line {
+    -fx-background-color: #d4a574;
+    -fx-padding: 0 16px;
+}

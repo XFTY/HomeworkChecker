@@ -58,6 +58,7 @@ public class LockService {
         logger.debug("Homework context saved to database");
 
         Idf.isEditable = false;
+        Idf.editableProperty.set(false);
         logger.debug("Editable state set to false");
     }
 
@@ -73,6 +74,7 @@ public class LockService {
         logger.info("Module unlocked and focus requested");
 
         Idf.isEditable = true;
+        Idf.editableProperty.set(true);
         logger.debug("Editable state set to true");
     }
 }

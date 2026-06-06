@@ -322,6 +322,23 @@ public class ReminderCardService {
     }
 
     /**
+     * 删除磁盘上指定路径的图片文件
+     *
+     * @param imagePath 相对路径（如 "images/uuid.png"）
+     */
+    public void deleteImageFile(String imagePath) {
+        if (imagePath == null || imagePath.isEmpty()) return;
+        try {
+            File imageFile = new File(getHomeworkDatabaseDir(), imagePath);
+            if (imageFile.exists() && imageFile.delete()) {
+                logger.info("Deleted image file: {}", imageFile.getAbsolutePath());
+            }
+        } catch (Exception e) {
+            logger.error("Error deleting image file: {}", imagePath, e);
+        }
+    }
+
+    /**
      * 根据相对路径加载图片，用于卡片展示
      *
      * @param imagePath 相对路径（如 "images/uuid.png"）

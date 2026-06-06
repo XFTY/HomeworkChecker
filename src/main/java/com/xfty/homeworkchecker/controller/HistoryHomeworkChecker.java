@@ -60,6 +60,10 @@ public class HistoryHomeworkChecker implements Initializable {
         }
     }
 
+    public TextArea getEditMain() {
+        return editMain;
+    }
+
     public void setHomeworkData(String content, JSONArray warnings) {
         editMain.setText(content);
         if (warnings != null && !warnings.isEmpty()) {

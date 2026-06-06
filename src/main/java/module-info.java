@@ -9,6 +9,7 @@ module com.xfty.homeworkchecker {
     requires fastjson;
     requires okhttp3;
     requires org.commonmark;
+    requires java.management;
 
 
     opens com.xfty.homeworkchecker to javafx.fxml;

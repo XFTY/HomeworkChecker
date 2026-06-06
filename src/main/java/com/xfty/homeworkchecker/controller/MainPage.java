@@ -11,6 +11,7 @@ import com.xfty.homeworkchecker.service.ui.mainPage.MainPageInitService;
 import com.xfty.homeworkchecker.service.ui.mainPage.PopupService;
 import com.xfty.homeworkchecker.service.ui.mainPage.ReminderCardService;
 import com.xfty.homeworkchecker.service.ui.mainPage.TopButtonService;
+import com.xfty.homeworkchecker.service.ui.settings.DataBaseEditorService;
 import com.xfty.homeworkchecker.service.ui.mainPage.WindowListener;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -101,12 +102,13 @@ public class MainPage implements Initializable {
             centerShowingArea, blackPane, centerOutBox, showingMainArea
         );
 
-        screenshotService = new TopButtonService.ScreenshotService(editMain, screenShotButton);
+        ReminderCardService reminderCardService = new ReminderCardService();
+
+        screenshotService = new TopButtonService.ScreenshotService(
+            editMain, screenShotButton, reminderCardService);
         historyHomeworkService = new TopButtonService.HistoryHomeworkService(popupService);
         editMainService = new EditMainService(lockStatusLabel, lockModelShowingArea);
         editMainService.setEditMain(editMain);
-
-        ReminderCardService reminderCardService = new ReminderCardService();
 
         cardUiService = new CardUiService(
             cardList, addCardButton, emptyPlaceholder, emptyHintLabel,
@@ -144,7 +146,10 @@ public class MainPage implements Initializable {
 
         settingsService = new TopButtonService.SettingsService(
             popupService, homeworkDatabase, editMain,
-            () -> mainPageInitService.clearTodayHomework(editMain)
+            () -> {
+                mainPageInitService.clearTodayHomework(editMain);
+                cardUiService.removeTodayImageCards();
+            }
         );
         settingsService.setOnFontChanged(() -> {
             if (Idf.userConfig != null) {
@@ -189,6 +194,8 @@ public class MainPage implements Initializable {
             editMain.setDisable(true);
             logger.debug("EditMain disabled on initialization");
         }
+
+        new DataBaseEditorService().performAutoCleanup();
 
         MainPageInitService.Result result = mainPageInitService.loadHomeworkContent();
         editMain.setText(result.getContent());

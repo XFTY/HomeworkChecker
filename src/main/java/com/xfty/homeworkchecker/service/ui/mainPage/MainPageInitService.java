@@ -231,10 +231,10 @@ public class MainPageInitService {
         logger.info("Clearing today's homework");
         if (!Idf.isEditable) {
             editMain.setEditable(true);
-            editMain.setText(initTemplate);
+            editMain.setText(Idf.initTemple);
             editMain.setEditable(false);
         } else {
-            editMain.setText(initTemplate);
+            editMain.setText(Idf.initTemple);
         }
         logger.debug("Clear homework operation completed");
     }

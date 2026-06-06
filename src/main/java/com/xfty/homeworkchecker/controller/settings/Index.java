@@ -2,23 +2,19 @@ package com.xfty.homeworkchecker.controller.settings;
 
 import com.xfty.homeworkchecker.Entry;
 import com.xfty.homeworkchecker.Idf;
-import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import javafx.animation.*;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
-import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
-import javafx.scene.text.Font;
 import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -76,8 +72,6 @@ public class Index implements Initializable {
     private static final String PRESSED_BACKGROUND = "#4a4a4a";
 
     private static final Logger logger = LoggerFactory.getLogger(Index.class);
-
-    private final HomeworkDatabase homeworkDatabase = new HomeworkDatabase();
 
     /** 窗口是否最大化 */
     private boolean isMaximized = false;
@@ -181,57 +175,17 @@ public class Index implements Initializable {
         highlightButton(initialDataButton);
         
         try {
-            // 加载 FXML 文件
-            logger.debug("Loading FXML file for initial data editor");
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/historyHomeworkChecker.fxml"));
-            // Set resource bundle for internationalization
+            logger.debug("Loading FXML file for init template editor");
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/com/xfty/homeworkchecker/fxml/settings/initTemplateEditor.fxml"));
             if (Idf.userLanguage != null && Idf.userLanguage.getString("language") != null) {
                 loader.setResources(ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale));
                 logger.debug("Applied language bundle for locale: {}", locale);
             }
             Parent root = loader.load();
-            logger.info("Successfully loaded historyHomeworkChecker.fxml");
+            logger.info("Successfully loaded initTemplateEditor.fxml");
 
-            // 创建新的舞台
-//            Stage stageNl = new Stage();
-//            stageNl.setTitle(Idf.userLanguageBundle.getString("mainpage.initTemple.title"));
-//            stageNl.initModality(Modality.APPLICATION_MODAL);
-//            stageNl.setScene(new Scene(root));
-
-            Label showDate = (Label) root.lookup("#showDate");
-            showDate.setText(Idf.userLanguageBundle.getString("mainpage.initTemple.title"));
-            logger.debug("Set title for showDate label");
-
-            TextArea editMain = (TextArea) root.lookup("#editMain");
-            editMain.setText(Idf.initTemple);
-            editMain.setFont(new Font(18));
-            logger.debug("Set initial template text and font");
-
-            Label statusDisplay = (Label) root.lookup("#statusDisplay");
-            statusDisplay.setText(Idf.userLanguageBundle.getString("mainpage.initTemple.description"));
-            logger.debug("Set description for statusDisplay label");
-
-            // 添加监听器，当文本内容变化时立即执行保存操作
-            logger.debug("Adding text change listener for template editing");
-            editMain.textProperty().addListener((observable, oldValue, newValue) -> {
-                logger.debug("Template text changed from length {} to length {}", 
-                    oldValue != null ? oldValue.length() : 0, 
-                    newValue != null ? newValue.length() : 0);
-                Idf.initTemple = newValue;
-                homeworkDatabase.changeInitTemple(Idf.initTemple);
-                logger.info("Init template updated and saved");
-            });
-
-//            stageNl.setOnCloseRequest(windowEvent -> {
-//                Idf.initTemple = editMain.getText();
-//                homeworkDatabase.changeInitTemple(Idf.initTemple);
-//            });
-//
-//            stageNl.showAndWait();
-
-            // 应用淡入淡出动画
             applyFadeAnimation(root);
-            logger.info("Applied fade animation for initial data editor");
+            logger.info("Applied fade animation for init template editor");
 
         } catch (Exception e) {
             logger.error("Failed to open init template editor", e);

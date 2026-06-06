@@ -227,6 +227,27 @@ public class CardUiService {
     }
 
     /**
+     * 移除所有非 persistent 的图片卡片，同时删除磁盘上的图片文件
+     */
+    public void removeTodayImageCards() {
+        List<CardItem> cards = reminderCardService.readCards();
+        boolean removed = false;
+        var iterator = cards.iterator();
+        while (iterator.hasNext()) {
+            CardItem card = iterator.next();
+            if (card.getImagePath() != null && !card.getImagePath().isEmpty() && !card.isPersistent()) {
+                reminderCardService.deleteImageFile(card.getImagePath());
+                iterator.remove();
+                removed = true;
+            }
+        }
+        if (removed) {
+            reminderCardService.writeCards(cards);
+        }
+        loadCards();
+    }
+
+    /**
      * 根据当前编辑状态更新空状态占位文案（锁定/解锁不同提示）
      */
     private void updateEmptyHintText() {
@@ -480,6 +501,7 @@ public class CardUiService {
                 sizeSlider.setMinorTickCount(4);
                 sizeSlider.setPrefWidth(Double.MAX_VALUE);
                 sizeSlider.getStyleClass().add("card-image-slider");
+                sizeSlider.disableProperty().bind(Idf.editableProperty.not());
                 sizeSlider.valueProperty().addListener((obs, old, val) ->
                     imageView.setFitWidth(val.doubleValue())
                 );

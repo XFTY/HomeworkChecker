@@ -1,6 +1,7 @@
 package com.xfty.homeworkchecker.service.ui.mainPage;
 
 import com.xfty.homeworkchecker.Idf;
+import com.xfty.homeworkchecker.model.CardItem;
 import com.xfty.homeworkchecker.service.HomeworkDatabase;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
@@ -16,6 +17,7 @@ import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
+import javafx.scene.image.Image;
 import javafx.scene.image.WritableImage;
 import javafx.scene.input.Clipboard;
 import javafx.scene.input.ClipboardContent;
@@ -60,11 +62,14 @@ public class TopButtonService {
 
         private final TextArea editMain;
         private final Button screenShotButton;
+        private final ReminderCardService reminderCardService;
         private boolean animating;
 
-        public ScreenshotService(TextArea editMain, Button screenShotButton) {
+        public ScreenshotService(TextArea editMain, Button screenShotButton,
+                                 ReminderCardService reminderCardService) {
             this.editMain = editMain;
             this.screenShotButton = screenShotButton;
+            this.reminderCardService = reminderCardService;
         }
         
         /**
@@ -83,13 +88,14 @@ public class TopButtonService {
                     + String.format("%02d", today.getDayOfMonth()) + "\u65E5 "
                     + today.getDayOfWeek().getDisplayName(TextStyle.FULL, Locale.CHINESE);
 
-                int imageWidth = (int) editMain.getWidth();
-                int headerHeight = 52;
-                int padding = 12;
+                final double renderScale = 2.0;
+                int imageWidth = (int) (editMain.getWidth() * renderScale);
+                int headerHeight = (int) (52 * renderScale);
+                int padding = (int) (12 * renderScale);
                 int contentWidth = Math.max(imageWidth - padding * 2, 1);
 
-                Font contentFont = new Font(editMain.getFont().getFamily(), 16);
-                Font dateFont = new Font(16);
+                Font contentFont = new Font(editMain.getFont().getFamily(), 16 * renderScale);
+                Font dateFont = new Font(16 * renderScale);
 
                 List<String> wrappedLines = wrapText(textContent, contentFont, contentWidth);
                 if (wrappedLines.isEmpty()) {
@@ -109,8 +115,8 @@ public class TopButtonService {
 
                 // Draw separator line
                 gc.setStroke(Color.web("#3a3a3a"));
-                gc.setLineWidth(1);
-                gc.strokeLine(0, headerHeight - 0.5, imageWidth, headerHeight - 0.5);
+                gc.setLineWidth(renderScale);
+                gc.strokeLine(0, headerHeight - renderScale / 2, imageWidth, headerHeight - renderScale / 2);
 
                 // Draw date text
                 gc.setFont(dateFont);
@@ -118,7 +124,7 @@ public class TopButtonService {
                 measureText.setFont(dateFont);
                 double textHeight = measureText.getLayoutBounds().getHeight();
                 gc.setFill(Color.WHITE);
-                gc.fillText(dateText, 16, (headerHeight - textHeight) / 2 + textHeight * 0.85);
+                gc.fillText(dateText, 16 * renderScale, (headerHeight - textHeight) / 2 + textHeight * 0.85);
 
                 // Draw content background (same color as editMain)
                 gc.setFill(Color.web("#2d2d2d"));
@@ -138,6 +144,87 @@ public class TopButtonService {
                 WritableImage resultImage = canvas.snapshot(null, null);
                 logger.debug("Composite image created with text content, dimensions: {}x{}",
                     resultImage.getWidth(), resultImage.getHeight());
+
+                List<CardItem> cards = reminderCardService.readCards();
+                List<CardItem> imageCards = new ArrayList<>();
+                for (CardItem card : cards) {
+                    if (card.getImagePath() != null && !card.getImagePath().isEmpty()) {
+                        imageCards.add(card);
+                    }
+                }
+
+                if (!imageCards.isEmpty()) {
+                    int separatorHeight = (int) (40 * renderScale);
+                    int imageSpacing = (int) (4 * renderScale);
+
+                    List<Image> loadedImages = new ArrayList<>();
+                    List<double[]> imageDims = new ArrayList<>();
+                    int imagesTotalHeight = 0;
+                    for (CardItem card : imageCards) {
+                        Image img = reminderCardService.loadImageForCard(card.getImagePath());
+                        if (img != null) {
+                            double imgW = img.getWidth();
+                            double imgH = img.getHeight();
+                            double logicalContentWidth = contentWidth / renderScale;
+                            if (imgW > logicalContentWidth) {
+                                double scale = logicalContentWidth / imgW;
+                                imgW = logicalContentWidth;
+                                imgH *= scale;
+                            }
+                            imgW *= renderScale;
+                            imgH *= renderScale;
+                            loadedImages.add(img);
+                            imageDims.add(new double[]{imgW, imgH});
+                            imagesTotalHeight += separatorHeight + (int) imgH + imageSpacing;
+                        }
+                    }
+
+                    if (!loadedImages.isEmpty()) {
+                        int finalTotalHeight = totalHeight + imagesTotalHeight;
+                        Canvas finalCanvas = new Canvas(imageWidth, finalTotalHeight);
+                        GraphicsContext finalGc = finalCanvas.getGraphicsContext2D();
+
+                        finalGc.drawImage(resultImage, 0, 0);
+
+                        int currentY = totalHeight;
+                        int imgIndex = 1;
+
+                        for (int i = 0; i < loadedImages.size(); i++) {
+                            Image img = loadedImages.get(i);
+                            double[] dims = imageDims.get(i);
+                            double imgW = dims[0];
+                            double imgH = dims[1];
+
+                            finalGc.setFill(Color.web("#252525"));
+                            finalGc.fillRect(0, currentY, imageWidth, separatorHeight);
+
+                            finalGc.setStroke(Color.web("#555555"));
+                            finalGc.setLineWidth(renderScale);
+                            finalGc.strokeLine(0, currentY + renderScale / 2, imageWidth, currentY + renderScale / 2);
+
+                            String labelText = "\u56FE\u7247 " + imgIndex;
+                            finalGc.setFont(contentFont);
+                            Text labelMeasure = new Text(labelText);
+                            labelMeasure.setFont(contentFont);
+                            double labelH = labelMeasure.getLayoutBounds().getHeight();
+                            finalGc.setFill(Color.web("#cccccc"));
+                            finalGc.fillText(labelText, padding,
+                                currentY + (separatorHeight - labelH) / 2 + labelH * 0.85);
+
+                            currentY += separatorHeight;
+
+                            double imgX = padding + (contentWidth - imgW) / 2;
+                            finalGc.drawImage(img, imgX, currentY, imgW, imgH);
+
+                            currentY += (int) imgH + imageSpacing;
+                            imgIndex++;
+                        }
+
+                        resultImage = finalCanvas.snapshot(null, null);
+                        logger.debug("Images appended to screenshot, final dimensions: {}x{}",
+                            resultImage.getWidth(), resultImage.getHeight());
+                    }
+                }
 
                 Clipboard clipboard = Clipboard.getSystemClipboard();
                 logger.debug("Getting system clipboard");

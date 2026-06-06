@@ -1,8 +1,11 @@
 package com.xfty.homeworkchecker.service.ui.mainPage;
 
 import com.xfty.homeworkchecker.Idf;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.effect.GaussianBlur;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -119,11 +122,10 @@ public class PopupService {
             );
             fadeInTimeline.play();
             logger.debug("Fade-in timeline started with duration 500ms");
-            
+
             blackPane.setOpacity(0);
-            centerOutBox.setMouseTransparent(false);
-            
-            // Setup close button handler
+
+            // Setup close button handler (won't fire until animation finishes)
             Circle windowCloseButton = null;
             if (closeButtonId != null && !closeButtonId.trim().isEmpty()) {
                 windowCloseButton = (Circle) root.lookup(closeButtonId);
@@ -134,14 +136,42 @@ public class PopupService {
                 }
             } else {
                 logger.debug("Close button found: {}", closeButtonId);
-                
-                windowCloseButton.setOnMouseClicked(event -> {
+                final Circle closeButton = windowCloseButton;
+
+                closeButton.setOnMouseClicked(event -> {
                     logger.info("Closing popup window");
                     closePopup();
                     Idf.isPreviewWindowShowing = false;
                 });
             }
-            
+
+            final Circle finalCloseButton = windowCloseButton;
+            fadeInTimeline.setOnFinished(event -> {
+                centerOutBox.setMouseTransparent(false);
+                centerOutBox.setOnMouseClicked(clickEvent -> {
+                    Node target = (Node) clickEvent.getTarget();
+                    boolean insidePopup = false;
+                    for (Node node = target; node != null; node = node.getParent()) {
+                        if (node == centerShowingArea) {
+                            insidePopup = true;
+                            break;
+                        }
+                    }
+                    if (!insidePopup) {
+                        logger.info("Closing popup by clicking outside area");
+                        if (finalCloseButton != null) {
+                            finalCloseButton.fireEvent(new MouseEvent(
+                                    MouseEvent.MOUSE_CLICKED, 0, 0, 0, 0, MouseButton.PRIMARY,
+                                    1, false, false, false, false, false, false, false, false, false, false, null
+                            ));
+                        } else {
+                            closePopup();
+                            Idf.isPreviewWindowShowing = false;
+                        }
+                    }
+                });
+            });
+
             return windowCloseButton;
         } catch (Exception e) {
             logger.error("Error showing popup window", e);

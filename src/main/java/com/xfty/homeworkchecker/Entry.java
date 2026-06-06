@@ -178,6 +178,8 @@ public class Entry extends Application {
     }
 
     public static void rebuildScene() {
+        Idf.isPreviewWindowShowing = false;
+
         Stage stage = Idf.primaryStage;
         if (stage == null) {
             logger.error("Primary stage is null, cannot rebuild scene");

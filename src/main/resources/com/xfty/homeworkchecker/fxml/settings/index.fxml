@@ -32,7 +32,7 @@
             </HBox>
          </children>
       </AnchorPane>
-      <ScrollPane fx:id="rightShowingArea" fitToWidth="true" layoutX="248.8" layoutY="92.0" prefHeight="476.0" prefWidth="569.0" style="-fx-background-radius: 0,0,0,0;" stylesheets="@../../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="249.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
+      <ScrollPane fx:id="rightShowingArea" fitToHeight="true" fitToWidth="true" layoutX="248.8" layoutY="92.0" prefHeight="476.0" prefWidth="569.0" style="-fx-background-radius: 0,0,0,0;" stylesheets="@../../theme/darkness/scroolPane/scroolPane.css" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="249.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="33.0">
          <content>
             <AnchorPane prefHeight="255.0" prefWidth="555.0">
                <children>
@@ -171,6 +171,42 @@
                         </HBox>
                      </children>
                   </AnchorPane>
+                   <AnchorPane fx:id="dataBaseEditorButton" onMouseClicked="#onDataBaseEditorClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
+                     <children>
+                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../icon/数据.png" />
+                                 </image>
+                              </ImageView>
+                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.databaseEditor" textFill="WHITE">
+                                 <font>
+                                    <Font size="15.0" />
+                                 </font>
+                              </Label>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" right="10.0" />
+                           </padding>
+                        </HBox>
+                        <HBox alignment="CENTER_RIGHT" layoutX="132.0" layoutY="-4.0" prefHeight="46.0" prefWidth="44.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                           <children>
+                              <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
+                                 <image>
+                                    <Image url="@../../icon/进入.png" />
+                                 </image>
+                                 <HBox.margin>
+                                    <Insets right="10.0" />
+                                 </HBox.margin>
+                              </ImageView>
+                           </children>
+                           <padding>
+                              <Insets left="10.0" />
+                           </padding>
+                        </HBox>
+                     </children>
+                  </AnchorPane>
                   <AnchorPane fx:id="updaterButton" onMouseClicked="#onUpdaterClicked" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
                      <children>
                         <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="186.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -279,42 +315,6 @@
                          </HBox>
                       </children>
                    </AnchorPane>
-                   <AnchorPane fx:id="dataBaseEditorButton" disable="true" onMouseClicked="#onDataBaseEditorClicked" opacity="0.0" prefHeight="45.0" prefWidth="263.0" style="-fx-background-color: #1e1e1e; -fx-background-radius: 10;">
-                     <children>
-                        <HBox alignment="CENTER_LEFT" layoutX="84.0" layoutY="24.0" prefHeight="46.0" prefWidth="188.0" spacing="10.0" style="-fx-background-color: transparent;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icon/数据.png" />
-                                 </image>
-                              </ImageView>
-                              <Label prefHeight="20.0" prefWidth="207.0" text="%settings.index.databaseEditor" textFill="WHITE">
-                                 <font>
-                                    <Font size="15.0" />
-                                 </font>
-                              </Label>
-                           </children>
-                           <padding>
-                              <Insets left="10.0" right="10.0" />
-                           </padding>
-                        </HBox>
-                        <HBox alignment="CENTER_RIGHT" layoutX="132.0" layoutY="-4.0" prefHeight="46.0" prefWidth="44.0" AnchorPane.bottomAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                           <children>
-                              <ImageView fitHeight="28.0" fitWidth="22.0" pickOnBounds="true" preserveRatio="true">
-                                 <image>
-                                    <Image url="@../../icon/进入.png" />
-                                 </image>
-                                 <HBox.margin>
-                                    <Insets right="10.0" />
-                                 </HBox.margin>
-                              </ImageView>
-                           </children>
-                           <padding>
-                              <Insets left="10.0" />
-                           </padding>
-                        </HBox>
-                     </children>
-                  </AnchorPane>
                </children>
                <padding>
                   <Insets bottom="10.0" left="5.0" right="5.0" top="20.0" />

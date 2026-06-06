@@ -34,7 +34,8 @@ HomeworkChecker/
 │   │       └── settings/
 │   │           ├── Index.java           # 设置面板索引 (左侧导航栏+右侧内容区切换)
 │   │           ├── Updater.java         # 更新管理控制器
-│   │           └── ResetThings.java     # 重置作业控制器
+│   │           ├── ResetThings.java     # 重置作业控制器
+│   │           └── DataBaseEditor.java  # 数据库编辑器控制器 (历史作业集管理/保留天数配置/自动清理开关)
 │   │
 │       ├── service/                 # 服务层 (业务逻辑)
 │       │   ├── FileInitManager.java         # 首次运行初始化 & 目录/配置文件管理
@@ -57,7 +58,8 @@ HomeworkChecker/
 │       │   │   │   ├── HomeworkContentFetcherService.java # 作业内容批量获取
 │       │   │   │   └── ButtonStateManagerService.java   # 按钮状态管理 (绿灯/红灯)
 │       │   │   └── settings/
-│       │   │       └── UpdaterService.java  # 更新服务 (版本检查/下载/安装)
+│       │   │       ├── UpdaterService.java  # 更新服务 (版本检查/下载/安装)
+│       │   │       └── DataBaseEditorService.java # 数据库编辑器业务逻辑 (扫描/删除/大小计算/保留天数)
 │       │   └── updater/
 │       │       ├── HttpClientService.java    # GitHub API HTTP 客户端
 │       │       ├── JSONParsingService.java   # GitHub Release JSON 解析
@@ -88,7 +90,7 @@ HomeworkChecker/
 │           │   darkness/、light/、paper/ 各自含:
 │           │   ├── mainPage.css
 │           │   ├── checkbox.css / slider.css / choicebox.css / datepicker.css
-│           │   ├── language-button.css
+│           │   ├── language-button.css / text-field.css
 │           │   ├── textarea/text-area.css / text-area-test.css
 │           │   ├── scroolPane/scroolPane.css
 │           │   ├── button/functional-button.css / danger-button.css
@@ -223,6 +225,8 @@ MainPage 交互流程:
 | `SetupWizardController.java` | 管理5步向导，依赖 `Entry` 加载子步骤 FXML |
 | `Settings/Index.java` | 设置面板导航，动态加载设置子页面到右侧区域（含 about.fxml） |
 | `LoadHistoryHomework.java` | 依赖 `WeekdayCalculatorService`, `HomeworkContentFetcherService`, `ButtonStateManagerService` |
+| `DataBaseEditor.java` | 设置→数据库编辑器控制器，依赖 `DataBaseEditorService`; 负责历史作业集列表渲染、查看/删除操作、保留天数配置 |
+| `DataBaseEditorService.java` | 数据库编辑器业务逻辑，封装文件扫描、作业数据读写、删除（含图片清理）、大小计算、retentionDays 配置持久化 |
 
 ---
 
@@ -231,7 +235,7 @@ MainPage 交互流程:
 首次启动时由 `FileInitManager` 创建在 `%USERPROFILE%/homeworkChecker/` 下：
 ```
 homeworkChecker/
-├── config.json              # 用户配置 (字体/字号)
+├── config.json              # 用户配置 (字体/字号/自动化清理设置)
 ├── initTemple.txt           # 初始作业模板
 ├── config/language.json     # 语言设置
 ├── homeworkDatabase/        # 作业数据库 (YYYYMMDD 格式文件, JSON含SHA256)
@@ -275,6 +279,7 @@ homeworkChecker/
 | `fxml/settings/homeworkArea-back.fxml` | `controller.Settings` |
 | `fxml/settings/updater.fxml` | `controller.settings.Updater` |
 | `fxml/settings/reset.fxml` | `controller.settings.ResetThings` |
+| `fxml/settings/dataBaseEditor.fxml` | `controller.settings.DataBaseEditor` |
 | `fxml/setupWizard.fxml` | `controller.setupWizard.SetupWizardController` |
 | `fxml/settings/about.fxml` | `controller.About` |
 
@@ -285,7 +290,6 @@ homeworkChecker/
 | `fxml/cardItem.fxml` | `CardUiService.java` | 卡片项目组件 (动态渲染) |
 | `fxml/updateWhat.fxml` | `About.java:36` | 更新内容展示弹窗 |
 | `fxml/openSourceLicence.fxml` | `About.java:65` | 开源许可证弹窗 |
-| `fxml/settings/dataBaseEditor.fxml` | `Index.java:242` | 数据库编辑器占位页 |
 | `fxml/setupWizard/welcome.fxml` | `SetupWizardController.java` | 向导第1步：欢迎 |
 | `fxml/setupWizard/language.fxml` | `SetupWizardController.java` | 向导第2步：语言 |
 | `fxml/setupWizard/fontSettings.fxml` | `SetupWizardController.java` | 向导第3步：字体 |
@@ -304,7 +308,7 @@ homeworkChecker/
 | `Index.java:96` | `fxml/settings/homeworkArea.fxml` | `rightShowingArea.setContent()` | 设置→字体/字号页 |
 | `Index.java:132` | `fxml/languageChooser.fxml` | `rightShowingArea.setContent()` | 设置→语言页 |
 | `Index.java:169` | `fxml/historyHomeworkChecker.fxml` | `rightShowingArea.setContent()` | 设置→初始模板页 |
-| `Index.java:242` | `fxml/settings/dataBaseEditor.fxml` | `rightShowingArea.setContent()` | 设置→数据库编辑器占位页 |
+| `Index.java:242` | `fxml/settings/dataBaseEditor.fxml` | `rightShowingArea.setContent()` | 设置→数据库编辑器 |
 | `Index.java:276` | `fxml/settings/reset.fxml` | `rightShowingArea.setContent()` | 设置→重置页面 |
 | `Index.java:310` | `fxml/settings/updater.fxml` | `rightShowingArea.setContent()` | 设置→软件更新页 |
 | `Index.java:369` | `fxml/settings/about.fxml` | `rightShowingArea.setContent()` | 设置→关于页面 |

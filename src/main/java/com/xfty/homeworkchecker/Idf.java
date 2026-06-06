@@ -3,6 +3,8 @@ package com.xfty.homeworkchecker;
 import com.alibaba.fastjson2.JSONObject;
 import com.xfty.homeworkchecker.controller.MainPage;
 import com.xfty.homeworkchecker.service.SingletonInstanceManager;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
@@ -11,7 +13,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Idf {
-    public static String softwareVersion = "1.7.0 - Private Beta (在线模式内测体验)";
+    public static String softwareVersion = "1.7.0 - Beta";
     public static boolean UpdaterTestMode = false;
 
     public static String year;
@@ -23,6 +25,7 @@ public class Idf {
     public static Double editMainFontSize;
 
     public static boolean isEditable = false;
+    public static final BooleanProperty editableProperty = new SimpleBooleanProperty(false);
 
     
     public static boolean isMainPageMaximized = false;
