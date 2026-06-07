@@ -139,7 +139,7 @@
                                     <manifestEntries>
                                         <Add-Opens>java.base/java.lang=ALL-UNNAMED java.base/java.util=ALL-UNNAMED</Add-Opens>
                                         <Add-Exports>java.base/jdk.internal.misc=ALL-UNNAMED javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED javafx.web/com.sun.javafx.sg.prism.web=ALL-UNNAMED</Add-Exports>
-                                        <Enable-Native-Access>javafx.graphics,javafx.web</Enable-Native-Access>
+<!--                                        <Enable-Native-Access>javafx.graphics,javafx.web</Enable-Native-Access>-->
                                     </manifestEntries>
                                 </transformer>
 

@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.image.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.shape.Circle?>
+<?import javafx.scene.text.Font?>
+<AnchorPane prefHeight="420.0" prefWidth="580.0" style="-fx-background-color: #1e1e1e; -fx-border-radius: 20; -fx-background-radius: 20;" xmlns="http://javafx.com/javafx/21.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.FatalError">
+   <children>
+      <AnchorPane style="-fx-background-color: #323232; -fx-background-radius: 20 20 0 0;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <HBox alignment="CENTER_LEFT" prefHeight="39.0" spacing="7.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="20.0" AnchorPane.topAnchor="0.0">
+               <children>
+                  <Circle fx:id="windowCloseButton" fill="#f96057" radius="8.0" stroke="#f96057" strokeType="INSIDE" />
+                  <Circle fx:id="windowMinimizeButton" fill="#f8ce52" radius="8.0" stroke="#f8ce52" strokeType="INSIDE" />
+                  <Circle fx:id="windowMaximizeButton" fill="#5fcf65" radius="8.0" stroke="#5fcf65" strokeType="INSIDE" />
+               </children>
+            </HBox>
+         </children>
+      </AnchorPane>
+      <VBox alignment="TOP_CENTER" prefHeight="358.0" prefWidth="580.0" spacing="8.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="30.0" AnchorPane.rightAnchor="30.0" AnchorPane.topAnchor="55.0">
+         <children>
+            <ImageView fitHeight="64.0" fitWidth="64.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../icon/card/严重.png" />
+               </image>
+            </ImageView>
+            <Label text="%fatalError.title" textFill="#e53935">
+               <font>
+                  <Font size="22.0" />
+               </font>
+            </Label>
+            <Label text="%fatalError.message" textFill="#9e9e9e">
+               <font>
+                  <Font size="13.0" />
+               </font>
+            </Label>
+            <Label text="%fatalError.details" textFill="#bdbdbd" VBox.vgrow="NEVER">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+            <TextArea fx:id="errorDetailArea" editable="false" prefHeight="200.0" prefWidth="520.0" stylesheets="@../theme/darkness/textarea/text-area.css" VBox.vgrow="ALWAYS" />
+            <HBox alignment="CENTER_RIGHT" spacing="10.0" VBox.vgrow="NEVER">
+               <children>
+                  <Button fx:id="copyButton" mnemonicParsing="false" styleClass="functional-button" stylesheets="@../theme/darkness/button/functional-button.css" text="%fatalError.copy" />
+                  <Button fx:id="exitButton" mnemonicParsing="false" styleClass="danger-button" stylesheets="@../theme/darkness/button/danger-button.css" text="%fatalError.exit" />
+               </children>
+            </HBox>
+         </children>
+      </VBox>
+   </children>
+</AnchorPane>
