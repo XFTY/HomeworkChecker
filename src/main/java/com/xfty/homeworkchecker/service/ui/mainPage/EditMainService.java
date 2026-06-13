@@ -2,22 +2,12 @@ package com.xfty.homeworkchecker.service.ui.mainPage;
 
 import com.xfty.homeworkchecker.Idf;
 import javafx.animation.KeyFrame;
-import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
 import javafx.collections.ObservableList;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
-import javafx.scene.control.MenuItem;
-import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TextArea;
 import javafx.scene.image.Image;
-import javafx.scene.input.Clipboard;
-import javafx.scene.input.ContextMenuEvent;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.MouseEvent;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.HBox;
-import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -63,9 +53,8 @@ public class EditMainService {
     // 图片粘贴回调：接收 JavaFX Image，返回分配的图片编号
     private Function<Image, Integer> imagePasteHandler;
 
-    // 自定义右键菜单
-    private ContextMenu contextMenu;
-    
+    private ContextMenuHelper contextMenuHelper;
+
     /**
      * 构造函数（兼容旧版本）
      * @param lockStatusLabel 锁定状态标签
@@ -102,8 +91,9 @@ public class EditMainService {
         }
         
         this.editMain = editMain;
-        setupKeyPressHandler();
-        setupContextMenu();
+        this.contextMenuHelper = new ContextMenuHelper(editMain, imagePasteHandler);
+        contextMenuHelper.setupKeyPressHandler();
+        contextMenuHelper.setupContextMenu();
         logger.debug("EditMain set and key press handler initialized");
     }
     
@@ -168,16 +158,13 @@ public class EditMainService {
                 
                 double currentTimeAnim = 0;
                 
-                // 添加关键帧的辅助方法
-                addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude, 3); // 前 3 个完整周期
-                currentTimeAnim += 300; // 3 个周期的时间 (3 * (50+25+50+25))
-                
-                // 第四个周期，幅度开始衰减（减小到原来的一半）
-                addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.5, 1);
-                currentTimeAnim += 150; // 1 个周期的时间 (50+25+50+25)
-                
-                // 第五个周期，幅度进一步减小（减小到原来的四分之一）
-                addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.25, 1);
+                ShakeAnimationHelper.addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude, 3, lockModelShowingArea);
+                currentTimeAnim += 300;
+
+                ShakeAnimationHelper.addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.5, 1, lockModelShowingArea);
+                currentTimeAnim += 150;
+
+                ShakeAnimationHelper.addShakeKeyFrames(keyFrames, currentTimeAnim, amplitude * 0.25, 1, lockModelShowingArea);
                 
                 shakeAnimation.play();
                 logger.debug("Shake animation started with amplitude: {}, total duration: {} ms", amplitude, currentTimeAnim);
@@ -212,51 +199,6 @@ public class EditMainService {
     }
     
     /**
-     * 辅助方法：添加指定次数的抖动关键帧
-     * @param keyFrames 关键帧列表
-     * @param startTime 开始时间
-     * @param amplitude 振幅
-     * @param cycles 周期数
-     */
-    private void addShakeKeyFrames(ObservableList<KeyFrame> keyFrames, 
-                                   double startTime, double amplitude, int cycles) {
-        logger.trace("Adding {} shake keyframes starting at {} ms with amplitude {}", cycles, startTime, amplitude);
-        
-        double currentTime = startTime;
-        for (int cycle = 0; cycle < cycles; cycle++) {
-            // 向左移动
-            keyFrames.add(new KeyFrame(
-                Duration.millis(currentTime),
-                new KeyValue(lockModelShowingArea.translateXProperty(), -amplitude)
-            ));
-            currentTime += 50;
-            
-            // 回到中心
-            keyFrames.add(new KeyFrame(
-                Duration.millis(currentTime),
-                new KeyValue(lockModelShowingArea.translateXProperty(), 0)
-            ));
-            currentTime += 25;
-            
-            // 向右移动
-            keyFrames.add(new KeyFrame(
-                Duration.millis(currentTime),
-                new KeyValue(lockModelShowingArea.translateXProperty(), amplitude)
-            ));
-            currentTime += 50;
-            
-            // 回到中心
-            keyFrames.add(new KeyFrame(
-                Duration.millis(currentTime),
-                new KeyValue(lockModelShowingArea.translateXProperty(), 0)
-            ));
-            currentTime += 25;
-        }
-        
-        logger.trace("Completed adding {} shake keyframes, ending at {} ms", cycles, currentTime);
-    }
-    
-    /**
      * 清理资源
      * 关闭计划任务执行器
      */
@@ -284,204 +226,4 @@ public class EditMainService {
         
         logger.info("EditMainService resource cleanup completed");
     }
-    
-    /**
-     * 设置按键事件处理器，监听回车键自动缩进 + Ctrl+V 剪贴板图片检测
-     */
-    private void setupKeyPressHandler() {
-        if (editMain == null) {
-            logger.warn("Cannot setup key press handler: editMain is null");
-            return;
-        }
-        
-        editMain.addEventFilter(KeyEvent.KEY_PRESSED, event -> {
-//            if (event.getCode() == KeyCode.ENTER) {
-//                handleEnterKey(event);
-//            }
-            if (event.isControlDown() && event.getCode() == KeyCode.V) {
-                handleImagePaste(event);
-            }
-        });
-        
-        logger.debug("Key press handler registered for editMain");
-    }
-
-    /**
-     * 设置自定义右键菜单，替换 TextArea 原生默认菜单
-     */
-    private void setupContextMenu() {
-        if (editMain == null) {
-            logger.warn("Cannot setup context menu: editMain is null");
-            return;
-        }
-
-        contextMenu = new ContextMenu();
-        contextMenu.getStyleClass().add("edit-main-context-menu");
-
-        MenuItem cutItem = new MenuItem();
-        MenuItem copyItem = new MenuItem();
-        MenuItem pasteItem = new MenuItem();
-        MenuItem pasteImageItem = new MenuItem();
-        MenuItem deleteItem = new MenuItem();
-        MenuItem selectAllItem = new MenuItem();
-
-        cutItem.setText(ctxMenuText("editmain.contextmenu.cut", "剪切") + "\tCtrl+X");
-        copyItem.setText(ctxMenuText("editmain.contextmenu.copy", "复制") + "\tCtrl+C");
-        pasteItem.setText(ctxMenuText("editmain.contextmenu.paste", "粘贴") + "\tCtrl+V");
-        pasteImageItem.setText(ctxMenuText("editmain.contextmenu.pasteImage", "粘贴图片") + "\tCtrl+V");
-        deleteItem.setText(ctxMenuText("editmain.contextmenu.delete", "删除"));
-        selectAllItem.setText(ctxMenuText("editmain.contextmenu.selectAll", "全选") + "\tCtrl+A");
-
-        cutItem.setOnAction(e -> editMain.cut());
-        copyItem.setOnAction(e -> editMain.copy());
-        pasteItem.setOnAction(e -> editMain.paste());
-        pasteImageItem.setOnAction(e -> handleImagePasteFromClipboard());
-        deleteItem.setOnAction(e -> editMain.replaceSelection(""));
-        selectAllItem.setOnAction(e -> editMain.selectAll());
-
-        contextMenu.getItems().addAll(
-            cutItem, copyItem, pasteItem, pasteImageItem,
-            new SeparatorMenuItem(), deleteItem, selectAllItem
-        );
-
-        editMain.addEventHandler(ContextMenuEvent.CONTEXT_MENU_REQUESTED, event -> {
-            boolean hasSelection = !editMain.getSelectedText().isEmpty();
-            boolean editable = Idf.isEditable;
-            Clipboard clipboard = Clipboard.getSystemClipboard();
-            boolean hasString = clipboard.hasString();
-            boolean hasImage = clipboard.hasImage();
-
-            cutItem.setDisable(!editable || !hasSelection);
-            copyItem.setDisable(!hasSelection);
-            pasteItem.setDisable(!editable || !hasString);
-            pasteImageItem.setDisable(!editable || !hasImage);
-            deleteItem.setDisable(!editable || !hasSelection);
-            selectAllItem.setDisable(editMain.getText().isEmpty());
-
-            editMain.requestFocus();
-            contextMenu.show(editMain, event.getScreenX(), event.getScreenY());
-            event.consume();
-        });
-
-        // 点击 editMain 区域时隐藏菜单（菜单不会因点击 owner 自动关闭）
-        editMain.addEventFilter(MouseEvent.MOUSE_PRESSED, event -> {
-            if (contextMenu.isShowing()) {
-                contextMenu.hide();
-            }
-        });
-
-        logger.debug("Context menu initialized for editMain");
-    }
-
-    /**
-     * 从 i18n 获取菜单文本，取不到时返回 fallback
-     */
-    private String ctxMenuText(String key, String fallback) {
-        if (Idf.userLanguageBundle != null && Idf.userLanguageBundle.containsKey(key)) {
-            return Idf.userLanguageBundle.getString(key);
-        }
-        return fallback;
-    }
-
-    /**
-     * 处理 Ctrl+V：检测剪贴板中是否有图片，若有则保存、创建卡片、插入文本
-     */
-    private void handleImagePaste(KeyEvent event) {
-        if (handleImagePasteFromClipboard()) {
-            event.consume();
-        }
-    }
-
-    /**
-     * 从剪贴板粘贴图片（供 Ctrl+V 和右键菜单共用）
-     * @return true 如果成功处理了图片粘贴
-     */
-    private boolean handleImagePasteFromClipboard() {
-        if (!Idf.isEditable || imagePasteHandler == null) {
-            return false;
-        }
-        Clipboard clipboard = Clipboard.getSystemClipboard();
-        if (!clipboard.hasImage()) {
-            return false;
-        }
-        Image image = clipboard.getImage();
-        if (image == null || image.getWidth() <= 0 || image.getHeight() <= 0) {
-            return false;
-        }
-        Integer number = imagePasteHandler.apply(image);
-        if (number != null) {
-            int pos = editMain.getCaretPosition();
-            String text = "【详见图片(" + number + ")】";
-            editMain.insertText(pos, text);
-            editMain.positionCaret(pos + text.length());
-            editMain.requestFocus();
-            logger.info("Image pasted as card #{}, inserted placeholder at position {}", number, pos);
-            return true;
-        }
-        return false;
-    }
-    
-//    /**
-//     * 处理回车键事件，自动填充当前行的缩进
-//     * @param event 按键事件
-//     */
-//    private void handleEnterKey(KeyEvent event) {
-//        if (editMain == null) {
-//            return;
-//        }
-//        
-//        try {
-//            int caretPosition = editMain.getCaretPosition();
-//            String text = editMain.getText();
-//            
-//            // 找到当前行的起始位置
-//            int lineStart = text.lastIndexOf('\n', caretPosition - 1);
-//            lineStart = (lineStart == -1) ? 0 : lineStart + 1;
-//            
-//            // 找到当前行的结束位置（光标位置或行尾）
-//            int lineEnd = text.indexOf('\n', caretPosition);
-//            lineEnd = (lineEnd == -1) ? text.length() : lineEnd;
-//            
-//            // 提取从行首到光标位置的所有空白字符（包括中间的）
-//            StringBuilder indent = new StringBuilder();
-//            boolean foundNonWhitespace = false;
-//            
-//            for (int i = lineStart; i < caretPosition; i++) {
-//                char c = text.charAt(i);
-//                if (c == ' ' || c == '\t') {
-//                    // 如果已经遇到过非空白字符，后续的空白也计入缩进
-//                    indent.append(c);
-//                } else {
-//                    foundNonWhitespace = true;
-//                }
-//            }
-//            
-//            // 如果光标后面还有内容，检查是否应该继续缩进
-//            // 只有当光标在行尾或者后面都是空白时才应用缩进
-//            if (caretPosition < lineEnd) {
-//                String afterCursor = text.substring(caretPosition, lineEnd).trim();
-//                if (!afterCursor.isEmpty()) {
-//                    // 光标后面有非空白内容，不自动缩进
-//                    logger.trace("Cursor has non-whitespace content after it, skipping auto-indent");
-//                    return;
-//                }
-//            }
-//            
-//            currentIndentation = indent.toString();
-//            logger.trace("Detected indentation: '{}', foundNonWhitespace: {}", currentIndentation, foundNonWhitespace);
-//            
-//            // 延迟插入缩进，确保在默认换行行为之后执行
-//            javafx.application.Platform.runLater(() -> {
-//                if (!currentIndentation.isEmpty()) {
-//                    int newCaretPosition = editMain.getCaretPosition();
-//                    editMain.insertText(newCaretPosition, currentIndentation);
-//                    editMain.positionCaret(newCaretPosition + currentIndentation.length());
-//                    logger.debug("Auto-indented with: '{}'", currentIndentation);
-//                }
-//            });
-//            
-//        } catch (Exception e) {
-//            logger.error("Error handling enter key for auto-indentation", e);
-//        }
-//    }
 }

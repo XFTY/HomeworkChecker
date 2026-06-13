@@ -10,7 +10,9 @@ import com.xfty.homeworkchecker.service.ui.mainPage.LockService;
 import com.xfty.homeworkchecker.service.ui.mainPage.MainPageInitService;
 import com.xfty.homeworkchecker.service.ui.mainPage.PopupService;
 import com.xfty.homeworkchecker.service.ui.mainPage.ReminderCardService;
-import com.xfty.homeworkchecker.service.ui.mainPage.TopButtonService;
+import com.xfty.homeworkchecker.service.ui.mainPage.HistoryHomeworkService;
+import com.xfty.homeworkchecker.service.ui.mainPage.ScreenshotService;
+import com.xfty.homeworkchecker.service.ui.mainPage.SettingsService;
 import com.xfty.homeworkchecker.service.ui.settings.DataBaseEditorService;
 import com.xfty.homeworkchecker.service.ui.mainPage.WindowListener;
 import javafx.fxml.FXML;
@@ -84,9 +86,9 @@ public class MainPage implements Initializable {
     HomeworkDatabase homeworkDatabase = new HomeworkDatabase();
 
     private final MainPageInitService mainPageInitService = new MainPageInitService();
-    private TopButtonService.ScreenshotService screenshotService;
-    private TopButtonService.HistoryHomeworkService historyHomeworkService;
-    private TopButtonService.SettingsService settingsService;
+    private ScreenshotService screenshotService;
+    private HistoryHomeworkService historyHomeworkService;
+    private SettingsService settingsService;
     private PopupService popupService;
     private EditMainService editMainService;
     private EditStateService editStateService;
@@ -104,9 +106,9 @@ public class MainPage implements Initializable {
 
         ReminderCardService reminderCardService = new ReminderCardService();
 
-        screenshotService = new TopButtonService.ScreenshotService(
+        screenshotService = new ScreenshotService(
             editMain, screenShotButton, reminderCardService);
-        historyHomeworkService = new TopButtonService.HistoryHomeworkService(popupService);
+        historyHomeworkService = new HistoryHomeworkService(popupService);
         editMainService = new EditMainService(lockStatusLabel, lockModelShowingArea);
         editMainService.setEditMain(editMain);
 
@@ -144,7 +146,7 @@ public class MainPage implements Initializable {
             editMain, lockStatusImageView, lockStatusLabel, homeworkDatabase
         );
 
-        settingsService = new TopButtonService.SettingsService(
+        settingsService = new SettingsService(
             popupService, homeworkDatabase, editMain,
             () -> {
                 mainPageInitService.clearTodayHomework(editMain);

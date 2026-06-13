@@ -1,6 +1,8 @@
 使用简体中文回答
 
-{file:SUM.md}是项目架构，每次进行计划规划时读取这个文件，并在更改项目结构后更新这个文件
+{file:SUM.md}是项目架构，每次进行计划规划时读取这个文件，并在更改项目结构后更新这个文件  
+
+合理利用codegraph MCP工具，可以大幅度节省时间
 
 Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
 

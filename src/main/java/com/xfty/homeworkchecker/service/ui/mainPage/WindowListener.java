@@ -4,6 +4,7 @@ import com.xfty.homeworkchecker.Idf;
 import javafx.application.Platform;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -127,7 +128,7 @@ public class WindowListener {
             
             // 编辑区域级别的键盘快捷键监听
             if (editMain != null && editMain.getScene() != null) {
-                editMain.setOnKeyPressed(event -> {
+                editMain.addEventHandler(KeyEvent.KEY_PRESSED, event -> {
                     try {
                         // 检查是否按下了 Ctrl+` 组合键
                         if (!Idf.isPreviewWindowShowing) {
