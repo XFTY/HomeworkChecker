@@ -52,8 +52,13 @@ body:
       label: HomeworkChecker版本
       description: |
         您正在运行哪个版本的 HomeworkChecker。  
+        建议您反馈最新版本的 HomeworkChecker 版本，旧版本可能会不受理
 
       options:
+        - 1.7.0-Beta
+        - 1.6.0-Beta
+        - 1.5.0-Beta
+        - 1.4.2-Beta
         - 1.4-snapshot
         - 1.3-stable
         - 1.2-snapshot
