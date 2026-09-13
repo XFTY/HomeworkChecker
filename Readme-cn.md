@@ -1,4 +1,8 @@
 # HomeworkChecker 
+
+## ⚠️重要通知
+我们最近修改了 HomeworkChecker 的授权模式，有关详情信息请参阅[这里](/docs/important-notes/licenseChange260913.md).
+
 适用于在 **教室大屏展示作业** 的一款作业查看工具 📚
 
 ![](https://img.shields.io/badge/license-GNU_GPL_V3-green.svg)

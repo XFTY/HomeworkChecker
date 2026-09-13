@@ -1,4 +1,8 @@
 # HomeworkChecker
+
+## ⚠️ Important Notice
+We have recently modified the licensing model of HomeworkChecker. For details, please refer to [here](/docs/important-notes/licenseChange260913en.md).
+
 A homework viewing tool designed for **display on classroom screens** 📚
 
 ![](https://img.shields.io/badge/license-GNU_GPL_V3-green.svg)
