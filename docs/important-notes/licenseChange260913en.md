@@ -1,5 +1,5 @@
 # Explanation of Changes to HomeworkChecker's Licensing Model
-Date: September 13, 2026
+Date: September 13, 2026  
 Editor: XFTY
 
 **Starting from the [78f9093](https://github.com/XFTY/HomeworkChecker/commit/78f9093ef989ba86458206746606f6a52dcdcb91) commit on September 13, 2026** (excluding that commit), the licensing model of the HomeworkChecker open-source software will change from the original **GNU GPL Version 3** license to the **Apache License 2.0**.
@@ -47,4 +47,4 @@ Note 2: Version 1.4.1-snapshot is an internal version number and has not yet bee
 
 Each version follows the license attached at the time of its release. Already-published GPL v3 licenses are irrevocable and will continue to be effective under GPL v3.
 
-(If there are any discrepancies between this translated version and the Chinese version, the Chinese version shall prevail.)
+(If there are any discrepancies between this translated version and [the Chinese version](https://github.com/XFTY/HomeworkChecker/blob/master/docs/important-notes/licenseChange260913.md), [the Chinese version](https://github.com/XFTY/HomeworkChecker/blob/master/docs/important-notes/licenseChange260913.md) shall prevail.)
