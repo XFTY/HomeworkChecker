@@ -4,143 +4,7 @@
 
 **HomeworkChecker** 是一款基于 JavaFX 的桌面应用程序，旨在帮助教师在教室内展示作业内容。支持多语言（11种语言）、作业记录隐式保存、历史作业查询、一键截屏、锁定防误触机制等功能。版本 `1.7.0-beta`，采用 Maven 构建，目标平台为 Windows 64位。
 
----
-
-## 项目结构
-
-```
-HomeworkChecker/
-├── pom.xml                          # Maven 构建 (Java 25, JavaFX 25.0.1)
-├── module-info.java                 # Java模块声明
-│
-├── src/main/java/
-│   └── com/xfty/homeworkchecker/
-│       ├── Entry.java               # 应用入口 (JavaFX Application.launch)
-│       ├── Idf.java                 # 全局静态配置/状态常量池
-│       │
-│       ├── model/                   # 数据模型
-│       │   └── CardItem.java            # 警示卡片模型 (严重程度/标题/内容/时间戳)
-│       │
-│       ├── controller/              # MVC 控制器层 (UI交互逻辑)
-│       │   ├── MainPage.java            # 主页面控制器 (核心界面)
-│       │   ├── Settings.java            # 设置页控制器 (字体/字号/初始模板)
-│       │   ├── About.java               # 关于页面控制器 (含彩蛋游戏)
-│       │   ├── EggPlant.java            # 彩蛋页面 (空控制器)
-│       │   ├── languageChooser.java     # 语言选择控制器 (11种语言)
-│       │   ├── LoadHistoryHomework.java # 历史作业加载对话框控制器
-│       │   ├── HistoryHomeworkChecker.java # 历史作业展示窗口控制器
-│       │   ├── setupWizard/
-│       │   │   └── SetupWizardController.java # 首次运行向导 (5步, 含动画)
-│   │       └── settings/
-│   │           ├── Index.java           # 设置面板索引 (左侧导航栏+右侧内容区切换)
-│   │           ├── Updater.java         # 更新管理控制器
-│   │           ├── ResetThings.java     # 重置作业控制器
-│   │           └── DataBaseEditor.java  # 数据库编辑器控制器 (历史作业集管理/保留天数配置/自动清理开关)
-│   │
-│       ├── service/                 # 服务层 (业务逻辑)
-│       │   ├── FileInitManager.java         # 首次运行初始化 & 目录/配置文件管理
-│       │   ├── SingletonInstanceManager.java # 单例锁 (文件锁 + WatchService 激活)
-│       │   ├── DatabaseManager.java         # 数据库文件名扫描
-│       │   ├── HomeworkDatabase.java        # 作业数据库 CRUD (SHA256 校验)
-│       │   ├── ui/
-│       │   │   ├── mainPage/
-│       │   │   │   ├── MainPageInitService.java  # 主页初始化 (加载当日/周末作业)
-│       │   │   │   ├── TopButtonService.java     # 顶部按钮服务 (截图/历史/设置/关于)
-│       │   │   │   ├── EditMainService.java      # 编辑区逻辑 (可爱模式/抖动/自动缩进)
-│   │   │   │   ├── EditStateService.java     # 编辑状态看门狗 (自动锁定计时器)
-│   │   │   │   ├── PopupService.java         # 弹窗管理 (高斯模糊/缩放动画)
-│   │   │   │   ├── ReminderCardService.java  # 警示卡片数据 CRUD + 持久化 + SHA256
-│   │   │   │   ├── CardUiService.java        # 卡片 UI 渲染与交互 (添加/编辑/删除/持久化, 756行)
-│   │   │   │   ├── LockService.java          # 锁定/解锁模块 (更新图标/缓存内容/写入数据库)
-│   │   │   │   └── WindowListener.java       # 窗口状态监听 (最大化/Ctrl+~快捷键)
-│       │   │   ├── loadHistoryHomework/
-│       │   │   │   ├── WeekdayCalculatorService.java    # 工作日计算器
-│       │   │   │   ├── HomeworkContentFetcherService.java # 作业内容批量获取
-│       │   │   │   └── ButtonStateManagerService.java   # 按钮状态管理 (绿灯/红灯)
-│       │   │   └── settings/
-│       │   │       ├── UpdaterService.java  # 更新服务 (版本检查/下载/安装)
-│       │   │       └── DataBaseEditorService.java # 数据库编辑器业务逻辑 (扫描/删除/大小计算/保留天数)
-│       │   └── updater/
-│       │       ├── HttpClientService.java    # GitHub API HTTP 客户端
-│       │       ├── JSONParsingService.java   # GitHub Release JSON 解析
-│       │       └── HtmlBuilder.java          # Markdown→HTML 暗色主题转换 (未被引用, 功能被 UpdaterService.generateUpdateInfoHtml() 替代)
-│       │
-│       └── resources/                # 资源文件
-│           ├── fxml/                 # 24个 FXML 界面布局文件
-│           │   ├── mainPage.fxml             # 主界面 (SplitPane 左: editMain, 右: cardContainer)
-│           │   ├── settings.fxml             # 设置窗口
-│           │   ├── about.fxml / updateWhat.fxml / openSourceLicence.fxml
-│           │   ├── languageChooser.fxml      # 语言选择
-│           │   ├── loadHistoryHomework.fxml / historyHomeworkChecker.fxml
-│           │   ├── cardItem.fxml             # 警示卡片项目组件 (由CardUiService动态加载)
-│           │   ├── setupWizard.fxml          # 首次运行向导壳
-│           │   ├── eggPlant.fxml             # 彩蛋页面
-│           │   ├── setupWizard/             # 向导子步骤 (5个)
-│           │   │   ├── welcome.fxml / language.fxml / fontSettings.fxml
-│           │   │   ├── initialTemplate.fxml / finish.fxml
-│           │   └── settings/                # 设置子页面 (8个)
-│           │       ├── index.fxml / homeworkArea.fxml / homeworkArea-back.fxml
-│   │       ├── about.fxml / dataBaseEditor.fxml / reset.fxml / updater.fxml
-│           │
-│           ├── theme/                 # 主题 CSS (3套 × 13个 = 39个文件)
-│           │   ├── darkness/               # 暗色主题 (默认)
-│           │   ├── light/                  # 亮色主题
-│           │   ├── paper/                  # 纸张质感主题
-│           │
-│           │   darkness/、light/、paper/ 各自含:
-│           │   ├── mainPage.css
-│           │   ├── checkbox.css / slider.css / choicebox.css / datepicker.css
-│           │   ├── language-button.css / text-field.css
-│           │   ├── textarea/text-area.css / text-area-test.css
-│           │   ├── scroolPane/scroolPane.css
-│           │   ├── button/functional-button.css / danger-button.css
-│           │   ├── splitPane/main-split-pane.css
-│           │   └── card/reminder-card.css (扁平现代填充色圆角卡片)
-│           │
-│           ├── i18n/                 # 国际化 (11个语言包)
-│           │   ├── language_zh_CN.properties / zh_HK / en_US
-│           │   ├── es_ES / fr_FR / de_DE / ja_JP / pt_PT
-│           │   ├── ru_RU / ar_SA / bn_BD
-│           │
-│           ├── icon/                 # 图标资源 (38个PNG + 1个PSD)
-│           │   ├── logo.png / logo-classic.png / close.png
-│           │   ├── lock/lock.png / unlock.png
-│           │   ├── light/green.png / red.png
-│           │   ├── topbar/ (窗口控制按钮)
-│           │   ├── card/ (7个: 编辑/警告/删除/时间/时间-back/提示/严重)
-│           │   └── background/ (背景图片)
-│           │
-│           ├── config/               # 配置模板
-│           │   └── modelConfigV1.json
-│           ├── modelConfig.json      # 默认配置模板
-│           ├── modelDatabase.json    # 数据库模板
-│           ├── githubApiTemple.json  # GitHub API 模拟JSON (测试用)
-│           ├── language.json         # 默认语言配置
-│           ├── initTemple.txt        # 默认初始模板
-│           ├── log4j2.xml            # Log4j2 日志配置
-│           └── logback.xml           # Logback 日志配置
-│
-├── docs/                            # 产品展示网页
-│   ├── index.html                   # 营销落地页 (Vue3 + ElementPlus + Anime.js)
-│   ├── style.css                    # 暗色液态玻璃风格 (1039行)
-│   ├── script.js                    # 粒子背景/多语言/动画 (584行)
-│   └── pic/                         # 截图 & 图标素材
-│
-├── .github/ISSUE_TEMPLATE/          # GitHub Issue 模板 (6个, 中英双版)
-│
-├── HomeworkChecker.aip              # Advanced Installer 项目文件
-├── HomeworkCheckerLauncher.vbs      # VBS 启动器
-├── app.bat                          # CMD 启动脚本
-├── updater.bat                      # 更新脚本
-├── logo.ico                         # 应用图标
-│
-├── .idea/                           # IntelliJ IDEA 配置
-├── AGENTS.md                        # AI Agent 构建/规则备忘录
-├── .gitignore / LICENSE / Readme.md / Readme-cn.md
-│
-├── mvnw / mvnw.cmd                  # Maven Wrapper
-└── logs/                            # 运行时日志文件
-```
+## 如需要项目结构请使用codegraph MCP工具获取，如果没有，请立即停止作业并告知使用者安装codegraph.
 
 ---
 
@@ -199,9 +63,9 @@ MainPage 交互流程:
   → HomeworkContentFetcherService → HomeworkDatabase → 返回 JSON 内容
   → HistoryHomeworkChecker 展示
 
-设置 (Settings → Settings.Index):
-   字体/字号调整 → HomeworkDatabase.updateConfig() → 写 config.json
-   初始模板编辑 → HomeworkDatabase.changeInitTemple() → 写 initTemple.txt
+设置 (Settings.Index → 各子页面):
+   字体/字号/图片卡片调整 → HomeworkArea → HomeworkAreaService → HomeworkDatabase.updateConfig() → 写 config.json
+   初始模板编辑 → InitTemplateEditor → HomeworkDatabase.changeInitTemple() → 写 initTemple.txt
    语言切换 → languageChooser → HomeworkDatabase.changeLanguage() → 写 language.json → 重启
    更新管理 → UpdaterService → HttpClientService (GitHub API) → 下载 .msi → msiexec 安装
    重置作业 → ResetThings → Idf.needHomeworkShowingAreaClear → 主页面重置为 initTemple
@@ -216,7 +80,7 @@ MainPage 交互流程:
 | `Entry.java` | 启动入口，依赖 `FileInitManager`, `SingletonInstanceManager`, `MainPage`, `SetupWizardController` |
 | `Idf.java` | 全局引用池，被所有 controller/service 引用 |
 | `MainPage.java` | 依赖 11 个服务: `HomeworkDatabase`, `MainPageInitService`, `TopButtonService.ScreenshotService/HistoryHomeworkService/SettingsService/AboutService`, `PopupService`, `EditMainService`, `EditStateService`, `WindowListener`, `CardUiService`, `LockService`, `ReminderCardService`; 管理 cardContainer 折叠/展开 (divider ≥0.90 时 setManaged(false)) |
-| `HomeworkDatabase.java` | 核心数据服务，被 `MainPage`, `Settings`, `MainPageInitService`, `HomeworkContentFetcherService`, `Index`, `languageChooser`, `LockService` 等使用 |
+| `HomeworkDatabase.java` | 核心数据服务，被 `MainPage`, `HomeworkArea`, `MainPageInitService`, `HomeworkContentFetcherService`, `Index`, `languageChooser`, `LockService` 等使用 |
 | `TopButtonService.java` | 含4个内部类: ScreenshotService, HistoryHomeworkService, SettingsService, AboutService |
 | `CardUiService.java` | 卡片 UI 核心 (756行)，依赖 `ReminderCardService`, `PopupService`, `CardItem`; 管理卡片添加/编辑/删除/渲染/折叠 |
 | `LockService.java` | 锁定/解锁服务，依赖 `HomeworkDatabase`, `Idf`; 被 `MainPage` 调用 |
@@ -224,6 +88,8 @@ MainPage 交互流程:
 | `UpdaterService.java` | 依赖 `HttpClientService` (GitHub API), OkHttp 下载, CommonMark 渲染 HTML; 内部 `generateUpdateInfoHtml()` 替代了 `HtmlBuilder` |
 | `SetupWizardController.java` | 管理5步向导，依赖 `Entry` 加载子步骤 FXML |
 | `Settings/Index.java` | 设置面板导航，动态加载设置子页面到右侧区域（含 about.fxml） |
+| `HomeworkArea.java` | 字体/字号/图片卡片设置控制器，依赖 `HomeworkAreaService`; 被 `Index.java` 加载 homeworkArea.fxml |
+| `HomeworkAreaService.java` | 字体/字号/图片卡片设置业务逻辑，封装配置读写与 `HomeworkDatabase.updateConfig()` 持久化 |
 | `LoadHistoryHomework.java` | 依赖 `WeekdayCalculatorService`, `HomeworkContentFetcherService`, `ButtonStateManagerService` |
 | `DataBaseEditor.java` | 设置→数据库编辑器控制器，依赖 `DataBaseEditorService`; 负责历史作业集列表渲染、查看/删除操作、保留天数配置 |
 | `DataBaseEditorService.java` | 数据库编辑器业务逻辑，封装文件扫描、作业数据读写、删除（含图片清理）、大小计算、retentionDays 配置持久化 |
@@ -273,10 +139,9 @@ homeworkChecker/
 | `fxml/languageChooser.fxml` | `controller.languageChooser` |
 | `fxml/loadHistoryHomework.fxml` | `controller.LoadHistoryHomework` |
 | `fxml/historyHomeworkChecker.fxml` | `controller.HistoryHomeworkChecker` |
-| `fxml/settings.fxml` | `controller.Settings` |
 | `fxml/settings/index.fxml` | `controller.settings.Index` |
-| `fxml/settings/homeworkArea.fxml` | `controller.Settings` |
-| `fxml/settings/homeworkArea-back.fxml` | `controller.Settings` |
+| `fxml/settings/homeworkArea.fxml` | `controller.settings.HomeworkArea` |
+| `fxml/settings/initTemplateEditor.fxml` | `controller.settings.InitTemplateEditor` |
 | `fxml/settings/updater.fxml` | `controller.settings.Updater` |
 | `fxml/settings/reset.fxml` | `controller.settings.ResetThings` |
 | `fxml/settings/dataBaseEditor.fxml` | `controller.settings.DataBaseEditor` |
@@ -312,8 +177,6 @@ homeworkChecker/
 | `Index.java:276` | `fxml/settings/reset.fxml` | `rightShowingArea.setContent()` | 设置→重置页面 |
 | `Index.java:310` | `fxml/settings/updater.fxml` | `rightShowingArea.setContent()` | 设置→软件更新页 |
 | `Index.java:369` | `fxml/settings/about.fxml` | `rightShowingArea.setContent()` | 设置→关于页面 |
-| `Settings.java:87` | `fxml/historyHomeworkChecker.fxml` | 独立 `Stage`（模态） | 初始模板编辑器（旧版） |
-| `Settings.java:130` | `fxml/languageChooser.fxml` | 独立 `Stage`（模态） | 语言选择器（旧版） |
 | `LoadHistoryHomework.java:183` | `fxml/historyHomeworkChecker.fxml` | 独立 `Stage`（模态） | 历史作业详情窗口 |
 | `About.java:36` | `fxml/updateWhat.fxml` | 独立 `Stage`（模态） | 更新内容 |
 | `About.java:65` | `fxml/openSourceLicence.fxml` | 独立 `Stage`（模态） | 开源许可证 |

@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
-<VBox prefWidth="462.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.Settings">
+<VBox prefWidth="462.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.settings.HomeworkArea">
    <children>
       <AnchorPane prefHeight="53.0" prefWidth="442.0">
          <children>
