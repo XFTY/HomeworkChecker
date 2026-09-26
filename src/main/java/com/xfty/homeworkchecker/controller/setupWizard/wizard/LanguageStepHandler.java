@@ -106,9 +106,14 @@ public class LanguageStepHandler {
     }
 
     private String selectedLanguageCode;
+    private ResourceBundle selectedBundle;
 
     public String getSelectedLanguageCode() {
         return selectedLanguageCode;
+    }
+
+    public ResourceBundle getSelectedBundle() {
+        return selectedBundle;
     }
 
     public ResourceBundle selectLanguage(String languageCode, Parent root) {
@@ -121,6 +126,7 @@ public class LanguageStepHandler {
             locale = new Locale.Builder().setLanguage(parts[0]).build();
         }
         ResourceBundle bundle = ResourceBundle.getBundle("com/xfty/homeworkchecker/i18n/language", locale);
+        selectedBundle = bundle;
 
         GridPane grid = (GridPane) root.lookup("#languageGrid");
         if (grid != null) {

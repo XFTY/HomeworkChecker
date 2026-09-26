@@ -81,6 +81,9 @@ public class SetupWizardController implements Initializable {
         welcomeStepHandler = new WelcomeStepHandler(backButton, nextButton);
         languageStepHandler = new LanguageStepHandler();
         languageStepHandler.setOnLanguageChanged(() -> {
+            selectedLanguageCode = languageStepHandler.getSelectedLanguageCode();
+            wizardBundle = languageStepHandler.getSelectedBundle();
+            stepBundle = wizardBundle;
             updateStepLabels();
             updateNavigationButtons();
         });
