@@ -1,10 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
-<?import javafx.scene.image.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
-<AnchorPane prefHeight="500.0" prefWidth="767.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.MainPage">
+
+<AnchorPane prefHeight="500.0" prefWidth="767.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.MainPage">
    <children>
       <AnchorPane fx:id="showingMainArea" prefHeight="500.0" prefWidth="767.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
          <children>
@@ -71,9 +81,9 @@
                                         <VBox fx:id="cardList" spacing="8" style="-fx-padding: 8 15 8 15;" />
                                     </content>
                                  </ScrollPane>
-                                 <StackPane fx:id="emptyPlaceholder" mouseTransparent="true" visible="false" managed="false" alignment="CENTER">
+                                 <StackPane fx:id="emptyPlaceholder" alignment="CENTER" managed="false" mouseTransparent="true" visible="false">
                                     <VBox alignment="CENTER" spacing="10">
-                                       <ImageView fitHeight="48.0" fitWidth="48.0" pickOnBounds="true" preserveRatio="true" opacity="0.4">
+                                       <ImageView fitHeight="48.0" fitWidth="48.0" opacity="0.4" pickOnBounds="true" preserveRatio="true">
                                           <image>
                                              <Image url="@../icon/card/提示.png" />
                                           </image>
@@ -106,7 +116,7 @@
                   </HBox>
                </children>
             </AnchorPane>
-            <Label fx:id="versionDisplay" text="%main.version" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
+            <Label fx:id="versionDisplay" text="%main.version" textAlignment="RIGHT" textFill="WHITE" AnchorPane.bottomAnchor="5.0" AnchorPane.rightAnchor="5.0" />
          </children>
       </AnchorPane>
       <Pane fx:id="blackPane" mouseTransparent="true" opacity="0.0" prefHeight="500.0" prefWidth="767.0" style="-fx-background-color: black;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />

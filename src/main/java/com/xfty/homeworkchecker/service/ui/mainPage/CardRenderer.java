@@ -262,7 +262,8 @@ public class CardRenderer {
                                    String cardFontFamily, double cardFontSize,
                                    Runnable onSave, Runnable onCancel,
                                    java.util.function.Consumer<TextField> titleFieldConsumer,
-                                   java.util.function.Consumer<TextArea> contentFieldConsumer) {
+                                   java.util.function.Consumer<TextArea> contentFieldConsumer,
+                                   java.util.function.Consumer<CardItem.Severity> severityConsumer) {
         double iconSize = cardFontSize * 1.3;
         VBox editBody = new VBox(4);
         editBody.getStyleClass().add("card-body");
@@ -291,6 +292,13 @@ public class CardRenderer {
             case CRITICAL -> criticalBtn.setSelected(true);
             default -> infoBtn.setSelected(true);
         }
+
+        severityGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
+            if (severityConsumer != null && newToggle != null
+                    && newToggle.getUserData() instanceof CardItem.Severity severity) {
+                severityConsumer.accept(severity);
+            }
+        });
 
         severityBar.getChildren().addAll(infoBtn, warningBtn, criticalBtn);
 

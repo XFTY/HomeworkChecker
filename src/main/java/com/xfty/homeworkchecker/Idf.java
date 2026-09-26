@@ -13,7 +13,7 @@ import java.util.Locale;
 import java.util.ResourceBundle;
 
 public class Idf {
-    public static String softwareVersion = "1.8.0 - Beta";
+    public static String softwareVersion = "1.8.0 - Dev Channel [Not In Relase]";
     public static boolean UpdaterTestMode = false;
 
     public static String year;

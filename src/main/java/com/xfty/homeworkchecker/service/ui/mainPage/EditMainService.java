@@ -91,7 +91,10 @@ public class EditMainService {
         }
         
         this.editMain = editMain;
-        this.contextMenuHelper = new ContextMenuHelper(editMain, imagePasteHandler);
+        this.contextMenuHelper = new ContextMenuHelper(editMain, image -> {
+            Function<Image, Integer> handler = this.imagePasteHandler;
+            return handler == null ? null : handler.apply(image);
+        });
         contextMenuHelper.setupKeyPressHandler();
         contextMenuHelper.setupContextMenu();
         logger.debug("EditMain set and key press handler initialized");

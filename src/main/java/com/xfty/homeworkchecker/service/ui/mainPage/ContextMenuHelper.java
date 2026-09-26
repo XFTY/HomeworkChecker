@@ -84,7 +84,7 @@ public class ContextMenuHelper {
             boolean editable = Idf.isEditable;
             Clipboard clipboard = Clipboard.getSystemClipboard();
             boolean hasString = clipboard.hasString();
-            boolean hasImage = clipboard.hasImage();
+            boolean hasImage = hasClipboardImage(clipboard);
 
             cutItem.setDisable(!editable || !hasSelection);
             copyItem.setDisable(!hasSelection);
@@ -114,6 +114,14 @@ public class ContextMenuHelper {
         return fallback;
     }
 
+    private boolean hasClipboardImage(Clipboard clipboard) {
+        if (clipboard.hasImage()) {
+            return true;
+        }
+        Image image = clipboard.getImage();
+        return image != null && image.getWidth() > 0 && image.getHeight() > 0;
+    }
+
     private void handleImagePaste(KeyEvent event) {
         if (handleImagePasteFromClipboard()) {
             event.consume();
@@ -125,9 +133,6 @@ public class ContextMenuHelper {
             return false;
         }
         Clipboard clipboard = Clipboard.getSystemClipboard();
-        if (!clipboard.hasImage()) {
-            return false;
-        }
         Image image = clipboard.getImage();
         if (image == null || image.getWidth() <= 0 || image.getHeight() <= 0) {
             return false;
