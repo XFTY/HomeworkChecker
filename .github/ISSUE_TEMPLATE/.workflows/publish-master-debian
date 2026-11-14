@@ -1,0 +1,241 @@
+# .github/workflows/build-deb.yml
+name: build-deb
+
+on:
+  # 仅手动触发
+  workflow_dispatch:
+    inputs:
+      javafx_version:
+        description: 'JavaFX jmods 版本（需与 JDK 25 配套，例如 25.0.1）'
+        required: true
+        default: '25.0.1'
+        type: string
+      upload_artifact:
+        description: '是否把 .deb 作为 Artifact 上传'
+        required: true
+        default: true
+        type: boolean
+
+permissions:
+  contents: read
+
+concurrency:
+  group: build-deb-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-deb:
+    name: Build .deb on ubuntu-latest
+    runs-on: ubuntu-latest
+
+    steps:
+      # 1. 固定从 master 拉取
+      - name: Checkout master
+        uses: actions/checkout@v7
+        with:
+          ref: master
+
+      # 2. JDK 25（Temurin，setup-java v5；v1–v4 已废弃）
+      - name: Setup JDK 25
+        uses: actions/setup-java@v5
+        with:
+          distribution: temurin
+          java-version: '25'
+          cache: maven
+
+      # 3. 系统依赖
+      - name: Install build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends fakeroot unzip
+          java -version
+          mvn -version
+          jpackage --version
+
+      # 4. 从 pom.xml 解析版本，并按规则映射到 Debian 合规格式
+      #    1.7.1-beta1  -> app-version=1.7.1, release=1, deb-version=1.7.1~beta1-1
+      #    1.7.1-rc1    -> app-version=1.7.1, release=1, deb-version=1.7.1~rc1-1
+      #    1.7.0-1      -> app-version=1.7.0, release=1, deb-version=1.7.0-1
+      #    1.7.1        -> app-version=1.7.1, release=1, deb-version=1.7.1-1
+      - name: Parse and map version from pom.xml
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -n 's:.*<version>\(.*\)</version>.*:\1:p' pom.xml | head -1)"
+          if [[ -z "$VERSION" ]]; then
+            echo "::error::无法从 pom.xml 解析版本号"
+            exit 1
+          fi
+
+          APP_VERSION=""
+          DEB_RELEASE="1"
+          DEB_VERSION=""     # 最终写入 control 的 Version 字段
+          IS_PRERELEASE=false
+
+          if [[ "$VERSION" == *-* ]]; then
+            BASE="${VERSION%%-*}"
+            SUFFIX="${VERSION#*-}"
+
+            if [[ "$SUFFIX" =~ ^(alpha|beta|milestone|rc)[0-9]*$ ]]; then
+              # 预发布：~ 放进 upstream_version，release 固定为 1
+              IS_PRERELEASE=true
+              APP_VERSION="$BASE"
+              DEB_RELEASE="1"
+              DEB_VERSION="${BASE}~${SUFFIX}-${DEB_RELEASE}"
+            elif [[ "$SUFFIX" =~ ^[0-9]+$ ]]; then
+              # 数字 revision，如 1.7.0-1
+              APP_VERSION="$BASE"
+              DEB_RELEASE="$SUFFIX"
+              DEB_VERSION="${APP_VERSION}-${DEB_RELEASE}"
+            else
+              echo "::warning::未知版本后缀 '$SUFFIX'，将作为 debian-revision 使用"
+              APP_VERSION="$BASE"
+              DEB_RELEASE="$SUFFIX"
+              DEB_VERSION="${APP_VERSION}-${DEB_RELEASE}"
+            fi
+          else
+            APP_VERSION="$VERSION"
+            DEB_RELEASE="1"
+            DEB_VERSION="${APP_VERSION}-${DEB_RELEASE}"
+          fi
+
+          echo "pom version   : $VERSION"
+          echo "app-version   : $APP_VERSION"
+          echo "deb release   : $DEB_RELEASE"
+          echo "deb Version   : $DEB_VERSION"
+          echo "prerelease    : $IS_PRERELEASE"
+
+          {
+            echo "version=$VERSION"
+            echo "app_version=$APP_VERSION"
+            echo "deb_release=$DEB_RELEASE"
+            echo "deb_version=$DEB_VERSION"
+            echo "is_prerelease=$IS_PRERELEASE"
+          } >> "$GITHUB_OUTPUT"
+
+      # 5. 下载 JavaFX jmods
+      - name: Download JavaFX jmods
+        env:
+          JFX_VER: ${{ inputs.javafx_version }}
+        run: |
+          set -euo pipefail
+          URL="https://download2.gluonhq.com/openjfx/${JFX_VER}/openjfx-${JFX_VER}_linux-x64_bin-jmods.zip"
+          curl -fSL --retry 3 --retry-delay 5 -o javafx-jmods.zip "$URL"
+          unzip -q javafx-jmods.zip -d .
+          test -f "$(ls -d javafx-jmods-*/ | head -1)javafx.controls.jmod"
+
+      # 6. 用 jpackage 构建基础包
+      #    --app-version 始终用纯数字 APP_VERSION，避免 jpackage 对 ~ 的解析差异
+      #    --linux-app-release 始终用数字 DEB_RELEASE
+      #    预发布的 ~ 标记在后续步骤写入 control 文件
+      - name: Build base .deb with jpackage
+        env:
+          APP_VERSION: ${{ steps.version.outputs.app_version }}
+          DEB_RELEASE: ${{ steps.version.outputs.deb_release }}
+        run: |
+          set -euo pipefail
+          chmod +x build-deb.sh
+          # build-deb.sh 内部仍会自己解析 pom，但为了复用我们映射好的数字值，
+          # 用环境变量覆盖（脚本已支持 DEB_RELEASE 覆盖；APP_VERSION 需同步）
+          export APP_VERSION DEB_RELEASE
+          ./build-deb.sh
+
+      # 7. 预发布版本改写 control 中的 Version 字段
+      #    jpackage 生成的是 1.7.1-1，改写为 1.7.1~rc1-1
+      - name: Rewrite Version for prerelease
+        if: steps.version.outputs.is_prerelease == 'true'
+        env:
+          DEB_VERSION: ${{ steps.version.outputs.deb_version }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(package/*.deb)
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::未找到 package/*.deb"
+            exit 1
+          fi
+          mkdir -p dist
+          for f in "${files[@]}"; do
+            echo "Rewriting Version in $f -> $DEB_VERSION"
+            dpkg-deb --set-field "$f" Version "$DEB_VERSION" "dist/$(basename "$f")"
+          done
+
+      # 8. 非预发布版本直接复制
+      - name: Collect non-prerelease .deb
+        if: steps.version.outputs.is_prerelease != 'true'
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(package/*.deb)
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::未找到 package/*.deb"
+            exit 1
+          fi
+          mkdir -p dist
+          cp -v "${files[@]}" dist/
+
+      # 9. 复制为带 pom 完整版本号的文件名
+      - name: Normalize artifact name
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(dist/*.deb)
+          mkdir -p final
+          for f in "${files[@]}"; do
+            cp -v "$f" "final/HomeworkChecker-${VERSION}.deb"
+          done
+          ls -lh final
+
+      # 10. 验证 Debian 版本排序
+      - name: Verify version ordering
+        env:
+          DEB_VERSION: ${{ steps.version.outputs.deb_version }}
+          IS_PRERELEASE: ${{ steps.version.outputs.is_prerelease }}
+        run: |
+          set -euo pipefail
+          echo "最终包 Version: $DEB_VERSION"
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            FORMAL="${DEB_VERSION%%~*}-1"
+            if dpkg --compare-versions "$DEB_VERSION" lt "$FORMAL"; then
+              echo "✅ 预发布排序正确：$DEB_VERSION < $FORMAL"
+            else
+              echo "❌ 排序错误：$DEB_VERSION 不小于 $FORMAL"
+              exit 1
+            fi
+          fi
+
+      # 11. 打印包元信息
+      - name: Show .deb info
+        run: |
+          set -euo pipefail
+          for f in final/*.deb; do
+            echo "=== $f ==="
+            dpkg-deb -I "$f"
+          done
+
+      # 12. 上传 Artifact（不创建 Release）
+      - name: Upload .deb artifact
+        if: inputs.upload_artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: homeworkchecker-deb-${{ steps.version.outputs.version }}
+          path: final/*.deb
+          if-no-files-found: error
+          retention-days: 7
+
+      # 13. 摘要
+      - name: Job summary
+        if: always()
+        run: |
+          {
+            echo "### HomeworkChecker .deb"
+            echo ""
+            echo "| 项目 | 值 |"
+            echo "| --- | --- |"
+            echo "| pom version | \`${{ steps.version.outputs.version }}\` |"
+            echo "| deb Version | \`${{ steps.version.outputs.deb_version }}\` |"
+            echo "| 预发布 | \`${{ steps.version.outputs.is_prerelease }}\` |"
+            echo "| 文件名 | \`HomeworkChecker-${{ steps.version.outputs.version }}.deb\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
