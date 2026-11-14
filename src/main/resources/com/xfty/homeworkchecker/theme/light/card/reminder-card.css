@@ -39,6 +39,22 @@
     -fx-background-color: #eeb8b8;
 }
 
+/* 锁定状态下卡片保持原色，悬停不再高亮 */
+.card-item.info.locked,
+.card-item.info.locked:hover {
+    -fx-background-color: #d6e4f5;
+}
+
+.card-item.warning.locked,
+.card-item.warning.locked:hover {
+    -fx-background-color: #f5e6c8;
+}
+
+.card-item.critical.locked,
+.card-item.critical.locked:hover {
+    -fx-background-color: #f5d0d0;
+}
+
 .card-body {
     -fx-spacing: 8;
     -fx-padding: 10;

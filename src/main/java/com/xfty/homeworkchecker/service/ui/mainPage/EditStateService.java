@@ -29,6 +29,8 @@ public class EditStateService {
     
     // State tracking
     private volatile boolean isRunning = false;
+    // 当前看门狗线程引用，停止时通过中断它来保证同一时刻只有一个看门狗在运行
+    private volatile Thread watchdogThread;
     
     /**
      * Constructor
@@ -65,22 +67,21 @@ public class EditStateService {
      * Start the unlock counter watchdog thread
      * This monitors content changes and auto-locks after timeout
      */
-    public void startUnlockCounter() {
+    public synchronized void startUnlockCounter() {
         logger.info("Starting unlock counter watchdog");
         
-        if (isRunning) {
-            logger.warn("Unlock counter is already running");
-            return;
-        }
+        // 启动前先确保旧的看门狗线程已停止，避免多个看门狗并行倒计时
+        terminateWatchdogThread();
         
         isRunning = true;
         
-        new Thread(() -> {
+        Thread thread = new Thread(() -> {
             logger.info("Unlock counter watchdog thread started");
             int timings = INITIAL_TIMINGS;
             logger.debug("Initial timing value: {} seconds", timings);
             
-            while (true) {
+            // 使用运行标志作为循环条件，停止后可立即退出，无需等待下一轮状态检查
+            while (isRunning) {
                 logger.debug("Unlock counter check, remaining time: {} seconds", timings);
                 
                 // Check if software is closing
@@ -100,11 +101,12 @@ public class EditStateService {
                     logger.debug("Waiting for {} ms before next check", CHECK_INTERVAL);
                     Thread.sleep(CHECK_INTERVAL);
                 } catch (InterruptedException e) {
-                    logger.warn("Unlock counter thread interrupted", e);
-                    // When interrupted, check if software should be closed
+                    // 主动停止（锁定/清理）会中断本线程，属正常流程；仅软件关闭时才需要触发锁定
                     if (Idf.isSoftwareClosing) {
                         logger.debug("Software is closing, locking module from interrupted thread");
                         Platform.runLater(onLockModuleClicked);
+                    } else {
+                        logger.debug("Unlock counter thread interrupted for stop");
                     }
                     break;
                 }
@@ -142,17 +144,41 @@ public class EditStateService {
                 }
             }
             
-            isRunning = false;
+            // 仅当当前线程仍是登记的看门狗时才清除状态，避免旧线程误清新线程的运行标志
+            synchronized (this) {
+                if (Thread.currentThread() == watchdogThread) {
+                    isRunning = false;
+                    watchdogThread = null;
+                }
+            }
             logger.info("Unlock counter watchdog thread finished");
-        }, "UnlockCounterThread").start();
+        }, "UnlockCounterThread");
+        
+        // 先登记线程引用再启动，确保停止逻辑能拿到线程并中断其休眠
+        watchdogThread = thread;
+        thread.start();
     }
     
     /**
      * Stop the unlock counter thread
      */
-    public void stopUnlockCounter() {
+    public synchronized void stopUnlockCounter() {
         logger.info("Stopping unlock counter");
+        terminateWatchdogThread();
+    }
+    
+    /**
+     * 终止当前看门狗线程：清除运行标志与线程引用，并中断其休眠
+     * 由 startUnlockCounter/stopUnlockCounter 复用，保证同一时刻只有一个看门狗
+     */
+    private synchronized void terminateWatchdogThread() {
         isRunning = false;
+        // 先清空引用再中断，避免旧线程退出时干扰随后启动的新线程
+        Thread thread = watchdogThread;
+        watchdogThread = null;
+        if (thread != null && thread.isAlive()) {
+            thread.interrupt();
+        }
     }
     
     /**

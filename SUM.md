@@ -62,7 +62,8 @@ MainPage:
 | `MainPage.java` | 主控；依赖约 11 个服务（`HomeworkDatabase`、`MainPageInitService`、`TopButtonService.*`、`PopupService`、`EditMainService`、`EditStateService`、`WindowListener`、`CardUiService`、`LockService`、`ReminderCardService`）；管理 cardContainer 折叠（divider ≥0.90 时 `setManaged(false)`） |
 | `HomeworkDatabase.java` | 核心数据服务，被 `MainPage`/`HomeworkArea`/`MainPageInitService`/`HomeworkContentFetcherService`/`Index`/`languageChooser`/`LockService` 使用 |
 | `TopButtonService.java` | 含 4 内部类：ScreenshotService、HistoryHomeworkService、SettingsService、AboutService |
-| `CardUiService.java` | 卡片 UI 核心（~756 行），依赖 `ReminderCardService`/`PopupService`/`CardItem`；卡片增删改渲染折叠 |
+| `CardUiService.java` | 卡片 UI 核心（~1534 行），依赖 `ReminderCardService`/`PopupService`/`CardItem`；卡片增删改渲染折叠 |
+| `service/ui/motion/MotionEasing.java` | 统一类 iOS 弹簧缓动曲线（`SPRING`/`SPRING_EXIT`），复用于卡片、弹窗、设置窗口与欢迎页的位移/缩放/尺寸动画 |
 | `LockService.java` | 锁定/解锁；依赖 `HomeworkDatabase`、`Idf` |
 | `ReminderCardService.java` | 卡片 CRUD + SHA256 校验 + persistentCards.json 同步 |
 | `UpdaterService.java` | 依赖 `HttpClientService`、OkHttp 下载、CommonMark 渲染；内部 `generateUpdateInfoHtml()` 替代旧 `HtmlBuilder` |
@@ -102,7 +103,7 @@ repeatedly.start         # 激活信号文件(临时)
 - **彩蛋**：About 页面快速连点触发 EggPlant 游戏
 - **自动缩进**：编辑区 Enter 保持当前行缩进
 - **可折叠卡片容器**：SplitPane 分隔线 ≥ 9:1 自动折叠，拖回恢复（`setManaged` 控制）
-- **警示卡片**：三种严重程度（提示/警告/严重），彩色边框+图标，hover 内联编辑/删除，持久化至作业库 + `persistentCards.json`
+- **警示卡片**：三种严重程度（提示/警告/严重），彩色边框+图标，hover 内联编辑/删除（编辑展开与删除收起均为动画），持久化至作业库 + `persistentCards.json`
 
 ---
 

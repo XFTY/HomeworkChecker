@@ -1,5 +1,6 @@
 package com.xfty.homeworkchecker.controller.setupWizard.wizard;
 
+import com.xfty.homeworkchecker.service.ui.motion.MotionEasing;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -90,27 +91,34 @@ public class WelcomeStepHandler {
         nextButton.setText(welcomeWords[0][4]);
 
         Interpolator easeOutCustom = Interpolator.SPLINE(0.0, 0.0, 0.58, 1.0);
-        Interpolator easeInOutCustom = Interpolator.SPLINE(0.25, 0.1, 0.25, 1.0);
 
         Timeline phase1 = new Timeline(
+            // 缩放弹簧放慢一倍，透明度仍保持原有的 1000ms 淡入节奏
+            new KeyFrame(Duration.millis(2000),
+                // 图标缩放使用弹簧曲线
+                new KeyValue(welcomeIcon.scaleXProperty(), 1, MotionEasing.SPRING),
+                new KeyValue(welcomeIcon.scaleYProperty(), 1, MotionEasing.SPRING)
+            ),
             new KeyFrame(Duration.millis(1000),
-                new KeyValue(welcomeIcon.opacityProperty(), 1, easeOutCustom),
-                new KeyValue(welcomeIcon.scaleXProperty(), 1, easeOutCustom),
-                new KeyValue(welcomeIcon.scaleYProperty(), 1, easeOutCustom)
+                new KeyValue(welcomeIcon.opacityProperty(), 1, easeOutCustom)
             )
         );
 
         Timeline phase2 = new Timeline(
+            // 横向滑入放慢一倍，文字透明度仍保持原有的 700ms 节奏
+            new KeyFrame(Duration.millis(1400),
+                new KeyValue(welcomeIcon.translateXProperty(), 0, MotionEasing.SPRING),
+                new KeyValue(appNameLabel.translateXProperty(), 0, MotionEasing.SPRING)
+            ),
             new KeyFrame(Duration.millis(700),
-                new KeyValue(welcomeIcon.translateXProperty(), 0, easeInOutCustom),
-                new KeyValue(appNameLabel.translateXProperty(), 0, easeInOutCustom),
                 new KeyValue(appNameLabel.opacityProperty(), 1, easeOutCustom)
             )
         );
 
         Timeline phase3 = new Timeline(
-            new KeyFrame(Duration.millis(500),
-                new KeyValue(rootContainer.translateYProperty(), -30, easeInOutCustom)
+            // 根容器位移动画放慢一倍
+            new KeyFrame(Duration.millis(1000),
+                new KeyValue(rootContainer.translateYProperty(), -30, MotionEasing.SPRING)
             )
         );
 
@@ -137,9 +145,9 @@ public class WelcomeStepHandler {
             Timeline fadeOut = new Timeline(
                 new KeyFrame(Duration.millis(250),
                     new KeyValue(welcomeTitle.opacityProperty(), 0),
-                    new KeyValue(welcomeTitle.translateYProperty(), -12, Interpolator.EASE_OUT),
+                    new KeyValue(welcomeTitle.translateYProperty(), -12, MotionEasing.SPRING_EXIT),
                     new KeyValue(welcomeSubtitle.opacityProperty(), 0),
-                    new KeyValue(welcomeSubtitle.translateYProperty(), -12, Interpolator.EASE_OUT)
+                    new KeyValue(welcomeSubtitle.translateYProperty(), -12, MotionEasing.SPRING_EXIT)
                 )
             );
             fadeOut.setOnFinished(e2 -> {
@@ -153,9 +161,9 @@ public class WelcomeStepHandler {
                 Timeline fadeIn = new Timeline(
                     new KeyFrame(Duration.millis(250),
                         new KeyValue(welcomeTitle.opacityProperty(), 1),
-                        new KeyValue(welcomeTitle.translateYProperty(), 0, Interpolator.EASE_OUT),
+                        new KeyValue(welcomeTitle.translateYProperty(), 0, MotionEasing.SPRING),
                         new KeyValue(welcomeSubtitle.opacityProperty(), 1),
-                        new KeyValue(welcomeSubtitle.translateYProperty(), 0, Interpolator.EASE_OUT)
+                        new KeyValue(welcomeSubtitle.translateYProperty(), 0, MotionEasing.SPRING)
                     )
                 );
                 fadeIn.play();
