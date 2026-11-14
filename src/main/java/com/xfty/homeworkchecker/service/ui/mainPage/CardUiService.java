@@ -10,6 +10,8 @@ import javafx.animation.KeyValue;
 import javafx.animation.ParallelTransition;
 import javafx.animation.SequentialTransition;
 import javafx.animation.Timeline;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -18,10 +20,14 @@ import javafx.scene.control.SplitPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundFill;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import org.slf4j.Logger;
@@ -86,6 +92,10 @@ public class CardUiService {
         CARD_EDIT_HEIGHT_ANIM_DURATION.subtract(CARD_EDIT_FADE_OUT_DURATION);
     /** 编辑切换动画在卡片节点属性中的键，用于中断和清理。 */
     private static final String CARD_EDIT_ANIM_KEY = "cardEditAnim";
+    /** 编辑中切换警示程度时，卡片背景色的渐变时长。 */
+    private static final Duration SEVERITY_COLOR_FADE_DURATION = Duration.millis(220);
+    /** 警示程度颜色渐变动画在节点属性中的键，用于快速切换时停止旧动画。 */
+    private static final String SEVERITY_COLOR_ANIM_KEY = "cardSeverityColorAnim";
     /** SplitPane 分隔条比例达到该值时折叠卡片区域。 */
     private static final double CARD_COLLAPSE_THRESHOLD = 0.90;
 
@@ -1188,7 +1198,11 @@ public class CardUiService {
             () -> cancelEditCard(),
             tf -> this.cardTitleField = tf,
             ta -> this.cardContentField = ta,
-            sev -> this.editingCardSeverity = sev
+            sev -> {
+                this.editingCardSeverity = sev;
+                // 立即切换卡片配色，并以渐变方式从旧颜色过渡到目标主题色
+                applySeverityWithColorFade(cardRoot, sev);
+            }
         );
 
         if (!animate) {
@@ -1251,6 +1265,91 @@ public class CardUiService {
         });
         cardRoot.getProperties().put(CARD_EDIT_ANIM_KEY, animation);
         animation.play();
+    }
+
+    /**
+     * 切换卡片的警示程度，并让背景色从旧颜色平滑渐变到新主题色。
+     * <p>
+     * 颜色取自卡片当前的 CSS 计算背景色，因此 darkness/light/paper 三套主题都能得到
+     * 各自的正确配色。动画结束后清除程序化设置的背景，让 CSS 重新接管
+     * （包括悬停高亮等状态样式）。
+     * </p>
+     *
+     * @param cardRoot 卡片根节点
+     * @param severity 目标警示程度
+     */
+    private void applySeverityWithColorFade(VBox cardRoot, CardItem.Severity severity) {
+        // 快速连续切换时先停止上一段渐变动画，避免多个动画同时改写背景色
+        stopSeverityColorAnimation(cardRoot);
+
+        // 渐变起点：切换样式类之前的当前背景色
+        Color from = readCardBackgroundColor(cardRoot);
+
+        // 先切换样式类并立即计算 CSS，取得目标主题下的最终背景色
+        // 清除上一段动画可能残留的程序化背景，确保取到的是样式表计算值
+        cardRoot.setBackground(null);
+        cardRoot.getStyleClass().removeAll("info", "warning", "critical");
+        cardRoot.getStyleClass().add(CardRenderer.severityStyleClass(severity));
+        cardRoot.applyCss();
+        Color to = readCardBackgroundColor(cardRoot);
+
+        // 无法读取颜色或颜色未变化时无需播放动画
+        if (from == null || to == null || from.equals(to)) {
+            return;
+        }
+
+        // 保留 CSS 定义的圆角与内边距，仅替换填充色
+        BackgroundFill template = cardRoot.getBackground().getFills().get(0);
+        ObjectProperty<Color> colorProp = new SimpleObjectProperty<>(from);
+        colorProp.addListener((obs, oldColor, newColor) -> cardRoot.setBackground(
+            new Background(new BackgroundFill(newColor, template.getRadii(), template.getInsets()))
+        ));
+        // 以旧色作为起始帧，避免动画启动前目标色短暂闪现
+        cardRoot.setBackground(new Background(
+            new BackgroundFill(from, template.getRadii(), template.getInsets())));
+
+        Timeline timeline = new Timeline(
+            new KeyFrame(Duration.ZERO, new KeyValue(colorProp, from, Interpolator.LINEAR)),
+            new KeyFrame(SEVERITY_COLOR_FADE_DURATION,
+                new KeyValue(colorProp, to, MotionEasing.EASE_OUT_CUBIC))
+        );
+        timeline.setOnFinished(event -> {
+            // 清除程序化背景并重新标记样式类为脏，让样式表重新接管背景色（恢复 hover 等状态）
+            cardRoot.getProperties().remove(SEVERITY_COLOR_ANIM_KEY);
+            cardRoot.setBackground(null);
+            cardRoot.getStyleClass().removeAll("info", "warning", "critical");
+            cardRoot.getStyleClass().add(CardRenderer.severityStyleClass(severity));
+            cardRoot.applyCss();
+        });
+        cardRoot.getProperties().put(SEVERITY_COLOR_ANIM_KEY, timeline);
+        timeline.play();
+    }
+
+    /**
+     * 停止卡片上正在播放的警示程度颜色渐变动画。
+     *
+     * @param cardRoot 卡片根节点
+     */
+    private void stopSeverityColorAnimation(VBox cardRoot) {
+        Object animation = cardRoot.getProperties().remove(SEVERITY_COLOR_ANIM_KEY);
+        if (animation instanceof Timeline timeline) {
+            timeline.stop();
+        }
+    }
+
+    /**
+     * 读取卡片根节点当前背景填充中的颜色。
+     *
+     * @param cardRoot 卡片根节点
+     * @return 首个背景填充的颜色；不存在或非纯色时返回 {@code null}
+     */
+    private Color readCardBackgroundColor(Region cardRoot) {
+        Background background = cardRoot.getBackground();
+        if (background == null || background.getFills().isEmpty()) {
+            return null;
+        }
+        Paint fill = background.getFills().get(0).getFill();
+        return fill instanceof Color color ? color : null;
     }
 
     /**
@@ -1399,6 +1498,8 @@ public class CardUiService {
                     // 把目标只读卡片的按钮栏/编辑按钮引用与严重性样式迁移到现有卡片根节点
                     copyCardProperty(targetRoot, cardRoot, CardRenderer.BUTTON_BAR_PROPERTY);
                     copyCardProperty(targetRoot, cardRoot, CardRenderer.EDIT_BUTTON_PROPERTY);
+                    // 退出编辑前停止可能仍在播放的颜色渐变，避免它与最终配色冲突
+                    stopSeverityColorAnimation(cardRoot);
                     cardRoot.getStyleClass().removeAll("info", "warning", "critical");
                     cardRoot.getStyleClass().add(CardRenderer.severityStyleClass(targetItem.getSeverity()));
 

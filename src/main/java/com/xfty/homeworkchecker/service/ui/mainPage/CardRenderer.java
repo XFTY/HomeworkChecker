@@ -377,9 +377,14 @@ public class CardRenderer {
         }
 
         severityGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
-            if (severityConsumer != null && newToggle != null
+            if (newToggle != null
                     && newToggle.getUserData() instanceof CardItem.Severity severity) {
-                severityConsumer.accept(severity);
+                // 编辑中切换警示程度时，立即同步左侧状态图标，避免图标与配色不一致
+                iconView.setImage(buildSeverityIcon(severity, iconSize).getImage());
+                // 卡片整体配色由调用方处理（需要播放颜色渐变），这里只负责通知
+                if (severityConsumer != null) {
+                    severityConsumer.accept(severity);
+                }
             }
         });
 
