@@ -2,6 +2,7 @@ package com.xfty.homeworkchecker.controller.settings;
 
 import com.xfty.homeworkchecker.Entry;
 import com.xfty.homeworkchecker.Idf;
+import com.xfty.homeworkchecker.service.ui.motion.MotionEasing;
 import javafx.animation.Interpolator;
 import javafx.animation.KeyFrame;
 import javafx.animation.KeyValue;
@@ -162,7 +163,6 @@ public class Index implements Initializable {
             return;
         }
 
-        Interpolator spring = Interpolator.SPLINE(0.34, 0.9, 0.64, 1.0);
         Interpolator easeOut = Interpolator.SPLINE(0.25, 0.1, 0.25, 1.0);
 
         if (!isMaximized) {
@@ -192,9 +192,12 @@ public class Index implements Initializable {
             settingsRoot.setOpacity(0.6);
 
             new Timeline(
+                // 缩放弹簧放慢一倍，透明度仍保持原有的 350ms 节奏
+                new KeyFrame(Duration.millis(700),
+                    new KeyValue(settingsRoot.scaleXProperty(), 1.0, MotionEasing.SPRING),
+                    new KeyValue(settingsRoot.scaleYProperty(), 1.0, MotionEasing.SPRING)
+                ),
                 new KeyFrame(Duration.millis(350),
-                    new KeyValue(settingsRoot.scaleXProperty(), 1.0, spring),
-                    new KeyValue(settingsRoot.scaleYProperty(), 1.0, spring),
                     new KeyValue(settingsRoot.opacityProperty(), 1.0, easeOut)
                 )
             ).play();
@@ -203,9 +206,12 @@ public class Index implements Initializable {
             isMaximized = true;
         } else {
             Timeline shrink = new Timeline(
+                // 缩放弹簧放慢一倍，透明度仍保持原有的 120ms 节奏
+                new KeyFrame(Duration.millis(240),
+                    new KeyValue(settingsRoot.scaleXProperty(), 0.93, MotionEasing.SPRING_EXIT),
+                    new KeyValue(settingsRoot.scaleYProperty(), 0.93, MotionEasing.SPRING_EXIT)
+                ),
                 new KeyFrame(Duration.millis(120),
-                    new KeyValue(settingsRoot.scaleXProperty(), 0.93, easeOut),
-                    new KeyValue(settingsRoot.scaleYProperty(), 0.93, easeOut),
                     new KeyValue(settingsRoot.opacityProperty(), 0.0, easeOut)
                 )
             );
@@ -233,9 +239,12 @@ public class Index implements Initializable {
                 settingsRoot.setOpacity(0.0);
 
                 new Timeline(
+                    // 缩放弹簧放慢一倍，透明度仍保持原有的 200ms 节奏
+                    new KeyFrame(Duration.millis(400),
+                        new KeyValue(settingsRoot.scaleXProperty(), 1.0, MotionEasing.SPRING),
+                        new KeyValue(settingsRoot.scaleYProperty(), 1.0, MotionEasing.SPRING)
+                    ),
                     new KeyFrame(Duration.millis(200),
-                        new KeyValue(settingsRoot.scaleXProperty(), 1.0, easeOut),
-                        new KeyValue(settingsRoot.scaleYProperty(), 1.0, easeOut),
                         new KeyValue(settingsRoot.opacityProperty(), 1.0, easeOut)
                     )
                 ).play();

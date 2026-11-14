@@ -1,6 +1,7 @@
 package com.xfty.homeworkchecker.service.ui.mainPage;
 
 import com.xfty.homeworkchecker.Idf;
+import com.xfty.homeworkchecker.service.ui.motion.MotionEasing;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.effect.GaussianBlur;
@@ -88,26 +89,12 @@ public class PopupService {
             new javafx.animation.KeyValue(centerShowingArea.opacityProperty(), 1, elasticInterpolator)
         );
         
-        // Scale X keyframes
-        javafx.animation.KeyFrame scaleXKeyFrame = new javafx.animation.KeyFrame(
-            javafx.util.Duration.millis(300),
-            new javafx.animation.KeyValue(centerShowingArea.scaleXProperty(), 1.1, elasticInterpolator)
-        );
-        
-        javafx.animation.KeyFrame scaleXKeyFrame2 = new javafx.animation.KeyFrame(
-            javafx.util.Duration.millis(500),
-            new javafx.animation.KeyValue(centerShowingArea.scaleXProperty(), 1.0, elasticInterpolator)
-        );
-        
-        // Scale Y keyframes
-        javafx.animation.KeyFrame scaleYKeyFrame = new javafx.animation.KeyFrame(
-            javafx.util.Duration.millis(300),
-            new javafx.animation.KeyValue(centerShowingArea.scaleYProperty(), 1.1, elasticInterpolator)
-        );
-        
-        javafx.animation.KeyFrame scaleYKeyFrame2 = new javafx.animation.KeyFrame(
-            javafx.util.Duration.millis(500),
-            new javafx.animation.KeyValue(centerShowingArea.scaleYProperty(), 1.0, elasticInterpolator)
+        // 缩放使用单段弹簧曲线：0.8 → 1.0 由弹簧自身产生轻微过冲，避免手动两段回弹叠加
+        // 时长在原有 500ms 基础上放慢一倍
+        javafx.animation.KeyFrame scaleKeyFrame = new javafx.animation.KeyFrame(
+            javafx.util.Duration.millis(1000),
+            new javafx.animation.KeyValue(centerShowingArea.scaleXProperty(), 1.0, MotionEasing.SPRING),
+            new javafx.animation.KeyValue(centerShowingArea.scaleYProperty(), 1.0, MotionEasing.SPRING)
         );
         
         // Black pane opacity keyframe
@@ -117,11 +104,10 @@ public class PopupService {
         );
         
             fadeInTimeline.getKeyFrames().addAll(
-                blurKeyFrame, opacityKeyFrame, blackPaneKeyFrame,
-                scaleXKeyFrame, scaleXKeyFrame2, scaleYKeyFrame, scaleYKeyFrame2
+                blurKeyFrame, opacityKeyFrame, blackPaneKeyFrame, scaleKeyFrame
             );
             fadeInTimeline.play();
-            logger.debug("Fade-in timeline started with duration 500ms");
+            logger.debug("Fade-in timeline started with duration 1000ms");
 
             blackPane.setOpacity(0);
 
@@ -207,15 +193,12 @@ public class PopupService {
             new javafx.animation.KeyValue(centerShowingArea.opacityProperty(), 0, easeOutInterpolator)
         );
         
-        // Scale out keyframes
-        javafx.animation.KeyFrame scaleOutXKeyFrame = new javafx.animation.KeyFrame(
-            javafx.util.Duration.millis(250),
-            new javafx.animation.KeyValue(centerShowingArea.scaleXProperty(), 0.8, easeOutInterpolator)
-        );
-        
-        javafx.animation.KeyFrame scaleOutYKeyFrame = new javafx.animation.KeyFrame(
-            javafx.util.Duration.millis(250),
-            new javafx.animation.KeyValue(centerShowingArea.scaleYProperty(), 0.8, easeOutInterpolator)
+        // 关闭缩放使用无过冲弹簧收束，避免退场时尺寸反向弹跳
+        // 时长在原有 250ms 基础上放慢一倍
+        javafx.animation.KeyFrame scaleOutKeyFrame = new javafx.animation.KeyFrame(
+            javafx.util.Duration.millis(500),
+            new javafx.animation.KeyValue(centerShowingArea.scaleXProperty(), 0.8, MotionEasing.SPRING_EXIT),
+            new javafx.animation.KeyValue(centerShowingArea.scaleYProperty(), 0.8, MotionEasing.SPRING_EXIT)
         );
         
         // Black pane opacity out keyframe
@@ -225,8 +208,7 @@ public class PopupService {
         );
         
             fadeOutTimeline.getKeyFrames().addAll(
-                blurOutKeyFrame, opacityOutKeyFrame, blackPaneOutKeyFrame,
-                scaleOutXKeyFrame, scaleOutYKeyFrame
+                blurOutKeyFrame, opacityOutKeyFrame, blackPaneOutKeyFrame, scaleOutKeyFrame
             );
             fadeOutTimeline.setOnFinished(e -> {
                 logger.debug("Fade-out animation finished, clearing popup content");
@@ -235,7 +217,7 @@ public class PopupService {
                 showingMainArea.setEffect(null);
             });
             fadeOutTimeline.play();
-            logger.debug("Fade-out timeline started with duration 250ms");
+            logger.debug("Fade-out timeline started with duration 500ms");
         } catch (Exception e) {
             logger.error("Error closing popup window", e);
         }
