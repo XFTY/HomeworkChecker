@@ -276,10 +276,16 @@ public class LoadHistoryHomework implements Initializable {
         List<Button> buttons = Arrays.asList(lastweekBt, monBt, tusBt, wedBt, thuBt, friBt);
         List<ImageView> imageViews = Arrays.asList(lastweekIv, monIv, tusIv, wedIv, thuIv, firIv);
         
-        boolean hasLastWeekendData = homeworkContexts[0] != null || homeworkContexts[1] != null;
+        // 上周末按钮：上周五(索引0)、上周六(索引1)、上周日(索引2)任意一天有数据即绿灯，
+        // 与 handleLastWeekButton() 的查找范围保持一致，避免只判断周日而误显示为无数据。
+        boolean hasLastWeekendData = homeworkContexts[0] != null
+                || homeworkContexts[1] != null
+                || homeworkContexts[2] != null;
         buttonStateManagerService.setButtonState(lastweekBt, lastweekIv, hasLastWeekendData);
         
-        for (int i = 2; i < homeworkContexts.length; i++) {
+        // 仅遍历周一至周五（索引3-7），映射到按钮列表索引1-5（周一~周五）；
+        // 从索引3开始可避免再次覆盖上面已设置好的「上周末」按钮状态。
+        for (int i = 3; i < homeworkContexts.length; i++) {
             int buttonIndex = i - 2;
             boolean hasData = homeworkContexts[i] != null;
             buttonStateManagerService.setButtonState(buttons.get(buttonIndex), imageViews.get(buttonIndex), hasData);
