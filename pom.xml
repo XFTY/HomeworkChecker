@@ -88,6 +88,12 @@
             <artifactId>commonmark</artifactId>
             <version>0.21.0</version>
         </dependency>
+
+        <dependency>
+            <groupId>org.controlsfx</groupId>
+            <artifactId>controlsfx</artifactId>
+            <version>11.2.1</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -128,6 +134,7 @@
                 <version>3.2.4</version>
                 <executions>
                     <execution>
+                        <id>shade</id>
                         <goals>
                             <goal>shade</goal>
                         </goals>
@@ -160,4 +167,36 @@
             </plugin>
         </plugins>
     </build>
+
+    <profiles>
+        <!--
+            Linux .deb 打包专用 profile。
+            目的：让 shade 产物排除 JavaFX（org.openjfx），JavaFX 改由 jmods 提供的
+            模块在运行时镜像中提供，避免 libjfxwebkit.so 等原生库被重复打包。
+            用法：mvn -Plinux-deb -DskipTests clean package
+        -->
+        <profile>
+            <id>linux-deb</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <groupId>org.apache.maven.plugins</groupId>
+                        <artifactId>maven-shade-plugin</artifactId>
+                        <executions>
+                            <execution>
+                                <id>shade</id>
+                                <configuration>
+                                    <artifactSet>
+                                        <excludes>
+                                            <exclude>org.openjfx:*</exclude>
+                                        </excludes>
+                                    </artifactSet>
+                                </configuration>
+                            </execution>
+                        </executions>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
 </project>

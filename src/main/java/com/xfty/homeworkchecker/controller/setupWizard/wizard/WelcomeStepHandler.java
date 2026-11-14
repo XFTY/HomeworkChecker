@@ -81,15 +81,7 @@ public class WelcomeStepHandler {
         String[][] welcomeWords = {
             {"zh_CN", "欢迎", "请按\u201c下一步\u201d继续", "上一步", "下一步"},
             {"zh_HK", "歡迎", "請按\u201c下一步\u201d繼續", "上一步", "下一步"},
-            {"en_US", "Welcome", "Press \u201cNext\u201d to continue", "Back", "Next"},
-            {"es_ES", "Bienvenido", "Presione \u201cSiguiente\u201d para continuar", "Atrás", "Siguiente"},
-            {"fr_FR", "Bienvenue", "Appuyez sur \u201cSuivant\u201d pour continuer", "Retour", "Suivant"},
-            {"ar_SA", "مرحبا", "اضغط على \u201cالتالي\u201d للمتابعة", "رجوع", "التالي"},
-            {"ru_RU", "Добро пожаловать", "Нажмите \u201cДалее\u201d, чтобы продолжить", "Назад", "Далее"},
-            {"bn_BD", "স্বাগতম", "চালিয়ে যেতে \u201cপরবর্তী\u201d টিপুন", "পিছনে", "পরবর্তী"},
-            {"de_DE", "Willkommen", "Drücken Sie \u201cWeiter\u201d, um fortzufahren", "Zurück", "Weiter"},
-            {"ja_JP", "ようこそ", "\u201c次へ\u201dを押して続行", "戻る", "次へ"},
-            {"pt_PT", "Bem-vindo", "Prima \u201cSeguinte\u201d para continuar", "Voltar", "Seguinte"}
+            {"en_US", "Welcome", "Press \u201cNext\u201d to continue", "Back", "Next"}
         };
         int[] idx = {1};
         welcomeTitle.setText(welcomeWords[0][1]);

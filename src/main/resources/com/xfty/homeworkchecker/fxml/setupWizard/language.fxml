@@ -57,7 +57,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="spanishButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="3">
+                  <AnchorPane fx:id="spanishButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="3">
                      <children>
                         <Label alignment="CENTER" text="%language.spanish" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -66,7 +66,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="frenchButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.rowIndex="1">
+                  <AnchorPane fx:id="frenchButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.rowIndex="1">
                      <children>
                         <Label alignment="CENTER" text="%language.french" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -75,7 +75,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="arabicButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                  <AnchorPane fx:id="arabicButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="1">
                      <children>
                         <Label alignment="CENTER" text="%language.arabic" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -84,7 +84,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="russianButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="1">
+                  <AnchorPane fx:id="russianButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="1">
                      <children>
                         <Label alignment="CENTER" text="%language.russian" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -93,7 +93,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="bengaliButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                  <AnchorPane fx:id="bengaliButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="3" GridPane.rowIndex="1">
                      <children>
                         <Label alignment="CENTER" text="%language.bengali" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -102,7 +102,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="germanButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.rowIndex="2">
+                  <AnchorPane fx:id="germanButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.rowIndex="2">
                      <children>
                         <Label alignment="CENTER" text="%language.german" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -111,7 +111,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="japaneseButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                  <AnchorPane fx:id="japaneseButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <children>
                         <Label alignment="CENTER" text="%language.japanese" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>
@@ -120,7 +120,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="portugueseButton" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                  <AnchorPane fx:id="portugueseButton" visible="false" managed="false" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #575757; -fx-background-radius: 10;" GridPane.columnIndex="2" GridPane.rowIndex="2">
                      <children>
                         <Label alignment="CENTER" text="%language.portuguese" textFill="WHITE" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                            <font>

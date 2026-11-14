@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Hyperlink?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.ToggleSwitch?>
+
+<AnchorPane prefHeight="789.0" prefWidth="555.0" style="-fx-background-color: #1e1e1e;" xmlns="http://javafx.com/javafx/26" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.xfty.homeworkchecker.controller.settings.CloudSync">
+   <children>
+      <AnchorPane layoutX="22.0" layoutY="14.0" prefHeight="151.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="14.0">
+         <children>
+            <Label layoutY="2.0" text="云同步服务" textFill="WHITE">
+               <font>
+                  <Font name="System Bold" size="19.0" />
+               </font>
+            </Label>
+            <Label layoutY="104.0" text="启用此功能" textFill="WHITE">
+               <font>
+                  <Font size="15.0" />
+               </font>
+            </Label>
+            <ToggleSwitch fx:id="cloudSyncToggleSwitch" layoutY="106.0" AnchorPane.rightAnchor="0.0" />
+            <Label layoutY="129.0" text="您需要先启用此功能，然后在进行后续设置" textFill="#ababab">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+            <Label alignment="TOP_LEFT" layoutY="32.0" prefHeight="39.0" text="云同步服务需要搭配服务器使用，关于服务器的搭建和部署，请看" textFill="#ababab" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+               <font>
+                  <Font size="12.0" />
+               </font>
+            </Label>
+            <Hyperlink layoutX="-3.0" layoutY="59.0" text="https://github.com/XFTY/HomeworkCheckerServer" />
+         </children>
+      </AnchorPane>
+      <VBox fx:id="cGlobalSettings" alignment="TOP_CENTER" layoutX="22.0" layoutY="206.0" prefHeight="600.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="22.0" AnchorPane.topAnchor="206.0">
+         <children>
+            <AnchorPane prefHeight="119.0" prefWidth="400.0">
+               <children>
+                  <Label text="服务器状态" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="TOP_LEFT" layoutY="25.0" prefHeight="39.0" text="尚未填写服务器IP或公钥，请填写相关信息后，点击“开始连接”启动云服务功能" textFill="#ababab" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+                  <Button layoutY="63.0" mnemonicParsing="false" styleClass="functional-button" stylesheets="@../../theme/darkness/button/functional-button.css" text="开始连接" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="149.0" prefWidth="400.0">
+               <children>
+                  <Label text="服务器IP" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label alignment="TOP_LEFT" layoutY="25.0" prefHeight="25.0" text="输入服务器IP地址(暂不支持IPv6地址解析)" textFill="#ababab" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+                  <TextField fx:id="serverIpField" layoutY="49.0" prefHeight="28.0" promptText="在此键入您的IP地址..." AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+                  <Button fx:id="testConnectButton" layoutY="90.0" mnemonicParsing="false" onMouseClicked="#onTestIpConnectionButtonPressed" styleClass="functional-button" stylesheets="@../../theme/darkness/button/functional-button.css" text="测试连接（无须公钥）" />
+               </children>
+            </AnchorPane>
+            <AnchorPane prefHeight="332.0" prefWidth="400.0">
+               <children>
+                  <Label text="服务器公钥" textFill="WHITE">
+                     <font>
+                        <Font size="15.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="1.0" layoutY="45.0" text="在此填入您在服务器上注册的公钥" textFill="#ababab">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+                  <Label layoutY="245.0" prefHeight="63.0" text="注意: 每一个客户端对应唯一的一个公钥。 当您首次连接到服务器时，服务器会记录当前客户端的唯一身份信息，此后请勿将该密钥应用于其他客户端，否则此公钥将立刻失效" textFill="#ababab" wrapText="true" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+                  <Label layoutX="1.0" layoutY="25.0" text="敏感数据！请妥善保管！" textFill="#ababab">
+                     <font>
+                        <Font size="12.0" />
+                     </font>
+                  </Label>
+                  <TextArea layoutX="1.0" layoutY="75.0" prefHeight="161.0" promptText="在此键入您的公钥..." AnchorPane.leftAnchor="1.0" AnchorPane.rightAnchor="0.0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </VBox>
+      <Separator layoutX="22.0" layoutY="180.0" prefHeight="5.0" AnchorPane.leftAnchor="22.0" AnchorPane.rightAnchor="22.0" />
+   </children>
+</AnchorPane>

@@ -1,80 +1,25 @@
-使用简体中文回答
+使用简体中文回答。
 
-{file:SUM.md}是项目架构，每次进行计划规划时读取这个文件，并在更改项目结构后更新这个文件  
+`SUM.md` 是项目架构：做规划前先读取，改动项目结构后更新。
 
-合理利用codegraph MCP工具，可以大幅度节省时间
+善用 codegraph MCP 工具（存在 `.codegraph/` 时优先于 grep/read，可大幅省时）。
 
-Behavioral guidelines to reduce common LLM coding mistakes. Merge with project-specific instructions as needed.
+**强制写注释**：所有新增/修改的代码都要写中文注释（类与方法用 Javadoc，关键逻辑加行内注释，魔法数字标注含义）。此条优先级高于「不要加注释」的通用默认规则。
 
-**Tradeoff:** These guidelines bias toward caution over speed. For trivial tasks, use judgment.
+## 编码准则
 
-## 1. Think Before Coding
-
-**Don't assume. Don't hide confusion. Surface tradeoffs.**
-
-Before implementing:
-- State your assumptions explicitly. If uncertain, ask.
-- If multiple interpretations exist, present them - don't pick silently.
-- If a simpler approach exists, say so. Push back when warranted.
-- If something is unclear, stop. Name what's confusing. Ask.
-
-## 2. Simplicity First
-
-**Minimum code that solves the problem. Nothing speculative.**
-
-- No features beyond what was asked.
-- No abstractions for single-use code.
-- No "flexibility" or "configurability" that wasn't requested.
-- No error handling for impossible scenarios.
-- If you write 200 lines and it could be 50, rewrite it.
-
-Ask yourself: "Would a senior engineer say this is overcomplicated?" If yes, simplify.
-
-## 3. Surgical Changes
-
-**Touch only what you must. Clean up only your own mess.**
-
-When editing existing code:
-- Don't "improve" adjacent code, comments, or formatting.
-- Don't refactor things that aren't broken.
-- Match existing style, even if you'd do it differently.
-- If you notice unrelated dead code, mention it - don't delete it.
-
-When your changes create orphans:
-- Remove imports/variables/functions that YOUR changes made unused.
-- Don't remove pre-existing dead code unless asked.
-
-The test: Every changed line should trace directly to the user's request.
-
-## 4. Goal-Driven Execution
-
-**Define success criteria. Loop until verified.**
-
-Transform tasks into verifiable goals:
-- "Add validation" → "Write tests for invalid inputs, then make them pass"
-- "Fix the bug" → "Write a test that reproduces it, then make it pass"
-- "Refactor X" → "Ensure tests pass before and after"
-
-For multi-step tasks, state a brief plan:
-```
-1. [Step] → verify: [check]
-2. [Step] → verify: [check]
-3. [Step] → verify: [check]
-```
-
-Strong success criteria let you loop independently. Weak criteria ("make it work") require constant clarification.
-
----
-
-**These guidelines are working if:** fewer unnecessary changes in diffs, fewer rewrites due to overcomplication, and clarifying questions come before implementation rather than after mistakes.
+1. **先思考再动手**：显式说明假设；有歧义先提问，不擅自选择；有更简方案就提出；不清楚就停下问。
+2. **简单优先**：只写解决问题的最少代码；不做未被要求的特性、抽象、配置或冗余容错。
+3. **外科手术式改动**：只碰必须改的；不顺手"改进"无关代码/注释/格式；匹配现有风格；只清理自己改动产生的孤儿代码，不动既有死代码。
+4. **目标驱动**：把任务转成可验证目标；多步任务先列计划（步骤 → 验证），循环到验证通过为止。
 
 <!-- CODEGRAPH_START -->
 ## CodeGraph
 
-In repositories indexed by CodeGraph (a `.codegraph/` directory exists at the repo root), reach for it BEFORE grep/find or reading files when you need to understand or locate code:
+仓库被 CodeGraph 索引（根目录存在 `.codegraph/`）时，理解/定位代码前先用它（优先于 grep/find/读文件）：
 
-- **MCP tool** (when available): `codegraph_explore` answers most code questions in one call — the relevant symbols' verbatim source plus the call paths between them, including dynamic-dispatch hops grep can't follow. Name a file or symbol in the query to read its current line-numbered source. If it's listed but deferred, load it by name via tool search.
-- **Shell** (always works): `codegraph explore "<symbol names or question>"` prints the same output.
+- **MCP 工具**：`codegraph_explore` 一次调用即可返回相关符号的逐行源码、调用路径（含 grep 跟不上的动态分派）与影响范围。在查询中指明文件或符号即可读取其当前源码。
+- **命令行**（始终可用）：`codegraph explore "<符号名或问题>"`，输出相同。
 
-If there is no `.codegraph/` directory, skip CodeGraph entirely — indexing is the user's decision.
+若无 `.codegraph/` 目录则完全跳过——是否索引由用户决定。
 <!-- CODEGRAPH_END -->

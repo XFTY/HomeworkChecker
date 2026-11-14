@@ -42,15 +42,7 @@ public class LanguageStepHandler {
         List<String[]> languages = Arrays.asList(
             new String[]{"chineseButton", "zh_CN"},
             new String[]{"traditionalChineseButton", "zh_HK"},
-            new String[]{"englishButton", "en_US"},
-            new String[]{"spanishButton", "es_ES"},
-            new String[]{"frenchButton", "fr_FR"},
-            new String[]{"arabicButton", "ar_SA"},
-            new String[]{"russianButton", "ru_RU"},
-            new String[]{"bengaliButton", "bn_BD"},
-            new String[]{"germanButton", "de_DE"},
-            new String[]{"japaneseButton", "ja_JP"},
-            new String[]{"portugueseButton", "pt_PT"}
+            new String[]{"englishButton", "en_US"}
         );
 
         for (String[] lang : languages) {
@@ -76,8 +68,7 @@ public class LanguageStepHandler {
         Label titleLabel = (Label) root.lookup("#languageTitle");
         if (titleLabel != null) {
             String[] rotateLocales = {
-                "zh_CN", "zh_HK", "en_US", "es_ES", "fr_FR",
-                "ar_SA", "ru_RU", "bn_BD", "de_DE", "ja_JP", "pt_PT"
+                "zh_CN", "zh_HK", "en_US"
             };
             String firstParts[] = rotateLocales[0].split("_");
             Locale firstLoc = new Locale.Builder().setLanguage(firstParts[0]).setRegion(firstParts[1]).build();
@@ -152,14 +143,6 @@ public class LanguageStepHandler {
             case "zh_CN" -> "chineseButton";
             case "zh_HK" -> "traditionalChineseButton";
             case "en_US" -> "englishButton";
-            case "es_ES" -> "spanishButton";
-            case "fr_FR" -> "frenchButton";
-            case "ar_SA" -> "arabicButton";
-            case "ru_RU" -> "russianButton";
-            case "bn_BD" -> "bengaliButton";
-            case "de_DE" -> "germanButton";
-            case "ja_JP" -> "japaneseButton";
-            case "pt_PT" -> "portugueseButton";
             default -> "englishButton";
         };
     }

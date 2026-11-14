@@ -44,6 +44,8 @@ public class Index implements Initializable {
     private AnchorPane updaterButton;
     @FXML
     private AnchorPane aboutSettingsButton;
+    @FXML
+    private AnchorPane cloudSyncSettingsButton;
 
     @FXML
     private Circle windowCloseButton;
@@ -95,6 +97,11 @@ public class Index implements Initializable {
         loadSection("about", "/com/xfty/homeworkchecker/fxml/settings/about.fxml", aboutSettingsButton);
     }
 
+    @FXML
+    private void onCloudSyncSettingsClicked() {
+        loadSection("cloudSync", "/com/xfty/homeworkchecker/fxml/settings/cloudsync.fxml", cloudSyncSettingsButton);
+    }
+
     private void loadSection(String pageCode, String fxmlPath, AnchorPane button) {
         if (openPageCode != null && openPageCode.equals(pageCode)) {
             return;
@@ -135,7 +142,8 @@ public class Index implements Initializable {
 
         for (AnchorPane btn : new AnchorPane[]{
             fontSettingsButton, languageSettingsButton, initialDataButton,
-            dataBaseEditorButton, resetButton, updaterButton, aboutSettingsButton
+            dataBaseEditorButton, resetButton, updaterButton, aboutSettingsButton,
+            cloudSyncSettingsButton
         }) {
             navHelper.setupButtonHoverEffect(btn);
         }

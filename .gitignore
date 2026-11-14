@@ -7,3 +7,6 @@
 /.opencode/
 /target/
 opencode.jsonc
+.vscode
+javafx-jmods-25.0.4
+/.build/

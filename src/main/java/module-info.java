@@ -10,6 +10,7 @@ module com.xfty.homeworkchecker {
     requires okhttp3;
     requires org.commonmark;
     requires java.management;
+    requires org.controlsfx.controls;
 
 
     opens com.xfty.homeworkchecker to javafx.fxml;
