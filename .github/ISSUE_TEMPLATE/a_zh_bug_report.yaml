@@ -8,15 +8,23 @@ body:
   - type: markdown
     attributes:
       value: |
-        感谢您向软件开发者提供故障反馈！  
-        请问，是哪里出现了问题(qwq)？
+        感谢您向 HomeworkChecker 开发者提交故障反馈，我们对此表示诚挚的谢意。
+
+        **在开始填写之前，建议您提前准备以下材料：**
+        - 您当前使用的 HomeworkChecker 版本号（可在「关于」页面查看）
+        - 您的操作系统及版本（如 Windows 11 23H2、Ubuntu 24.04）
+        - 可稳定复现问题的操作步骤
+        - 问题现象截图或录屏（如有）
+        - 相关错误日志或异常提示（如有）
+
+        请尽量如实、完整地填写下列信息，以便我们更快地定位并解决问题。
 
   - type: input
     id: Bug-Description
     attributes:
-      label: 软件 异常/故障 描述
-      description: 请向开发者简要说明软件故障。
-      placeholder: 请在这里输入
+      label: 软件异常/故障描述
+      description: 请简要说明您所遇到的软件故障现象。
+      placeholder: 请在此处输入
     validations:
       required: true
 
@@ -25,15 +33,13 @@ body:
     attributes:
       label: 问题复现步骤
       description: |
-        这问题...咋弄的？？？开发者求教程...  
-        如果可以，您也可以提供软件截图。
+        请描述问题的具体复现步骤，以便开发者能够准确重现。
+        如条件允许，您也可以附上相关截图或录屏链接。
 
       placeholder: |
-        1. 先这样...  
-        2. 在那样...  
-        3. 最后在这样...  
-        
-        真填的时候不能怎么说哈！
+        1. 打开……
+        2. 点击……
+        3. 出现……问题
     validations:
       required: true
 
@@ -41,29 +47,20 @@ body:
     id: Expected-Behavior
     attributes:
       label: 软件预期行为
-      description: 在按照您上述方法操作完后，软件应该是怎样的？
-      placeholder: 请在这里输入
+      description: 在按照上述步骤操作后，您期望软件呈现怎样的结果？
+      placeholder: 请在此处输入
     validations:
       required: true
 
-  - type: dropdown
+  - type: input
     id: HC-Version
     attributes:
-      label: HomeworkChecker版本
+      label: HomeworkChecker 版本
       description: |
-        您正在运行哪个版本的 HomeworkChecker。  
-        建议您反馈最新版本的 HomeworkChecker 版本，旧版本可能会不受理
+        请填写您当前运行的具体版本号（可在「关于」页面查看）。
+        建议您优先反馈最新版本中的问题，旧版本的问题可能无法及时受理。
 
-      options:
-        - 1.7.0-Beta
-        - 1.6.0-Beta
-        - 1.5.0-Beta
-        - 1.4.2-Beta
-        - 1.4-snapshot
-        - 1.3-stable
-        - 1.2-snapshot
-        - 1.1-snapshot
-      default: 0
+      placeholder: 例如：1.7.0-Beta
     validations:
       required: true
 
@@ -71,10 +68,7 @@ body:
     id: Additional-Context
     attributes:
       label: 补充信息
-      description: |
-        您可以在此补充您想要说明的信息
-
-      placeholder: |
-        请在这里输入
+      description: 若还有其他需要说明的信息，请在此处补充。
+      placeholder: 请在此处输入
     validations:
       required: false
