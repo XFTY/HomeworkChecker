@@ -8,8 +8,16 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thank you for providing us with valuable suggestions and recommendations!  
-        We value every single one of your suggestions, which will help us improve HomeworkChecker better.
+        Thank you for providing us with your valuable suggestions and recommendations.
+        We value every suggestion you make, as they help us continually improve HomeworkChecker.
+
+        **Before you begin, please have the following materials ready:**
+        - A clear description of the new feature you would like to see and its expected effect
+        - The use cases and practical requirements behind it
+        - Why the existing features cannot meet your needs (if applicable)
+        - Any reference examples, sketches, or screenshots (if available)
+
+        Please describe your idea as clearly as possible so that we can understand your needs accurately.
 
   - type: input
     id: Feature-Idea
@@ -24,7 +32,7 @@ body:
     id: Use-Cases
     attributes:
       label: Use Cases
-      description: Please describe how you think this new feature will be used? What are the specific use scenarios?
+      description: Please describe how this new feature would be used and what specific use cases it covers.
       placeholder: Please enter here
     validations:
       required: true
@@ -33,7 +41,7 @@ body:
     id: Benefits
     attributes:
       label: Benefits Provided
-      description: What benefits will implementing this new feature bring to users?
+      description: What benefits would implementing this new feature bring to users?
       placeholder: Please enter here
     validations:
       required: true
@@ -42,7 +50,7 @@ body:
     id: Priority
     attributes:
       label: Feature Priority
-      description: How important do you think this feature is?
+      description: How important do you consider this feature to be?
       options:
         - High
         - Medium
@@ -54,7 +62,7 @@ body:
     id: Alternative-Solutions
     attributes:
       label: Alternative Solutions
-      description: Are there other ways or existing features that can achieve similar effects?
+      description: Are there other ways or existing features that can achieve a similar effect?
       placeholder: Please enter here
     validations:
       required: false
@@ -63,7 +71,7 @@ body:
     id: Additional-Context
     attributes:
       label: Additional Information
-      description: Do you have any other related information you would like to add?
+      description: If there is any other related information you would like to add, please specify it here.
       placeholder: Please enter here
     validations:
       required: false

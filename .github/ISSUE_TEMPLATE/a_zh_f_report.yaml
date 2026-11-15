@@ -8,15 +8,23 @@ body:
   - type: markdown
     attributes:
       value: |
-        感谢您向我们提出宝贵的意见和建议！  
-        我们非常重视您的每一个建议，您的建议将帮助我们更好地改进 HomeworkChecker 。
+        感谢您向我们提出宝贵的意见与建议。
+        我们非常重视您的每一条建议，它们将帮助我们持续改进 HomeworkChecker。
+
+        **在开始填写之前，建议您提前准备以下材料：**
+        - 您希望新增功能的具体描述与预期效果
+        - 该功能的使用场景与实际需求
+        - 现有功能无法满足需求的原因（如有）
+        - 相关的参考示例、草图或截图（如有）
+
+        请尽量清晰地阐述您的想法，以便我们准确理解您的需求。
 
   - type: input
     id: Feature-Idea
     attributes:
       label: 新功能建议
-      description: 请详细描述您希望我们加入的新功能。
-      placeholder: 请在这里输入
+      description: 请详细描述您希望我们新增的功能。
+      placeholder: 请在此处输入
     validations:
       required: true
 
@@ -24,8 +32,8 @@ body:
     id: Use-Cases
     attributes:
       label: 使用场景
-      description: 请描述一下您认为这个新功能将如何使用？有哪些具体的使用场景？
-      placeholder: 请在这里输入
+      description: 请说明该功能将如何使用，以及有哪些具体的使用场景。
+      placeholder: 请在此处输入
     validations:
       required: true
 
@@ -33,8 +41,8 @@ body:
     id: Benefits
     attributes:
       label: 带来的益处
-      description: 实现这个新功能后，将给用户带来哪些好处？
-      placeholder: 请在这里输入
+      description: 实现该功能后，将为用户带来哪些好处？
+      placeholder: 请在此处输入
     validations:
       required: true
 
@@ -42,7 +50,7 @@ body:
     id: Priority
     attributes:
       label: 功能优先级
-      description: 您认为这个功能的重要性如何？
+      description: 您认为该功能的重要程度如何？
       options:
         - 高
         - 中
@@ -55,7 +63,7 @@ body:
     attributes:
       label: 替代方案
       description: 是否存在其他方式或现有功能可以达到类似的效果？
-      placeholder: 请在这里输入
+      placeholder: 请在此处输入
     validations:
       required: false
 
@@ -63,7 +71,7 @@ body:
     id: Additional-Context
     attributes:
       label: 补充信息
-      description: 您是否还有其他相关信息想要补充？
-      placeholder: 请在这里输入
+      description: 若还有其他相关信息需要补充，请在此处说明。
+      placeholder: 请在此处输入
     validations:
       required: false
