@@ -141,6 +141,49 @@
     -fx-padding: 0 4 0 0;
 }
 
+/* 卡片内删除确认层：深色半透明遮罩覆盖在模糊的卡片内容上 */
+.card-delete-confirm {
+    -fx-background-color: rgba(0, 0, 0, 0.72);
+    -fx-background-radius: 8;
+}
+
+.card-delete-confirm-content {
+    -fx-padding: 12 14;
+    -fx-spacing: 6;
+}
+
+.card-delete-confirm-title {
+    -fx-text-fill: #ffffff;
+}
+
+.card-delete-confirm-message {
+    -fx-text-fill: #dddddd;
+}
+
+.card-delete-confirm-button {
+    -fx-text-fill: #ffffff;
+    -fx-background-radius: 5;
+    -fx-background-insets: 0;
+    -fx-padding: 5 14;
+    -fx-cursor: hand;
+}
+
+.card-delete-confirm-button.danger {
+    -fx-background-color: #D94A4A;
+}
+
+.card-delete-confirm-button.danger:hover {
+    -fx-background-color: #E25B5B;
+}
+
+.card-delete-confirm-button.secondary {
+    -fx-background-color: #555555;
+}
+
+.card-delete-confirm-button.secondary:hover {
+    -fx-background-color: #666666;
+}
+
 .card-action-button {
     -fx-background-color: transparent;
     -fx-padding: 4;

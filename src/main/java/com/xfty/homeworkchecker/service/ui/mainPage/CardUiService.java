@@ -51,7 +51,8 @@ import java.util.List;
  * MainPage.onscreenShotButtonPressed()
  *                                 → checkActiveCardEditing(截图)
  * 卡片「保存」按钮                 → saveEditCard() → 退出编辑动画
- * 卡片「删除」按钮                 → deleteCardWithAnimation() → 收起动画 → deleteCard() → loadCards()
+ * 卡片「删除」按钮                 → CardRenderer 显示卡片内确认层
+ * 确认层「删除」                    → deleteCardWithAnimation() → 收起动画 → deleteCard() → loadCards()
  * 卡片拖放结束                     → commitReorderSilent() → loadCards()
  * </pre>
  *
@@ -221,6 +222,10 @@ public class CardUiService {
     private void updateCardLockState(boolean unlocked) {
         for (Node card : cardList.getChildren()) {
             applyCardLockedStyle(card, unlocked);
+            // 锁定后立即关闭仍打开的删除确认层，避免卡片保持模糊/变暗状态
+            if (!unlocked) {
+                cardRenderer.dismissDeleteConfirm(card);
+            }
             Region buttonBar = (Region) card.getProperties().get(CardRenderer.BUTTON_BAR_PROPERTY);
             if (buttonBar != null && card instanceof Region cardRoot) {
                 animateButtonBar(cardRoot, buttonBar, unlocked);
@@ -339,7 +344,7 @@ public class CardUiService {
      */
     private void animateButtonBar(Region cardRoot, Region buttonBar, boolean unlocked) {
         // 编辑态下旧按钮栏已脱离卡片，直接跳过，避免动画作用到无效节点
-        if (buttonBar.getParent() == null || buttonBar.getParent().getParent() != cardRoot) {
+        if (buttonBar.getParent() == null || !isDescendantOf(buttonBar, cardRoot)) {
             return;
         }
 
@@ -461,6 +466,26 @@ public class CardUiService {
         );
         collapse.setOnFinished(event -> finishButtonBarAnimation(cardRoot, buttonBar, false));
         return collapse;
+    }
+
+    /**
+     * 判断节点是否位于指定祖先节点之下。
+     * <p>
+     * 卡片内容现在包裹在 StackPane 中，按钮栏与卡片根节点之间多了一层容器，
+     * 因此不能再依赖固定的父子层级判断。
+     * </p>
+     *
+     * @param node     待检查的节点
+     * @param ancestor 期望的祖先节点
+     * @return {@code true} 表示 node 是 ancestor 自身或其后代
+     */
+    private boolean isDescendantOf(Node node, Node ancestor) {
+        for (Node current = node; current != null; current = current.getParent()) {
+            if (current == ancestor) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**
@@ -1212,7 +1237,7 @@ public class CardUiService {
             return;
         }
 
-        VBox readOnlyBody = (VBox) cardRoot.getChildren().get(0);
+        Region readOnlyBody = (Region) cardRoot.getChildren().get(0);
         readOnlyBody.setOpacity(1.0);
         // 编辑体先作为未托管子节点加入，仅用于 CSS 应用和高度测量
         editBody.setManaged(false);
@@ -1450,7 +1475,7 @@ public class CardUiService {
             loadCards();
             return;
         }
-        VBox targetBody = (VBox) targetRoot.getChildren().get(0);
+        Region targetBody = (Region) targetRoot.getChildren().get(0);
         targetRoot.getChildren().remove(targetBody);
         targetBody.setManaged(false);
         targetBody.setVisible(true);
@@ -1495,9 +1520,10 @@ public class CardUiService {
                     targetBody.setOpacity(0);
                     targetBody.setClip(targetClip);
 
-                    // 把目标只读卡片的按钮栏/编辑按钮引用与严重性样式迁移到现有卡片根节点
+                    // 把目标只读卡片的按钮栏/编辑按钮/删除确认层引用与严重性样式迁移到现有卡片根节点
                     copyCardProperty(targetRoot, cardRoot, CardRenderer.BUTTON_BAR_PROPERTY);
                     copyCardProperty(targetRoot, cardRoot, CardRenderer.EDIT_BUTTON_PROPERTY);
+                    copyCardProperty(targetRoot, cardRoot, CardRenderer.DELETE_CONFIRM_PROPERTY);
                     // 退出编辑前停止可能仍在播放的颜色渐变，避免它与最终配色冲突
                     stopSeverityColorAnimation(cardRoot);
                     cardRoot.getStyleClass().removeAll("info", "warning", "critical");

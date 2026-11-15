@@ -4,6 +4,15 @@ import com.alibaba.fastjson2.JSONObject;
 import com.xfty.homeworkchecker.Entry;
 import com.xfty.homeworkchecker.Idf;
 import com.xfty.homeworkchecker.model.CardItem;
+import com.xfty.homeworkchecker.service.ui.motion.MotionEasing;
+import javafx.animation.Animation;
+import javafx.animation.Interpolator;
+import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
+import javafx.animation.ParallelTransition;
+import javafx.animation.PauseTransition;
+import javafx.animation.SequentialTransition;
+import javafx.animation.Timeline;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,17 +25,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,6 +53,7 @@ import java.util.Objects;
  *   <li>{@link #renderCard}：把一张 {@link CardItem} 渲染成只读卡片节点；</li>
  *   <li>{@link #createEditCardBody}：把一张卡片渲染成内联编辑控件；</li>
  *   <li>{@link #showCardSaveConfirmDialog}：编辑中切换场景时弹出的保存/丢弃确认框；</li>
+ *   <li>删除确认层：点击删除按钮后在卡片内模糊变暗并渐显确认选项；</li>
  *   <li>以及若干图标、按钮、严重性样式的小型工厂方法。</li>
  * </ul>
  * 持久化操作（读卡、改卡、删图）通过构造时注入的 {@link ReminderCardService} 完成；
@@ -54,6 +68,21 @@ public class CardRenderer {
     public static final String BUTTON_BAR_PROPERTY = "cardButtonBar";
     /** 卡片根节点上保存「编辑」按钮引用的属性键，供编辑期间对其他卡片的编辑按钮做渐隐/渐显。 */
     public static final String EDIT_BUTTON_PROPERTY = "cardEditButton";
+    /** 卡片根节点上保存删除确认层的属性键，供锁定时统一关闭确认层。 */
+    public static final String DELETE_CONFIRM_PROPERTY = "cardDeleteConfirm";
+
+    /** 删除确认层显示时长：遮罩淡入与模糊加深同步完成。 */
+    private static final Duration DELETE_CONFIRM_SHOW_DURATION = Duration.millis(220);
+    /** 删除确认层文字相对遮罩延迟显示的时长，形成先变暗再渐显文字的层次感。 */
+    private static final Duration DELETE_CONFIRM_TEXT_DELAY = Duration.millis(60);
+    /** 删除确认层文字渐显时长。 */
+    private static final Duration DELETE_CONFIRM_TEXT_DURATION = Duration.millis(200);
+    /** 删除确认层收起时长；确认删除时先收起确认层，再交给原有删除动画。 */
+    private static final Duration DELETE_CONFIRM_HIDE_DURATION = Duration.millis(160);
+    /** 卡片模糊半径：值越大越模糊，12 在卡片尺寸下清晰可辨又不显脏。 */
+    private static final double DELETE_CONFIRM_BLUR_RADIUS = 12;
+    /** 删除确认层动画在节点属性中的键，用于快速切换时停止旧动画。 */
+    private static final String DELETE_CONFIRM_ANIM_KEY = "cardDeleteConfirmAnim";
 
     /** 卡片数据与图片读写服务，用于读取图片、保存图片宽度等。 */
     private final ReminderCardService reminderCardService;
@@ -95,10 +124,12 @@ public class CardRenderer {
      * 布局结构：
      * <pre>
      * card-item（根节点，按严重性附加 info/warning/critical 样式）
-     *   └─ card-body
-     *        ├─ topRow（严重性图标 + 内容区）
-     *        ├─ sliderBox（仅图片卡片：图片宽度调节滑杆）
-     *        └─ buttonBar（编辑/删除按钮，锁定状态下隐藏）
+     *   └─ StackPane（卡片内容 + 删除确认层的叠放容器）
+     *        ├─ card-body
+     *        │    ├─ topRow（严重性图标 + 内容区）
+     *        │    ├─ sliderBox（仅图片卡片：图片宽度调节滑杆）
+     *        │    └─ buttonBar（编辑/删除按钮，锁定状态下隐藏）
+     *        └─ card-delete-confirm（删除确认层，初始隐藏）
      * </pre>
      * 图片卡片不显示正文，只显示图片；普通卡片显示标题、正文和时间戳。
      * </p>
@@ -279,10 +310,21 @@ public class CardRenderer {
         // 登记按钮栏引用，便于 CardUiService 在锁定状态变化时找到并播放动画
         cardRoot.getProperties().put(BUTTON_BAR_PROPERTY, buttonBar);
 
+        // 删除确认层：覆盖在卡片内容上方，点击删除按钮时渐显
+        StackPane deleteConfirm = buildDeleteConfirmOverlay(
+            currentIndex, cardFontFamily, cardFontSize, onDelete
+        );
+
         // 按钮图标略小于正文基础字号
         double btnIconSize = cardFontSize * 0.9;
         Button deleteBtn = buildIconButton("icon/card/删除.png", btnIconSize, "card-action-button", "danger");
-        deleteBtn.setOnAction(e -> onDelete.accept(currentIndex));
+        // 解锁状态下点击删除按钮先展示卡片内确认层，确认后才真正删除
+        deleteBtn.setOnAction(e -> {
+            if (!Idf.editableProperty.get()) {
+                return;
+            }
+            showDeleteConfirm(cardBody, deleteConfirm);
+        });
 
         // 图片卡片只允许删除（图片内容本身无法内联编辑），普通卡片提供编辑 + 删除
         boolean isImageCard = imgPath != null && !imgPath.isEmpty();
@@ -302,7 +344,22 @@ public class CardRenderer {
         } else {
             cardBody.getChildren().addAll(topRow, buttonBar);
         }
-        cardRoot.getChildren().add(cardBody);
+
+        // 用 StackPane 把卡片内容与删除确认层叠放，才能只模糊卡片内容而不模糊确认文字
+        StackPane cardSurface = new StackPane(cardBody);
+        cardSurface.setMaxWidth(Double.MAX_VALUE);
+        cardBody.setMaxWidth(Double.MAX_VALUE);
+        cardSurface.getChildren().add(deleteConfirm);
+
+        // 确认层裁剪到卡片可视区域，卡片矮小时避免文字溢出到相邻卡片
+        Rectangle confirmClip = new Rectangle();
+        confirmClip.widthProperty().bind(cardSurface.widthProperty());
+        confirmClip.heightProperty().bind(cardSurface.heightProperty());
+        deleteConfirm.setClip(confirmClip);
+
+        // 登记确认层引用，锁定时由 CardUiService 调用来关闭
+        cardRoot.getProperties().put(DELETE_CONFIRM_PROPERTY, deleteConfirm);
+        cardRoot.getChildren().add(cardSurface);
 
         // 锁定状态下点击整张卡片，等同于点击主编辑区进入编辑（方便教师直接改作业）
         cardRoot.setOnMouseClicked(e -> {
@@ -548,6 +605,244 @@ public class CardRenderer {
         centerShowingArea.getChildren().clear();
         centerOutBox.setMouseTransparent(true);
         blackPane.setOpacity(0);
+    }
+
+    /**
+     * 构建卡片内的删除确认层。
+     * <p>
+     * 确认层覆盖在卡片内容上方，初始不可见且不参与布局；点击删除按钮后由
+     * {@link #showDeleteConfirm(Region, StackPane)} 播放渐显动画。标题左侧使用与
+     * 删除按钮相同的垃圾桶图标，按钮位于右下角。
+     * </p>
+     *
+     * @param index         卡片下标，确认删除时回传给删除回调
+     * @param cardFontFamily 卡片字体家族
+     * @param cardFontSize   卡片基础字号
+     * @param onDelete      确认删除后的回调
+     * @return 可直接叠加到卡片内容上方的确认层
+     */
+    private StackPane buildDeleteConfirmOverlay(int index, String cardFontFamily, double cardFontSize,
+                                                java.util.function.Consumer<Integer> onDelete) {
+        StackPane overlay = new StackPane();
+        overlay.getStyleClass().add("card-delete-confirm");
+        overlay.setVisible(false);
+        overlay.setManaged(false);
+        overlay.setOpacity(0);
+        // 确认层不参与卡片尺寸计算：显示在矮卡片上时不应把卡片撑高
+        overlay.setMinSize(0, 0);
+        overlay.setPrefSize(0, 0);
+        overlay.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        // 内容层使用 VBox：标题/说明占据剩余空间并垂直居中，按钮固定在右下角
+        VBox content = new VBox(6);
+        content.getStyleClass().add("card-delete-confirm-content");
+        content.setFillWidth(true);
+        content.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+
+        // 标题行：垃圾桶图标 +「确认删除？」，标题字号大于说明文字
+        HBox titleRow = new HBox(8);
+        titleRow.setAlignment(Pos.CENTER_LEFT);
+        ImageView trashIcon = buildIcon("icon/card/删除.png", cardFontSize * 1.1);
+        Label titleLabel = new Label(Idf.userLanguageBundle.getString("card.delete.confirm.title"));
+        titleLabel.getStyleClass().add("card-delete-confirm-title");
+        titleLabel.setFont(Font.font(cardFontFamily, FontWeight.BOLD, cardFontSize));
+        titleLabel.setWrapText(true);
+        titleRow.getChildren().addAll(trashIcon, titleLabel);
+
+        // 说明文字字号比标题小 3px，但不小于 11px，保证缩小字体后仍可阅读
+        Label messageLabel = new Label(Idf.userLanguageBundle.getString("card.delete.confirm.message"));
+        messageLabel.getStyleClass().add("card-delete-confirm-message");
+        messageLabel.setFont(Font.font(cardFontFamily, Math.max(cardFontSize - 3, 11)));
+        messageLabel.setWrapText(true);
+        messageLabel.setMaxWidth(Double.MAX_VALUE);
+
+        // 标题与说明作为一组，占满按钮上方的剩余空间并在此区域内水平靠左、垂直居中
+        VBox textBlock = new VBox(6, titleRow, messageLabel);
+        textBlock.setAlignment(Pos.CENTER_LEFT);
+        textBlock.setFillWidth(true);
+        textBlock.setMaxSize(Double.MAX_VALUE, Double.MAX_VALUE);
+        VBox.setVgrow(textBlock, Priority.ALWAYS);
+
+        Button confirmDeleteBtn = new Button(Idf.userLanguageBundle.getString("card.delete"));
+        confirmDeleteBtn.getStyleClass().addAll("card-delete-confirm-button", "danger");
+        Button cancelBtn = new Button(Idf.userLanguageBundle.getString("card.cancel"));
+        cancelBtn.getStyleClass().addAll("card-delete-confirm-button", "secondary");
+
+        // 选项靠右排列：删除（红）在左，取消（灰）在右
+        HBox actionBar = new HBox(8, confirmDeleteBtn, cancelBtn);
+        actionBar.setAlignment(Pos.CENTER_RIGHT);
+        actionBar.setMaxWidth(Double.MAX_VALUE);
+
+        content.getChildren().addAll(textBlock, actionBar);
+        overlay.getChildren().add(content);
+        StackPane.setAlignment(content, Pos.CENTER);
+
+        confirmDeleteBtn.setOnAction(e -> {
+            // 确认后先收起确认层，动画结束再交给原有卡片删除收起动画
+            hideDeleteConfirm(overlay, true, () -> onDelete.accept(index));
+        });
+        cancelBtn.setOnAction(e -> hideDeleteConfirm(overlay, true, null));
+
+        // 确认层可见时吞掉点击与拖拽检测，避免穿透到下方卡片触发拖拽
+        overlay.setOnMouseClicked(e -> e.consume());
+        overlay.setOnDragDetected(e -> e.consume());
+        return overlay;
+    }
+
+    /**
+     * 播放删除确认层的显示动画：卡片内容逐渐模糊，深色遮罩淡入，文字稍后渐显。
+     *
+     * @param cardBody 需要模糊的卡片内容体
+     * @param overlay  删除确认层
+     */
+    private void showDeleteConfirm(Region cardBody, StackPane overlay) {
+        // 已经显示时不重复播放，避免快速点击导致动画叠加
+        if (overlay.isVisible()) {
+            return;
+        }
+        stopDeleteConfirmAnimation(overlay);
+
+        // 模糊只作用在卡片内容上，确认文字作为兄弟节点保持清晰
+        GaussianBlur blur = new GaussianBlur(0);
+        cardBody.setEffect(blur);
+
+        overlay.setVisible(true);
+        overlay.setManaged(true);
+        overlay.setOpacity(0);
+        overlay.setMouseTransparent(false);
+
+        Node content = overlay.getChildren().isEmpty() ? null : overlay.getChildren().get(0);
+        if (content != null) {
+            // 文字初始向下偏移，渐显时上移归位，形成轻微浮现感
+            content.setOpacity(0);
+            content.setTranslateY(8);
+        }
+
+        // 第一阶段：遮罩淡入与模糊加深同时进行
+        Timeline dimTimeline = new Timeline(
+            new KeyFrame(DELETE_CONFIRM_SHOW_DURATION,
+                new KeyValue(overlay.opacityProperty(), 1, MotionEasing.SPRING_FADE),
+                new KeyValue(blur.radiusProperty(), DELETE_CONFIRM_BLUR_RADIUS, MotionEasing.EASE_OUT_CUBIC)
+            )
+        );
+
+        ParallelTransition animation;
+        if (content != null) {
+            // 第二阶段：文字延迟 60ms 渐显并上移，与遮罩淡入略微错开
+            Timeline textTimeline = new Timeline(
+                new KeyFrame(DELETE_CONFIRM_TEXT_DURATION,
+                    new KeyValue(content.opacityProperty(), 1, MotionEasing.SPRING_FADE),
+                    new KeyValue(content.translateYProperty(), 0, MotionEasing.SPRING)
+                )
+            );
+            SequentialTransition textReveal = new SequentialTransition(
+                new PauseTransition(DELETE_CONFIRM_TEXT_DELAY), textTimeline
+            );
+            animation = new ParallelTransition(dimTimeline, textReveal);
+        } else {
+            animation = new ParallelTransition(dimTimeline);
+        }
+        animation.setOnFinished(e -> overlay.getProperties().remove(DELETE_CONFIRM_ANIM_KEY));
+        overlay.getProperties().put(DELETE_CONFIRM_ANIM_KEY, animation);
+        animation.play();
+    }
+
+    /**
+     * 关闭卡片上的删除确认层。锁定或卡片刷新时使用无动画的立即关闭。
+     *
+     * @param cardRoot 卡片根节点
+     */
+    public void dismissDeleteConfirm(Node cardRoot) {
+        Object node = cardRoot.getProperties().get(DELETE_CONFIRM_PROPERTY);
+        if (node instanceof StackPane overlay && overlay.isVisible()) {
+            hideDeleteConfirm(overlay, false, null);
+        }
+    }
+
+    /**
+     * 收起删除确认层并恢复卡片内容。
+     *
+     * @param overlay 删除确认层
+     * @param animate 是否播放淡出与去模糊动画
+     * @param after   动画结束后的回调，可为 null
+     */
+    private void hideDeleteConfirm(StackPane overlay, boolean animate, Runnable after) {
+        stopDeleteConfirmAnimation(overlay);
+        // 收起动画期间禁止再次点击
+        overlay.setMouseTransparent(true);
+
+        Region blurTarget = resolveBlurTarget(overlay);
+        GaussianBlur blur = blurTarget != null && blurTarget.getEffect() instanceof GaussianBlur gaussianBlur
+            ? gaussianBlur : null;
+
+        if (!animate || blur == null) {
+            finishHideDeleteConfirm(overlay, blurTarget, after);
+            return;
+        }
+
+        Timeline hideTimeline = new Timeline(
+            new KeyFrame(DELETE_CONFIRM_HIDE_DURATION,
+                new KeyValue(overlay.opacityProperty(), 0, Interpolator.EASE_OUT),
+                new KeyValue(blur.radiusProperty(), 0, MotionEasing.EASE_OUT_CUBIC)
+            )
+        );
+        hideTimeline.setOnFinished(e -> {
+            overlay.getProperties().remove(DELETE_CONFIRM_ANIM_KEY);
+            finishHideDeleteConfirm(overlay, blurTarget, after);
+        });
+        overlay.getProperties().put(DELETE_CONFIRM_ANIM_KEY, hideTimeline);
+        hideTimeline.play();
+    }
+
+    /**
+     * 完成确认层的收起：隐藏节点、清除模糊并恢复文字初始状态。
+     *
+     * @param overlay     删除确认层
+     * @param blurTarget  被模糊的卡片内容体
+     * @param after       收起完成后的回调，可为 null
+     */
+    private void finishHideDeleteConfirm(StackPane overlay, Region blurTarget, Runnable after) {
+        overlay.setVisible(false);
+        overlay.setManaged(false);
+        overlay.setOpacity(0);
+        if (blurTarget != null) {
+            blurTarget.setEffect(null);
+        }
+        if (!overlay.getChildren().isEmpty()) {
+            Node content = overlay.getChildren().get(0);
+            content.setOpacity(1);
+            content.setTranslateY(0);
+        }
+        if (after != null) {
+            after.run();
+        }
+    }
+
+    /**
+     * 找到确认层下方真正应用模糊的卡片内容体。
+     *
+     * @param overlay 删除确认层
+     * @return 卡片内容体；节点结构异常时返回 null
+     */
+    private Region resolveBlurTarget(StackPane overlay) {
+        if (overlay.getParent() instanceof StackPane surface
+                && !surface.getChildren().isEmpty()
+                && surface.getChildren().get(0) instanceof Region body) {
+            return body;
+        }
+        return null;
+    }
+
+    /**
+     * 停止删除确认层上正在播放的显示/收起动画。
+     *
+     * @param overlay 删除确认层
+     */
+    private void stopDeleteConfirmAnimation(StackPane overlay) {
+        Object animation = overlay.getProperties().remove(DELETE_CONFIRM_ANIM_KEY);
+        if (animation instanceof Animation playable) {
+            playable.stop();
+        }
     }
 
     /**
