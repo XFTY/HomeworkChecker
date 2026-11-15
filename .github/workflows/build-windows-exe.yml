@@ -1,0 +1,220 @@
+name: Build Windows Installer
+
+# 持续交付（当前阶段）：仅手动触发。
+# 在 Actions 页面点击 “Run workflow” 时，由触发者决定是否保留构建产物。
+on:
+  workflow_dispatch:
+    inputs:
+      retain_artifact:
+        description: '是否保留 .exe 构建产物（上传为 Actions Artifact）'
+        type: boolean
+        required: false
+        default: false
+
+permissions:
+  contents: read
+
+# 同一个分支只允许一个构建，避免重复打包任务并行
+concurrency:
+  group: build-exe-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-exe:
+    name: Build .exe (x64)
+    runs-on: windows-latest
+    defaults:
+      run:
+        shell: bash
+
+    steps:
+      # 拉取触发本次工作流时选中的分支/提交
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      # jpackage 需要 JDK 25（含 jpackage / jlink），显式使用 x64
+      - name: Setup JDK 25 (x64)
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '25'
+          architecture: x64
+          cache: maven
+
+      # 读取 pom.xml 版本，并计算 jpackage/Windows 版本资源所需的纯数字版本
+      - name: Read project version
+        id: version
+        run: |
+          set -euo pipefail
+          VERSION="$(sed -n 's:.*<version>\(.*\)</version>.*:\1:p' pom.xml | head -1)"
+          JFX_VERSION="$(sed -n 's:.*<javafx.version>\(.*\)</javafx.version>.*:\1:p' pom.xml | head -1)"
+          if [[ -z "$VERSION" || -z "$JFX_VERSION" ]]; then
+            echo "::error::无法从 pom.xml 解析 version 或 javafx.version"
+            exit 1
+          fi
+
+          # jpackage 在 Windows 上只接受纯数字版本，去掉 -rc1/-beta 等后缀，
+          # 并补齐为 major.minor.build 三段。
+          JPACKAGE_VERSION="$(echo "${VERSION%%-*}" | awk -F. '{printf "%d.%d.%d", $1, $2, $3}')"
+          # Windows 文件版本资源需要 4 段数字。
+          VERSION_DWORD="${JPACKAGE_VERSION}.0"
+
+          echo "项目版本: $VERSION"
+          echo "jpackage 版本: $JPACKAGE_VERSION"
+          echo "版本资源: $VERSION_DWORD"
+          {
+            echo "version=$VERSION"
+            echo "javafx_version=$JFX_VERSION"
+            echo "jpackage_version=$JPACKAGE_VERSION"
+            echo "version_dword=$VERSION_DWORD"
+          } >> "$GITHUB_OUTPUT"
+
+      # NSIS 用于生成 .exe 安装包
+      - name: Install NSIS
+        shell: pwsh
+        run: choco install nsis --no-progress -y
+
+      # JavaFX jmods 不在 Maven Central，按 pom.xml 的 javafx.version 下载 Windows x64 版
+      - name: Download JavaFX jmods
+        shell: pwsh
+        env:
+          JFX_VERSION: ${{ steps.version.outputs.javafx_version }}
+        run: |
+          $url = "https://download2.gluonhq.com/openjfx/${env:JFX_VERSION}/openjfx-${env:JFX_VERSION}_windows-x64_bin-jmods.zip"
+          Invoke-WebRequest -Uri $url -OutFile javafx-jmods.zip
+          Expand-Archive -Path javafx-jmods.zip -DestinationPath . -Force
+          if (-not (Test-Path "javafx-jmods-${env:JFX_VERSION}\javafx.controls.jmod")) {
+            Write-Error "JavaFX jmods 解压失败"
+            exit 1
+          }
+
+      # 1) 用 shade 生成 fat jar。
+      #    复用 linux-deb profile：它的唯一作用是让 shaded jar 排除 JavaFX，
+      #    JavaFX 改由 jmods 在 jpackage 运行时镜像中提供，避免原生库重复。
+      - name: Build fat jar
+        run: mvn -q -Plinux-deb -DskipTests clean package
+
+      # 2) 用 jpackage 生成 x64 app-image（Windows 上无法交叉编译，必须用 Windows runner）
+      - name: Build app-image with jpackage
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          JPACKAGE_VERSION: ${{ steps.version.outputs.jpackage_version }}
+          JFX_VERSION: ${{ steps.version.outputs.javafx_version }}
+        run: |
+          set -euo pipefail
+          MAIN_JAR="target/homeworkChecker-${VERSION}-shaded.jar"
+          if [[ ! -f "$MAIN_JAR" ]]; then
+            echo "::error::未找到 $MAIN_JAR"
+            exit 1
+          fi
+
+          rm -rf .build/input .build/app-image
+          mkdir -p .build/input
+          cp "$MAIN_JAR" .build/input/
+
+          jpackage \
+            --type app-image \
+            --name HomeworkChecker \
+            --dest .build/app-image \
+            --input .build/input \
+            --main-jar "$(basename "$MAIN_JAR")" \
+            --main-class com.xfty.homeworkchecker.Entry \
+            --module-path "javafx-jmods-${JFX_VERSION}" \
+            --add-modules "java.se,jdk.unsupported,jdk.crypto.ec,jdk.charsets,jdk.zipfs,javafx.controls,javafx.fxml,javafx.web" \
+            --java-options "--add-modules=javafx.controls,javafx.fxml,javafx.web" \
+            --java-options "--enable-native-access=javafx.graphics,javafx.web" \
+            --java-options "--add-opens=java.base/java.lang=ALL-UNNAMED" \
+            --java-options "--add-opens=java.base/java.util=ALL-UNNAMED" \
+            --java-options "--add-exports=javafx.graphics/com.sun.javafx.sg.prism=ALL-UNNAMED" \
+            --java-options "--add-exports=javafx.web/com.sun.javafx.sg.prism.web=ALL-UNNAMED" \
+            --icon launcher/logo.ico \
+            --vendor XFTY \
+            --app-version "$JPACKAGE_VERSION"
+
+          if [[ ! -f .build/app-image/HomeworkChecker/HomeworkChecker.exe ]]; then
+            echo "::error::jpackage 未生成 HomeworkChecker.exe"
+            exit 1
+          fi
+
+      # 3) 准备 NSIS 的 InstallFiles：app-image 内容 + 安装器所需资源
+      - name: Prepare InstallFiles
+        run: |
+          set -euo pipefail
+          rm -rf InstallFiles
+          mkdir -p InstallFiles
+          cp -r .build/app-image/HomeworkChecker/. InstallFiles/
+          cp launcher/logo.ico InstallFiles/logo.ico
+          cp LICENSE InstallFiles/LICENSE
+          ls -la InstallFiles
+
+      # 4) 用 NSIS 生成 .exe 安装包。
+      #    仓库里的 .nsi 保持不动；CI 生成临时副本，注入 pom 版本号，
+      #    并把快捷方式从旧的 VBS 启动器改为 jpackage 生成的 HomeworkChecker.exe。
+      - name: Build .exe installer with NSIS
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          VERSION_DWORD: ${{ steps.version.outputs.version_dword }}
+          NSI_SRC: Installer/HomeworkCheckerInstaller.nsi
+          NSI_TMP: HomeworkCheckerInstaller.ci.nsi
+          NSIS_EXE: /c/Program Files (x86)/NSIS/makensis.exe
+        run: |
+          set -euo pipefail
+          ORIG_VERSION="$(sed -n 's/^!define PRODUCT_VERSION "\(.*\)"/\1/p' "$NSI_SRC" | head -1)"
+          if [[ -z "$ORIG_VERSION" ]]; then
+            echo "::error::无法从 .nsi 解析 PRODUCT_VERSION"
+            exit 1
+          fi
+          # 转义版本号中的点，避免作为正则通配符
+          ORIG_VERSION_ESC="${ORIG_VERSION//./\\.}"
+
+          sed \
+            -e "s/${ORIG_VERSION_ESC}/${VERSION}/g" \
+            -e "s/^!define PRODUCT_VERSION_DWORD \".*\"/!define PRODUCT_VERSION_DWORD \"${VERSION_DWORD}\"/" \
+            -e "s/HomeworkCheckerLauncher\.vbs/HomeworkChecker.exe/g" \
+            "$NSI_SRC" > "$NSI_TMP"
+
+          "$NSIS_EXE" "$NSI_TMP"
+          rm -f "$NSI_TMP"
+
+          if [[ ! -f "HomeworkChecker-${VERSION}-Setup.exe" ]]; then
+            echo "::error::NSIS 未生成安装包"
+            exit 1
+          fi
+
+      # 统一放到 final/ 目录，便于上传
+      - name: Collect artifact
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          mkdir -p final
+          cp -v "HomeworkChecker-${VERSION}-Setup.exe" final/
+          ls -lh final
+
+      # 仅当触发时勾选“保留产物”才上传 Artifact
+      - name: Upload .exe artifact
+        if: inputs.retain_artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: homeworkchecker-exe-${{ steps.version.outputs.version }}-build${{ github.run_number }}
+          path: final/*.exe
+          if-no-files-found: error
+          retention-days: 30
+
+      # 无论是否保留产物，都在 Job 摘要中记录构建信息
+      - name: Job summary
+        if: always()
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+          RETAIN_ARTIFACT: ${{ inputs.retain_artifact }}
+        run: |
+          {
+            echo "### HomeworkChecker .exe"
+            echo ""
+            echo "| 项目 | 值 |"
+            echo "| --- | --- |"
+            echo "| 项目版本 | \`${VERSION:-未知}\` |"
+            echo "| 架构 | \`x64\` |"
+            echo "| 保留产物 | \`${RETAIN_ARTIFACT:-false}\` |"
+            echo "| 触发提交 | \`${GITHUB_SHA}\` |"
+          } >> "$GITHUB_STEP_SUMMARY"
