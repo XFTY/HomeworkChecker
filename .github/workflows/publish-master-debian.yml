@@ -46,8 +46,11 @@ jobs:
           mvn -version
           jpackage --version
 
-      # 读取项目版本，供后续产物命名与摘要使用
-      - name: Read project version
+      # 读取 pom.xml 版本并映射为 Debian 版本：
+      #   1.7.0-rc1  -> 1.7.0~rc1-1（预发布用 ~，排序低于正式版）
+      #   1.7.0-1    -> 1.7.0-1
+      #   1.7.0      -> 1.7.0-1
+      - name: Read and map project version
         id: version
         run: |
           set -euo pipefail
@@ -56,8 +59,34 @@ jobs:
             echo "::error::无法从 pom.xml 解析版本号"
             exit 1
           fi
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          APP_VERSION="${VERSION%%-*}"
+          DEB_RELEASE="1"
+          DEB_VERSION="${APP_VERSION}-1"
+          IS_PRERELEASE=false
+
+          if [[ "$VERSION" == *-* ]]; then
+            SUFFIX="${VERSION#*-}"
+            if [[ "$SUFFIX" =~ ^(alpha|beta|milestone|rc)[0-9]*$ ]]; then
+              # 预发布：用 ~ 标记，保证低于同名正式版
+              IS_PRERELEASE=true
+              DEB_VERSION="${APP_VERSION}~${SUFFIX}-1"
+            else
+              # 数字或未知后缀：作为 Debian revision
+              DEB_RELEASE="$SUFFIX"
+              DEB_VERSION="${APP_VERSION}-${DEB_RELEASE}"
+            fi
+          fi
+
           echo "项目版本: $VERSION"
+          echo "Debian 版本: $DEB_VERSION（预发布: $IS_PRERELEASE）"
+          {
+            echo "version=$VERSION"
+            echo "app_version=$APP_VERSION"
+            echo "deb_release=$DEB_RELEASE"
+            echo "deb_version=$DEB_VERSION"
+            echo "is_prerelease=$IS_PRERELEASE"
+          } >> "$GITHUB_OUTPUT"
 
       # JavaFX jmods 不在 Maven Central，按 pom.xml 中的 javafx.version 下载
       - name: Download JavaFX jmods
@@ -83,13 +112,84 @@ jobs:
           ./build-deb.sh
           ls -lh package/*.deb
 
+      # jpackage 只会把预发布版本写成 1.7.0-rc1（排序高于正式版），
+      # 这里在打包后把 control 中的 Version 改写为 1.7.0~rc1-1。
+      # dpkg-deb 没有 --set-field，需先解包、改 control、再重新打包。
+      - name: Fix prerelease Debian version
+        if: steps.version.outputs.is_prerelease == 'true'
+        env:
+          DEB_VERSION: ${{ steps.version.outputs.deb_version }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(package/*.deb)
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::未找到 package/*.deb"
+            exit 1
+          fi
+          mkdir -p dist
+          for f in "${files[@]}"; do
+            workdir="$(mktemp -d)"
+            dpkg-deb -R "$f" "$workdir"
+            sed -i "s/^Version: .*/Version: ${DEB_VERSION}/" "$workdir/DEBIAN/control"
+            dpkg-deb -b --root-owner-group "$workdir" "dist/$(basename "$f")"
+            rm -rf "$workdir"
+          done
+          dpkg-deb -f dist/*.deb Version
+
+      # 非预发布版本无需改写，直接收集
+      - name: Collect non-prerelease .deb
+        if: steps.version.outputs.is_prerelease != 'true'
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(package/*.deb)
+          if (( ${#files[@]} == 0 )); then
+            echo "::error::未找到 package/*.deb"
+            exit 1
+          fi
+          mkdir -p dist
+          cp -v "${files[@]}" dist/
+
+      # 统一命名为 HomeworkChecker-<pom 版本>.deb
+      - name: Normalize artifact name
+        env:
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          files=(dist/*.deb)
+          mkdir -p final
+          for f in "${files[@]}"; do
+            cp -v "$f" "final/HomeworkChecker-${VERSION}.deb"
+          done
+          ls -lh final
+
+      # 校验版本排序：预发布必须低于同名正式版
+      - name: Verify version ordering
+        env:
+          DEB_VERSION: ${{ steps.version.outputs.deb_version }}
+          IS_PRERELEASE: ${{ steps.version.outputs.is_prerelease }}
+        run: |
+          set -euo pipefail
+          if [[ "$IS_PRERELEASE" == "true" ]]; then
+            FORMAL="${DEB_VERSION%%~*}-1"
+            if dpkg --compare-versions "$DEB_VERSION" lt "$FORMAL"; then
+              echo "✅ $DEB_VERSION < $FORMAL"
+            else
+              echo "::error::$DEB_VERSION 应低于 $FORMAL"
+              exit 1
+            fi
+          fi
+          echo "最终 Debian 版本: $DEB_VERSION"
+
       # 仅当触发时勾选“保留产物”才上传 Artifact
       - name: Upload .deb artifact
         if: inputs.retain_artifact
         uses: actions/upload-artifact@v4
         with:
           name: homeworkchecker-deb-${{ steps.version.outputs.version }}-build${{ github.run_number }}
-          path: package/*.deb
+          path: final/*.deb
           if-no-files-found: error
           retention-days: 30
 
@@ -98,6 +198,7 @@ jobs:
         if: always()
         env:
           VERSION: ${{ steps.version.outputs.version }}
+          DEB_VERSION: ${{ steps.version.outputs.deb_version }}
           RETAIN_ARTIFACT: ${{ inputs.retain_artifact }}
         run: |
           {
@@ -106,6 +207,7 @@ jobs:
             echo "| 项目 | 值 |"
             echo "| --- | --- |"
             echo "| 项目版本 | \`${VERSION:-未知}\` |"
+            echo "| Debian 版本 | \`${DEB_VERSION:-未知}\` |"
             echo "| 保留产物 | \`${RETAIN_ARTIFACT:-false}\` |"
             echo "| 触发提交 | \`${GITHUB_SHA}\` |"
           } >> "$GITHUB_STEP_SUMMARY"
