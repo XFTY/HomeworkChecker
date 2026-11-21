@@ -5,7 +5,7 @@ We have recently modified the licensing model of HomeworkChecker. For details, p
 
 A homework viewing tool designed for **display on classroom screens** 📚
 
-![](https://img.shields.io/badge/license-GNU_GPL_V3-green.svg)
+![](https://img.shields.io/badge/license-Apache_License_2.0-green.svg)
 ![](https://img.shields.io/badge/language-Java-orange.svg)
 
 ![](docs/pic/en/20260406/mainpage.png)
